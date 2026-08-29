@@ -11,6 +11,8 @@ QUE NO SE CUENTA (y por que):
   - Todo el frente CONTROL DE ACTIVOS VENDIDOS (id 56)     -> ya no es flota propia.
   - Equipos con estado DESINCORPORADO                      -> ya no operan.
   - Vacuums anteriores a 2025 y los que no tienen año      -> lo pediste tu.
+  - Volteos de CVG PUERTO ORDAZ (44) y MINISTERIO DE
+    OBRAS PUBLICAS (45)                                    -> lo pediste tu.
   - Cualquier equipo que diga ALQUILADO en marca, modelo,
     codigo de patio, etiqueta o detalle de ubicacion       -> no es propio.
 De la tabla equipos_auxiliares solo entran los MONTACARGAS.
@@ -31,8 +33,9 @@ SALIDA = os.path.join(BASE, 'flota.json')
 TIPOS_PESADA = 11        # cuantos tipos se detallan; el resto va a "Otra/Otros"
 TIPOS_LIVIANA = 5
 
-FRENTES_FUERA = (2, 56)  # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
-VACUUM_DESDE = 2025      # solo vacuums de este año en adelante
+FRENTES_FUERA = (2, 56)     # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
+VACUUM_DESDE = 2025         # solo vacuums de este año en adelante
+VOLTEOS_FUERA = (44, 45)    # CVG PUERTO ORDAZ, MINISTERIO DE OBRAS PUBLICAS
 
 # maquinaria y transporte pesado
 PESADA = {
@@ -83,8 +86,10 @@ EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
            "AND (e.ID_FRENTE_ACTUAL NOT IN (%s) OR e.ID_FRENTE_ACTUAL IS NULL) "
            "AND e.ESTADO_OPERATIVO <> 'DESINCORPORADO' "
            "AND NOT (t.nombre = 'VACUUM' AND (e.ANIO IS NULL OR e.ANIO < %d)) "
+           "AND NOT (t.nombre = 'VOLTEO' AND e.ID_FRENTE_ACTUAL IN (%s)) "
            "AND NOT (%s)"
-           % (','.join(str(f) for f in FRENTES_FUERA), VACUUM_DESDE, ALQUILADO))
+           % (','.join(str(f) for f in FRENTES_FUERA), VACUUM_DESDE,
+              ','.join(str(f) for f in VOLTEOS_FUERA), ALQUILADO))
 
 
 def consultar(sql):

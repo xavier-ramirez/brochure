@@ -77,11 +77,10 @@ PORTAFOLIO = dict(
 FLOTA = dict(
     epigrafe='Flota propia',
     titulo='Una flota que no para de crecer',
-    texto=('Todo lo que ponemos en obra es nuestro. No subcontratamos maquinaria: '
-           'cada equipo es propio, con mantenimiento y operadores de la casa, y el '
-           'parque crece año tras año para responder a frentes cada vez mas grandes '
-           'y mas exigentes.'),
-    pie='Cifras tomadas del sistema de gestion de flota de Vidalsa 27.',
+    texto=('No subcontratamos maquinaria: cada equipo es nuestro, con mantenimiento y '
+           'operadores de la casa. Eso nos permite montar un frente completo sin depender '
+           'de terceros, y el parque no ha dejado de crecer.'),
+    pie='Cifras tomadas del sistema de gestión de flota de Vidalsa 27.',
     # las 4 fotos son img/flota_1.jpg ... flota_4.jpg (cambiables desde el editor)
 )
 

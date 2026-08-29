@@ -1,26 +1,26 @@
 {
- "total": 966,
+ "total": 901,
  "marcas": 41,
- "excluidos": 235,
+ "excluidos": 300,
  "tipos_distintos": 47,
- "pesada": 665,
+ "pesada": 600,
  "liviana": 301,
  "bloques": [
   {
    "titulo": "Flota pesada",
-   "total": 665,
+   "total": 600,
    "tipos": [
     {
      "nombre": "Chutos",
      "cantidad": 142
     },
     {
-     "nombre": "Volteos",
-     "cantidad": 128
-    },
-    {
      "nombre": "Bateas",
      "cantidad": 73
+    },
+    {
+     "nombre": "Volteos",
+     "cantidad": 63
     },
     {
      "nombre": "Payloaders",
