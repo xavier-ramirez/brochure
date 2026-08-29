@@ -288,10 +288,11 @@ def lamina_cierre():
   <div class="pie-navy">
     %s
     <div class="contacto">%s</div>
-    <div class="sello">%s</div>
+    <div class="sello"><span>%s</span><span>%s</span></div>
   </div>
 </section>''' % (tag, EMPRESA['titular_cierre'], foto('flota_equipo_cierre'),
-                 rieles('rieles-panel'), cols, espaciada(EMPRESA['sello']))
+                 rieles('rieles-panel'), cols,
+                 espaciada(EMPRESA['elaborado']), espaciada(EMPRESA['sello']))
 
 
 # ------------------------------------------------------------------ armado ---

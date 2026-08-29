@@ -264,7 +264,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .ct p{font-size:12.5px;font-weight:300;line-height:1.8;color:#C6CDDE}
 .sello{position:absolute;left:128px;right:128px;bottom:34px;padding-top:18px;
   border-top:1px solid rgba(124,139,186,.28);
-  font-size:11px;font-weight:600;letter-spacing:.3em;color:var(--azul-suave);text-align:right}
+  display:flex;align-items:baseline;justify-content:space-between;gap:30px;
+  font-size:11px;font-weight:600;letter-spacing:.3em;color:var(--azul-suave)}
+.sello span:last-child{text-align:right}
 
 /* ======================================  efectos, solo en pantalla  ==== */
 @media screen{

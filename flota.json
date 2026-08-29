@@ -1,12 +1,12 @@
 {
- "total": 964,
- "marcas": 43,
+ "total": 961,
+ "marcas": 42,
  "pesada": 207,
- "liviana": 692,
+ "liviana": 689,
  "tipos": [
   {
    "nombre": "Camionetas",
-   "cantidad": 171
+   "cantidad": 169
   },
   {
    "nombre": "Chutos",
@@ -50,9 +50,9 @@
   },
   {
    "nombre": "Otros equipos",
-   "cantidad": 216
+   "cantidad": 215
   }
  ],
- "excluidos": 231,
- "tipos_distintos": 47
+ "excluidos": 232,
+ "tipos_distintos": 46
 }

@@ -1,50 +1,15 @@
 {
- "portada_valvulas": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "flota_equipo_cierre": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "macolla15_2": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "curataqui_3": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
  "flota_4": {
   "x": 50,
   "y": 50,
   "zoom": 1
  },
- "curataqui_1": {
+ "flota_3": {
   "x": 50,
   "y": 50,
-  "zoom": 1
+  "zoom": 1.0208
  },
- "portada_bombeo": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "servicio_2_tendido": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "servicio_3_soldadura": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
- },
- "xpmorichal_1": {
+ "flota_equipo_cierre": {
   "x": 50,
   "y": 50,
   "zoom": 1

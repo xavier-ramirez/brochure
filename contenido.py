@@ -11,6 +11,7 @@ EMPRESA = dict(
                      'personal altamente calificado.'),
     titular_cierre='La fuerza que construye<br>nuestra industria petrolera',
     sello='2017 — 2026  ·  9 años de excelencia operativa',
+    elaborado='Elaborado por Fernando Sánchez  ·  Ingeniero Industrial',
 )
 
 CONTACTO = [
