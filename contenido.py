@@ -131,16 +131,6 @@ PROYECTOS = [
          'de tuberías enterradas.',
    cliente='Proyectos Mayores FPO'),
 
- dict(id='diluen20', area='construccion', anio='2023', estado='Culminado',
-   lista='Diluenducto 20″ × 11,20 km — Palmichal–PTO',
-   titulo='Diluenducto 20″ × 11,20 km',
-   sub='Palmichal – Patio de Tanques Oficina · El Tigre, Anzoátegui',
-   texto='Reemplazo de 10,5 km del Diluenducto de 20″ Palmichal – PTO, con perforación direccional bajo suelo en la '
-         'Troncal 9 de la autopista Gran Mariscal de Ayacucho, con el propósito de restablecer la integridad del '
-         'sistema de transporte e incrementar la presión de bombeo hasta 840 psi, permitiendo el manejo de nafta con '
-         'un caudal promedio de 180 MBD de diluente.',
-   cliente='Proyectos Mayores FPO'),
-
  dict(id='veladero', area='construccion', anio='2026', estado='En ejecución',
    lista='Oleoducto 30″ Veladero · Tramo I (5,9 km)',
    titulo='Oleoducto 30″ × 5,90 km',
@@ -150,6 +140,16 @@ PROYECTOS = [
          'Diluente Mesa 30 para la División Carabobo, Distrito Morichal y empresas mixtas, y la formulación de la '
          'segregación Merey 16.',
    cliente='PDVSA'),
+
+ dict(id='diluen20', area='construccion', anio='2023', estado='Culminado',
+   lista='Diluenducto 20″ × 11,20 km — Palmichal–PTO',
+   titulo='Diluenducto 20″ × 11,20 km',
+   sub='Palmichal – Patio de Tanques Oficina · El Tigre, Anzoátegui',
+   texto='Reemplazo de 10,5 km del Diluenducto de 20″ Palmichal – PTO, con perforación direccional bajo suelo en la '
+         'Troncal 9 de la autopista Gran Mariscal de Ayacucho, con el propósito de restablecer la integridad del '
+         'sistema de transporte e incrementar la presión de bombeo hasta 840 psi, permitiendo el manejo de nafta con '
+         'un caudal promedio de 180 MBD de diluente.',
+   cliente='Proyectos Mayores FPO'),
 
  dict(id='macolla15', area='construccion', anio='2024 – 2025', estado='Culminado',
    lista='Macolla 15 — vialidad y plataforma',
