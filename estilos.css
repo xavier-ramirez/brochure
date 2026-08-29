@@ -253,16 +253,16 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 /* los dos bloques: primero la pesada, debajo la liviana.
    Sin rotulos: los separa el espacio entre grupos. */
-.fl-bloques{position:absolute;left:128px;top:230px;width:1024px;
-  display:flex;flex-direction:column;gap:34px}
+.fl-bloques{position:absolute;left:128px;top:216px;width:1024px;
+  display:flex;flex-direction:column;gap:26px}
 .fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
-  gap:13px 20px}
+  gap:12px 20px}
 .fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}
 .fl-bloque b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
   font-weight:700;font-size:31px;line-height:1;color:#fff}
 .fl-bloque span{display:block;margin-top:4px;font-size:12.5px;font-weight:400;
   line-height:1.35;color:#DCE2EE}
-.tira-flota{top:530px;height:190px;grid-template-columns:repeat(4,1fr)}
+.tira-flota{top:545px;height:175px;grid-template-columns:repeat(4,1fr)}
 
 /* ====================================================  15. CIERRE  ===== */
 .cr-izq{position:absolute;left:0;top:0;width:700px;height:467px;background:#fff}

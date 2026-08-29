@@ -17,6 +17,7 @@ QUE NO SE CUENTA (y por que):
   - El vacuum del frente GOBERNACION APURE (7)             -> lo pediste tu.
   - Volteos de CVG PUERTO ORDAZ (44) y MINISTERIO DE
     OBRAS PUBLICAS (45)                                    -> lo pediste tu.
+  - Los tipos de TIPOS_FUERA (ambulancias, automoviles, motos) -> lo pediste tu.
   - Cualquier equipo que diga ALQUILADO (o alquilada/os) en
     cualquier campo de texto                               -> no es propio.
     Se busca ALQUILAD, no ALQUIL: hay un frente que se llama ALQUILER
@@ -38,8 +39,11 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 MYSQL = os.path.join('C:' + chr(92) + 'xampp', 'mysql', 'bin', 'mysql.exe')
 SALIDA = os.path.join(BASE, 'flota.json')
 
-TIPOS_PESADA = 11        # cuantos tipos se detallan; el resto va a "Otra/Otros"
+TIPOS_PESADA = 17        # cuantos tipos se detallan; el resto va a "Otra/Otros"
 TIPOS_LIVIANA = 5
+
+# tipos que no cuentan como flota de obra
+TIPOS_FUERA = ('AMBULANCIA', 'AUTOMOVIL', 'MOTOCICLETA')
 
 # frentes que quedan enteros fuera del conteo
 FRENTES_FUERA = (2,    # POR DEFINIR
@@ -105,10 +109,12 @@ EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
            "AND NOT (t.nombre = 'VACUUM' AND (e.ANIO IS NULL OR e.ANIO < %d)) "
            "AND NOT (t.nombre = 'VACUUM' AND e.ID_FRENTE_ACTUAL IN (%s)) "
            "AND NOT (t.nombre = 'VOLTEO' AND e.ID_FRENTE_ACTUAL IN (%s)) "
+           "AND COALESCE(t.nombre,'') NOT IN (%s) "
            "AND NOT (%s)"
            % (','.join(str(f) for f in FRENTES_FUERA), VACUUM_DESDE,
               ','.join(str(f) for f in VACUUM_FUERA),
-              ','.join(str(f) for f in VOLTEOS_FUERA), ALQUILADO))
+              ','.join(str(f) for f in VOLTEOS_FUERA),
+              ','.join("'%s'" % t for t in TIPOS_FUERA), ALQUILADO))
 
 
 def consultar(sql):

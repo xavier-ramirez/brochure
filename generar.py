@@ -224,7 +224,7 @@ def lamina_flota():
         bloques += '<section class="fl-bloque"><ul>%s</ul></section>' % celdas
     fotos = ''.join('<figure>%s</figure>' % foto('flota_%d' % i) for i in (1, 2, 3, 4))
     return '''<section class="lamina l-flota">
-  <div class="panel" style="top:0;height:530px">
+  <div class="panel" style="top:0;height:545px">
     %s
     <div class="fl-cab">
       %s

@@ -18,6 +18,7 @@ from urllib.parse import urlparse, parse_qs
 from PIL import Image, ImageOps
 
 import exportar_pdf
+import exportar_pptx
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 IMG = os.path.join(BASE, 'img')
@@ -77,9 +78,11 @@ class Manejador(SimpleHTTPRequestHandler):
 
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store')
-        if self.path.split('?')[0].lower().endswith('.pdf'):
-            self.send_header('Content-Disposition',
-                             'attachment; filename="%s"' % exportar_pdf.NOMBRE)
+        camino = self.path.split('?')[0].lower()
+        for final, modulo in (('.pdf', exportar_pdf), ('.pptx', exportar_pptx)):
+            if camino.endswith(final):
+                self.send_header('Content-Disposition',
+                                 'attachment; filename="%s"' % modulo.NOMBRE)
         super().end_headers()
 
     def responder(self, codigo, obj):
@@ -96,7 +99,7 @@ class Manejador(SimpleHTTPRequestHandler):
         if largo > MAX_BYTES:
             return self.responder(400, {'ok': False, 'error': 'Archivo demasiado grande'})
         cuerpo = self.rfile.read(largo) if largo else b''
-        if ruta.path != '/api/pdf' and not cuerpo:
+        if ruta.path not in ('/api/pdf', '/api/pptx') and not cuerpo:
             return self.responder(400, {'ok': False, 'error': 'No llego nada'})
 
         if ruta.path == '/api/encuadre':
@@ -123,6 +126,14 @@ class Manejador(SimpleHTTPRequestHandler):
             try:
                 _, megas = exportar_pdf.generar()
                 return self.responder(200, {'ok': True, 'archivo': exportar_pdf.NOMBRE,
+                                            'megas': round(megas, 1)})
+            except Exception as err:
+                return self.responder(500, {'ok': False, 'error': str(err)})
+
+        if ruta.path == '/api/pptx':
+            try:
+                _, megas = exportar_pptx.generar()
+                return self.responder(200, {'ok': True, 'archivo': exportar_pptx.NOMBRE,
                                             'megas': round(megas, 1)})
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': str(err)})

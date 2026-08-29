@@ -118,6 +118,7 @@
     '<span class="ed-sel" id="ed-sel">ninguna foto seleccionada</span>' +
     '<button type="button" id="ed-cambiar">Cambiar foto</button>' +
     '<button type="button" id="ed-centrar">Centrar</button>' +
+    '<button type="button" id="ed-pptx">Descargar PowerPoint</button>' +
     '<button type="button" id="ed-pdf" class="ed-primario">Descargar PDF</button>' +
     '<span class="ed-estado" id="ed-estado"></span>';
   document.body.appendChild(barra);
@@ -149,6 +150,7 @@
   var btnCambiar = document.getElementById('ed-cambiar');
   var btnCentrar = document.getElementById('ed-centrar');
   var btnPdf = document.getElementById('ed-pdf');
+  var btnPptx = document.getElementById('ed-pptx');
   btnCambiar.disabled = btnCentrar.disabled = true;
 
   var reloj = null;
@@ -298,8 +300,35 @@
       .then(function () { btnPdf.disabled = false; btnPdf.textContent = texto; });
   });
 
+  /* ---- descargar el PowerPoint ----------------------------------------- */
+  /* Mismo camino que el PDF pero contra /api/pptx. El fondo de cada lamina va
+     como imagen y encima quedan los textos editables. Tarda mas que el PDF:
+     hay que capturar las 17 laminas de una en una. */
+  btnPptx.addEventListener('click', function () {
+    if (!conServidor) { aviso('Abre la pagina con: python servidor.py', true); return; }
+    btnPptx.disabled = true;
+    var texto = btnPptx.textContent;
+    btnPptx.textContent = 'Generando...';
+    aviso('Armando el PowerPoint, tarda un minuto...');
+    fetch('/api/pptx', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) { aviso(res.error || 'No se pudo generar', true); return; }
+        var a = document.createElement('a');
+        a.href = '/' + res.archivo + '?v=' + Date.now();
+        a.download = res.archivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        aviso('PowerPoint listo (' + res.megas + ' MB)');
+      })
+      .catch(function () { aviso('No se pudo generar el PowerPoint', true); })
+      .then(function () { btnPptx.disabled = false; btnPptx.textContent = texto; });
+  });
+
   if (!conServidor) {
     btnPdf.disabled = true;
+    btnPptx.disabled = true;
     aviso('Solo lectura: abre con python servidor.py para editar', true);
   }
 })();

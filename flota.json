@@ -1,10 +1,10 @@
 {
- "total": 874,
- "marcas": 41,
- "excluidos": 327,
- "tipos_distintos": 47,
+ "total": 841,
+ "marcas": 38,
+ "excluidos": 360,
+ "tipos_distintos": 44,
  "pesada": 579,
- "liviana": 295,
+ "liviana": 262,
  "bloques": [
   {
    "titulo": "Flota pesada",
@@ -55,14 +55,38 @@
      "cantidad": 11
     },
     {
+     "nombre": "Camiones elevadores 8 t",
+     "cantidad": 11
+    },
+    {
+     "nombre": "Motoniveladoras",
+     "cantidad": 11
+    },
+    {
+     "nombre": "Mototraíllas",
+     "cantidad": 11
+    },
+    {
+     "nombre": "Camiones grúa",
+     "cantidad": 10
+    },
+    {
+     "nombre": "Chutos con brazo 16 t",
+     "cantidad": 10
+    },
+    {
+     "nombre": "Tractores agrícolas",
+     "cantidad": 9
+    },
+    {
      "nombre": "Otra maquinaria pesada",
-     "cantidad": 99
+     "cantidad": 37
     }
    ]
   },
   {
    "titulo": "Flota liviana y de apoyo",
-   "total": 295,
+   "total": 262,
    "tipos": [
     {
      "nombre": "Camionetas",
@@ -73,20 +97,20 @@
      "cantidad": 42
     },
     {
-     "nombre": "Automóviles",
-     "cantidad": 20
-    },
-    {
-     "nombre": "Ambulancias",
-     "cantidad": 12
-    },
-    {
      "nombre": "Cuadrilleras",
      "cantidad": 8
     },
     {
+     "nombre": "Autobuses",
+     "cantidad": 6
+    },
+    {
+     "nombre": "Camiones de servicio",
+     "cantidad": 5
+    },
+    {
      "nombre": "Otros equipos de apoyo",
-     "cantidad": 44
+     "cantidad": 32
     }
    ]
   }
