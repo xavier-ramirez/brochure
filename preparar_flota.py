@@ -13,8 +13,12 @@ QUE NO SE CUENTA (y por que):
   - Vacuums anteriores a 2025 y los que no tienen año      -> lo pediste tu.
   - Volteos de CVG PUERTO ORDAZ (44) y MINISTERIO DE
     OBRAS PUBLICAS (45)                                    -> lo pediste tu.
-  - Cualquier equipo que diga ALQUILADO en marca, modelo,
-    codigo de patio, etiqueta o detalle de ubicacion       -> no es propio.
+  - Cualquier equipo que diga ALQUILADO (o alquilada/os) en
+    cualquier campo de texto                               -> no es propio.
+    Se busca ALQUILAD, no ALQUIL: hay un frente que se llama ALQUILER
+    SINOVENSA, y ese es equipo NUESTRO alquilado a un cliente, no al reves.
+    Si algun equipo dice ALQUIL de otra forma, el script lo avisa al final
+    para que decidas tu.
 De la tabla equipos_auxiliares solo entran los MONTACARGAS.
 
 OJO CON LA CLASIFICACION PESADA / LIVIANA
@@ -77,10 +81,12 @@ NOMBRES = {
     'CAMION': 'Camiones', 'CAMION  HIDROJET': 'Camiones hidrojet',
 }
 
-ALQUILADO = " OR ".join(
-    "COALESCE(e.%s,'') LIKE '%%ALQUIL%%'" % c
-    for c in ('MARCA', 'MODELO', 'CODIGO_PATIO', 'NUMERO_ETIQUETA',
-              'DETALLE_UBICACION_ACTUAL', 'CAPACIDAD'))
+# todos los campos de texto de la tabla equipos
+CAMPOS_TEXTO = ('NUMERO_ETIQUETA', 'CATEGORIA_FLOTA', 'CODIGO_PATIO', 'MARCA',
+                'MODELO', 'CAPACIDAD', 'COLOR', 'SERIAL_CHASIS', 'SERIAL_DE_MOTOR',
+                'COMBUSTIBLE', 'DETALLE_UBICACION_ACTUAL', 'ESTADO_OPERATIVO')
+TODO_TEXTO = "CONCAT_WS('|'," + ",".join("e." + c for c in CAMPOS_TEXTO) + ")"
+ALQUILADO = "%s LIKE '%%ALQUILAD%%'" % TODO_TEXTO
 
 EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
            "AND (e.ID_FRENTE_ACTUAL NOT IN (%s) OR e.ID_FRENTE_ACTUAL IS NULL) "
@@ -107,10 +113,12 @@ por_tipo = [(n, int(c)) for n, c in consultar(
     "SELECT COALESCE(t.nombre,'SIN TIPO'), COUNT(*) %s GROUP BY 1" % DESDE)]
 
 # los montacargas viven en equipos_auxiliares, no en equipos
+AUX_TEXTO = ("CONCAT_WS('|',MARCA,MODELO,SERIAL,CODIGO_INTERNO,CAPACIDAD,"
+             "DETALLE_UBICACION_ACTUAL,NRO_DOC_PROPIEDAD,OBSERVACIONES)")
 montacargas = int(consultar(
     "SELECT COUNT(*) FROM equipos_auxiliares WHERE TIPO='MONTACARGA' AND deleted_at IS NULL "
-    "AND NOT (COALESCE(MARCA,'') LIKE '%ALQUIL%' OR COALESCE(MODELO,'') LIKE '%ALQUIL%' "
-    "OR COALESCE(OBSERVACIONES,'') LIKE '%ALQUIL%')")[0][0])
+    "AND ESTADO_OPERATIVO <> 'DESINCORPORADO' "
+    "AND NOT (%s LIKE '%%ALQUILAD%%')" % AUX_TEXTO)[0][0])
 if montacargas:
     por_tipo.append(('MONTACARGA', montacargas))
 
