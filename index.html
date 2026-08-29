@@ -258,15 +258,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   border-top:1px solid rgba(124,139,186,.32)}
 .fl-sub span{font-size:12.5px;font-weight:500;color:#C6CDDE}
 
-/* los dos bloques: primero la pesada, debajo la liviana */
-.fl-bloques{position:absolute;left:128px;top:214px;width:1024px;
-  display:flex;flex-direction:column;gap:18px}
-.fl-bloque header{display:flex;align-items:baseline;gap:16px;
-  border-bottom:1px solid rgba(124,139,186,.3);padding-bottom:6px;margin-bottom:11px}
-.fl-bloque h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;
-  letter-spacing:.3em;color:#fff}
-.fl-suma{margin-left:auto;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:19px;color:var(--azul-suave);line-height:1}
+/* los dos bloques: primero la pesada, debajo la liviana.
+   Sin rotulos: los separa el espacio entre grupos. */
+.fl-bloques{position:absolute;left:128px;top:230px;width:1024px;
+  display:flex;flex-direction:column;gap:34px}
 .fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
   gap:13px 20px}
 .fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}
@@ -577,7 +572,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <span>equipos propios</span>
       <div class="fl-sub"><span>47 tipos de equipo</span><span>41 marcas</span></div>
     </div>
-    <div class="fl-bloques"><section class="fl-bloque"><header><h3>FLOTA PESADA</h3><span class="fl-suma">579 equipos</span></header><ul><li><b>138</b><span>Chutos</span></li><li><b>73</b><span>Bateas</span></li><li><b>62</b><span>Volteos</span></li><li><b>36</b><span>Payloaders</span></li><li><b>33</b><span>Lowboys</span></li><li><b>32</b><span>Retroexcavadoras</span></li><li><b>30</b><span>Excavadoras</span></li><li><b>25</b><span>Vacuums</span></li><li><b>24</b><span>Tractores de oruga</span></li><li><b>16</b><span>Sidebooms</span></li><li><b>11</b><span>Camiones elevadores 12 t</span></li><li><b>99</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><header><h3>FLOTA LIVIANA Y DE APOYO</h3><span class="fl-suma">295 equipos</span></header><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>20</b><span>Automóviles</span></li><li><b>12</b><span>Ambulancias</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>44</b><span>Otros equipos de apoyo</span></li></ul></section></div>
+    <div class="fl-bloques"><section class="fl-bloque"><ul><li><b>138</b><span>Chutos</span></li><li><b>73</b><span>Bateas</span></li><li><b>62</b><span>Volteos</span></li><li><b>36</b><span>Payloaders</span></li><li><b>33</b><span>Lowboys</span></li><li><b>32</b><span>Retroexcavadoras</span></li><li><b>30</b><span>Excavadoras</span></li><li><b>25</b><span>Vacuums</span></li><li><b>24</b><span>Tractores de oruga</span></li><li><b>16</b><span>Sidebooms</span></li><li><b>11</b><span>Camiones elevadores 12 t</span></li><li><b>99</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>20</b><span>Automóviles</span></li><li><b>12</b><span>Ambulancias</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>44</b><span>Otros equipos de apoyo</span></li></ul></section></div>
   </div>
   <div class="tira tira-flota"><figure><img src="img/flota_1.jpg" data-foto="flota_1" alt=""></figure><figure><img src="img/flota_2.jpg" data-foto="flota_2" alt=""></figure><figure><img src="img/flota_3.jpg" data-foto="flota_3" alt=""></figure><figure><img src="img/flota_4.jpg" data-foto="flota_4" alt=""></figure></div>
 </section>

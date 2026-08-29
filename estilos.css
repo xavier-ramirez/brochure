@@ -251,15 +251,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   border-top:1px solid rgba(124,139,186,.32)}
 .fl-sub span{font-size:12.5px;font-weight:500;color:#C6CDDE}
 
-/* los dos bloques: primero la pesada, debajo la liviana */
-.fl-bloques{position:absolute;left:128px;top:214px;width:1024px;
-  display:flex;flex-direction:column;gap:18px}
-.fl-bloque header{display:flex;align-items:baseline;gap:16px;
-  border-bottom:1px solid rgba(124,139,186,.3);padding-bottom:6px;margin-bottom:11px}
-.fl-bloque h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;
-  letter-spacing:.3em;color:#fff}
-.fl-suma{margin-left:auto;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:19px;color:var(--azul-suave);line-height:1}
+/* los dos bloques: primero la pesada, debajo la liviana.
+   Sin rotulos: los separa el espacio entre grupos. */
+.fl-bloques{position:absolute;left:128px;top:230px;width:1024px;
+  display:flex;flex-direction:column;gap:34px}
 .fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
   gap:13px 20px}
 .fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}

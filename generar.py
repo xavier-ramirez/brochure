@@ -221,10 +221,7 @@ def lamina_flota():
         celdas = ''.join(
             '<li><b>%s</b><span>%s</span></li>' % (miles(t['cantidad']), t['nombre'])
             for t in b['tipos'])
-        bloques += ('<section class="fl-bloque">'
-                    '<header><h3>%s</h3><span class="fl-suma">%s equipos</span></header>'
-                    '<ul>%s</ul></section>'
-                    % (espaciada(b['titulo']), miles(b['total']), celdas))
+        bloques += '<section class="fl-bloque"><ul>%s</ul></section>' % celdas
     fotos = ''.join('<figure>%s</figure>' % foto('flota_%d' % i) for i in (1, 2, 3, 4))
     return '''<section class="lamina l-flota">
   <div class="panel" style="top:0;height:530px">
