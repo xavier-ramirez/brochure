@@ -9,6 +9,7 @@ QUE NO SE CUENTA (y por que):
   - Camionetas del frente ASIGNACIONES ESPECIALES (id 23)  -> lo pediste tu.
   - Todo el frente POR DEFINIR (id 2)                      -> lo pediste tu.
   - Todo el frente CONTROL DE ACTIVOS VENDIDOS (id 56)     -> ya no es flota propia.
+  - Todo el frente PATIO EL LECHON (id 25)                 -> lo pediste tu.
   - Equipos con estado DESINCORPORADO                      -> ya no operan.
   - Vacuums anteriores a 2025 y los que no tienen año      -> lo pediste tu.
   - El vacuum del frente GOBERNACION APURE (7)             -> lo pediste tu.
@@ -38,7 +39,7 @@ SALIDA = os.path.join(BASE, 'flota.json')
 TIPOS_PESADA = 11        # cuantos tipos se detallan; el resto va a "Otra/Otros"
 TIPOS_LIVIANA = 5
 
-FRENTES_FUERA = (2, 56)     # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
+FRENTES_FUERA = (2, 25, 56)  # POR DEFINIR, PATIO EL LECHON, ACTIVOS VENDIDOS
 VACUUM_DESDE = 2025         # solo vacuums de este año en adelante
 VOLTEOS_FUERA = (44, 45)    # CVG PUERTO ORDAZ, MINISTERIO DE OBRAS PUBLICAS
 VACUUM_FUERA = (7,)         # GOBERNACION APURE

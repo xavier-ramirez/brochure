@@ -54,6 +54,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 }
 .epigrafe::before{content:"";width:38px;height:3px;background:currentColor;flex:none;transform:skewX(-22deg)}
 .epigrafe.claro{color:#C3CCE2}
+/* Quienes somos y Portafolio llevan el epigrafe en blanco;
+   Clientes y Flota se quedan con el azul palido de arriba. */
+.l-nosotros .banda-txt .epigrafe,
+.l-portafolio .banda-txt .epigrafe{color:#fff}
 .epigrafe.suave{color:var(--azul-suave);letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
 
@@ -121,7 +125,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .banda-txt h2{color:#fff;font-size:54px;margin-top:12px;text-shadow:0 2px 30px rgba(6,12,30,.55)}
 .banda-fecha{position:absolute;right:128px;bottom:44px;z-index:4;text-align:right;pointer-events:none}
 .banda-fecha span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;
-  color:var(--azul-suave)}
+  color:#fff}
 .banda-fecha b{display:block;margin-top:3px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
   font-weight:700;font-size:22px;color:#fff;text-shadow:0 2px 20px rgba(6,12,30,.6)}
 
@@ -133,20 +137,20 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .num{background:var(--navy-medio);color:#fff;transform:skewX(-22deg);padding:4px 15px}
 .num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14px}
 .pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.3em}
-.pilar p{color:#C6CDDE;font-weight:300;font-size:13.5px;line-height:1.82;text-align:justify;hyphens:auto}
+.pilar p{color:#fff;font-weight:300;font-size:13.5px;line-height:1.82;text-align:justify;hyphens:auto}
 
 /* ==================================================  3. SERVICIOS  ===== */
 .cabecera{position:absolute;left:128px;top:46px;width:1024px}
 .cabecera h2{font-size:52px;margin-top:12px;color:var(--navy)}
 .cols4{position:absolute;left:100px;top:38px;width:1080px;
   display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
-.srv .num{background:none;transform:none;padding:0;color:var(--azul-suave);
+.srv .num{background:none;transform:none;padding:0;color:#fff;
   font-weight:600;font-size:12px;letter-spacing:.26em}
 .srv h3{color:#fff;font-size:23px;margin-top:7px;height:2.1em}
 .srv .regla{height:2px;margin:12px 0 14px;
   background:linear-gradient(90deg,var(--azul) 0 34%,rgba(124,139,186,.32) 34%)}
 .srv ul{list-style:none;display:flex;flex-direction:column;gap:9px}
-.srv li{position:relative;padding-left:22px;font-size:12.5px;font-weight:300;line-height:1.4;color:#C6CDDE}
+.srv li{position:relative;padding-left:22px;font-size:12.5px;font-weight:300;line-height:1.4;color:#fff}
 .srv li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:7px;background:var(--azul);
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 .tira{position:absolute;left:0;top:440px;width:1280px;height:280px;overflow:hidden;
@@ -273,7 +277,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-cierre h2{font-size:44px;margin-top:38px;color:var(--navy)}
 /* sin overflow:hidden, si no los rieles diagonales se cortan a media altura
    al inclinarse hacia la izquierda (la figura ya recorta la foto por su cuenta) */
-.cr-der{position:absolute;left:699px;top:0;width:581px;height:467px}
+/* El corte en diagonal de la foto deja ver el fondo de la lamina: contra el
+   panel color hielo de la izquierda eso se leia como una linea blanca. Se
+   pinta detras el mismo blanco arriba / hielo abajo, con el corte a la misma
+   altura a la que arranca la cuna de la izquierda (177 de 467 = 37,9%). */
+.cr-der{position:absolute;left:699px;top:0;width:581px;height:467px;
+  background:linear-gradient(180deg,#fff 0 37.9%,var(--hielo) 37.9%)}
 .cr-der figure{position:absolute;inset:0;overflow:hidden;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
 .cr-der img{width:100%;height:100%}
 /* la foto se funde con el pie azul en vez de cortarse en seco */
@@ -281,7 +290,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   background:linear-gradient(180deg,rgba(12,23,52,0) 0%,rgba(12,23,52,.55) 62%,
              rgba(12,23,52,.92) 88%,#0C1734 100%)}
 .l-cierre .rieles-portada{left:-56px;top:-10px;height:477px;width:56px}
-.pie-navy{position:absolute;left:0;top:467px;width:1280px;height:253px;background:var(--navy-hondo);overflow:hidden}
+/* El pie arranca 1 px mas arriba y monta sobre el borde inferior de la foto y
+   del panel claro. Cuando la union caia justo en el limite (467) y el navegador
+   la dibujaba en un pixel fraccionado -zoom o pantalla escalada- asomaba el
+   blanco de fondo de la lamina como una raya de 1 px de ancho de lado a lado.
+   Con el solape no queda hueco que rellenar. El alto compensa: 466 + 254 = 720. */
+.pie-navy{position:absolute;left:0;top:466px;width:1280px;height:254px;background:var(--navy-hondo);overflow:hidden}
 .contacto{position:absolute;left:128px;top:46px;width:1024px;display:grid;grid-template-columns:repeat(4,1fr);gap:34px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
   font-size:11px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
