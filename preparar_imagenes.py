@@ -95,4 +95,28 @@ for y in range(blanco.height):
             px[x, y] = (255, 255, 255, a)
 blanco.save(os.path.join(OUT, 'logo_blanco.png'), optimize=True)
 
+# ---------------------------------------------------------------------------
+# Huecos que no salen del PDF original: se siembran con recortes de lo que hay
+# para que la lamina no quede vacia. Son PROVISIONALES: cambialos por tus fotos
+# desde el editor. Nunca se pisa un archivo que ya exista.
+SEMILLAS = [
+    ('flota_1',     'flota_equipo.jpg',          (0.00, 0.42)),
+    ('flota_2',     'flota_equipo.jpg',          (0.38, 0.74)),
+    ('flota_3',     'flota_equipo.jpg',          (0.66, 1.00)),
+    ('flota_4',     'servicio_5_maquinaria.jpg', None),
+    ('curataqui_4', 'curataqui_1.jpg',           (0.00, 0.52)),
+    ('curataqui_5', 'curataqui_1.jpg',           (0.48, 1.00)),
+]
+for destino, origen, corte in SEMILLAS:
+    ruta = os.path.join(OUT, destino + '.jpg')
+    if os.path.exists(ruta) and not REHACER:
+        continue
+    im = Image.open(os.path.join(OUT, origen)).convert('RGB')
+    if corte:
+        w, h = im.size
+        im = im.crop((int(corte[0] * w), 0, int(corte[1] * w), h))
+    if im.width > 900:
+        im = im.resize((900, round(im.height * 900 / im.width)), Image.LANCZOS)
+    im.save(ruta, 'JPEG', quality=88, optimize=True, progressive=True)
+
 print('imagenes listas en', OUT, '->', len(os.listdir(OUT)), 'archivos')

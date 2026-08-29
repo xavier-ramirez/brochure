@@ -1,5 +1,15 @@
 {
- "flota_4": {
+ "flota_equipo_cierre": {
+  "x": 50,
+  "y": 50,
+  "zoom": 1
+ },
+ "portada_valvulas": {
+  "x": 50,
+  "y": 50,
+  "zoom": 1
+ },
+ "portada_bombeo": {
   "x": 50,
   "y": 50,
   "zoom": 1
@@ -7,11 +17,6 @@
  "flota_3": {
   "x": 50,
   "y": 50,
-  "zoom": 1.0208
- },
- "flota_equipo_cierre": {
-  "x": 50,
-  "y": 50,
-  "zoom": 1
+  "zoom": 1.1270533120000004
  }
 }

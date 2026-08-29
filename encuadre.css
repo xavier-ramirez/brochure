@@ -1,4 +1,5 @@
 /* Encuadre de las fotos. Lo escribe el editor; no hace falta tocarlo. */
-img[data-foto="flota_3"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.021}
-img[data-foto="flota_4"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.000}
+img[data-foto="flota_3"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.127}
 img[data-foto="flota_equipo_cierre"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.000}
+img[data-foto="portada_bombeo"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.000}
+img[data-foto="portada_valvulas"]{object-position:50.0% 50.0%;--org:50.0% 50.0%;--zoom:1.000}

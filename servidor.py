@@ -11,7 +11,8 @@ Con la pagina abierta ahi:
 Todo se guarda solo: las fotos en img/ y el encuadre en encuadre.css,
 asi que "python exportar_pdf.py" saca el PDF igual a lo que ves.
 """
-import io, json, os, threading, webbrowser
+import datetime
+import io, json, os, shutil, threading, webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 from PIL import Image
@@ -20,6 +21,7 @@ import exportar_pdf
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 IMG = os.path.join(BASE, 'img')
+ANTERIORES = os.path.join(IMG, '_anteriores')
 ENCUADRE_JSON = os.path.join(BASE, 'encuadre.json')
 ENCUADRE_CSS = os.path.join(BASE, 'encuadre.css')
 PUERTO = 8787
@@ -42,6 +44,16 @@ def ancho_para(nombre):
         if nombre.startswith(pista) or nombre.endswith(pista):
             return w
     return 1300
+
+
+def guardar_anterior(ruta, nombre):
+    """Antes de pisar una foto, deja una copia en img/_anteriores/.
+    Asi nunca se pierde nada, ni por un cambio mio ni por una equivocacion."""
+    if not os.path.exists(ruta):
+        return
+    os.makedirs(ANTERIORES, exist_ok=True)
+    sello = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    shutil.copy2(ruta, os.path.join(ANTERIORES, '%s_%s.jpg' % (nombre, sello)))
 
 
 def escribir_css(datos):
@@ -115,6 +127,7 @@ class Manejador(SimpleHTTPRequestHandler):
             try:
                 im = Image.open(io.BytesIO(cuerpo))
                 im = im.convert('RGB')
+                guardar_anterior(destino, nombre)
                 w = ancho_para(nombre)
                 if im.width > w:
                     im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)

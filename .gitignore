@@ -26,3 +26,6 @@
 !fonts/
 !fonts/**
 !Brochure_Vidalsa27.pdf
+
+# copias de seguridad automaticas de las fotos: no van al repositorio
+img/_anteriores/
