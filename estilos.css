@@ -262,6 +262,13 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   font-weight:700;font-size:31px;line-height:1;color:#fff}
 .fl-bloque span{display:block;margin-top:4px;font-size:12.5px;font-weight:400;
   line-height:1.35;color:#DCE2EE}
+
+/* Se quitaron los rotulos de bloque, asi que el peso lo marca el tamano:
+   la flota pesada va con cifras grandes y filo azul; la liviana y de apoyo,
+   mas discreta. Asi se ve cual manda sin necesidad de titulos. */
+.fl-bloque:last-child li{border-top-width:2px;border-top-color:rgba(124,139,186,.55)}
+.fl-bloque:last-child b{font-size:24px;color:#D6DCEA}
+.fl-bloque:last-child span{font-size:11.5px;color:var(--azul-suave)}
 .tira-flota{top:545px;height:175px;grid-template-columns:repeat(4,1fr)}
 
 /* ====================================================  15. CIERRE  ===== */
@@ -291,7 +298,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    blanco de fondo de la lamina como una raya de 1 px de ancho de lado a lado.
    Con el solape no queda hueco que rellenar. El alto compensa: 466 + 254 = 720. */
 .pie-navy{position:absolute;left:0;top:466px;width:1280px;height:254px;background:var(--navy-hondo);overflow:hidden}
-.contacto{position:absolute;left:128px;top:46px;width:1024px;display:grid;grid-template-columns:repeat(4,1fr);gap:34px}
+/* las columnas se reparten solas segun cuantos bloques traiga CONTACTO en
+   contenido.py; con repeat(4,1fr) fijo, al quitar uno quedaba un hueco. */
+.contacto{position:absolute;left:128px;top:46px;width:1024px;display:grid;
+  grid-auto-flow:column;grid-auto-columns:1fr;gap:34px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
   font-size:11px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
 .ct h4 svg{width:15px;height:15px;flex:none;stroke:var(--azul-suave);fill:none;stroke-width:1.9}

@@ -17,8 +17,7 @@ EMPRESA = dict(
 CONTACTO = [
     ('Sede corporativa', 'Calle París entre New York y Caroní,<br>Edf. Pedreañera #177, Urb. Las Mercedes,<br>Municipio Baruta, Edo. Miranda — Caracas.'),
     ('Sede operativa',   'Lechería, estado Anzoátegui.'),
-    ('Teléfonos',        '+58 212 994.1106 / 1253<br>+58 212 994.0987 / 0730'),
-    ('Contacto',         'info@cvidalsa27.com'),
+    ('Contacto',         'fsanchez@cvidalsa27.com'),
 ]
 
 PILARES = [
@@ -89,7 +88,7 @@ FLOTA = dict(
 CARTERA = [
     ('PDVSA',        'Petróleos de Venezuela, S.A.', 'logo_pdvsa'),
     ('PETROMONAGAS', 'Empresa mixta',                'logo_petromonagas'),
-    ('SINOVENSA',    'PETROLERA SINOVENSA',          'logo_sinovensa'),
+    ('SINOVENSA',    'Empresa mixta',                'logo_sinovensa'),
 ]
 
 AREAS = [('construccion', 'Construcción'), ('ambiente', 'Ambiente'), ('servicios', 'Servicios y alquiler')]

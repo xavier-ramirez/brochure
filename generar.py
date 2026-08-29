@@ -54,7 +54,8 @@ AREA_NOMBRE = dict(AREAS)
 
 # ---------------------------------------------------------------- piezas ---
 def espaciada(txt):
-    return txt.upper()
+    # el <br> vuelve a minusculas: es una etiqueta, no texto que deba gritar
+    return txt.upper().replace('<BR>', '<br>')
 
 
 def foto(nombre, alt='', ext='jpg'):
@@ -261,7 +262,7 @@ def lamina_clientes():
   </div>
 </section>''' % (banda('clientes_equipo', 'Clientes', 'Nuestros clientes', 300),
                  rieles('rieles-panel'),
-                 epigrafe('Contratos directos con siete gerencias de la FPO', 'suave'),
+                 epigrafe('Contratos directos con siete<br>gerencias de la FPO', 'suave'),
                  ger, cart)
 
 
