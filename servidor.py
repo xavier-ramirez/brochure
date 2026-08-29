@@ -15,7 +15,7 @@ import datetime
 import io, json, os, shutil, threading, webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
-from PIL import Image
+from PIL import Image, ImageOps
 
 import exportar_pdf
 
@@ -126,7 +126,9 @@ class Manejador(SimpleHTTPRequestHandler):
                 return self.responder(404, {'ok': False, 'error': 'Esa foto no existe en img/'})
             try:
                 im = Image.open(io.BytesIO(cuerpo))
-                im = im.convert('RGB')
+                # las fotos de telefono traen la orientacion en el EXIF; si no se
+                # aplica antes de guardar, el JPEG sale girado
+                im = ImageOps.exif_transpose(im).convert('RGB')
                 guardar_anterior(destino, nombre)
                 w = ancho_para(nombre)
                 if im.width > w:

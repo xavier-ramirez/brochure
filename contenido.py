@@ -142,15 +142,6 @@ PROYECTOS = [
          'un caudal promedio de 180 MBD de diluente.',
    cliente='Proyectos Mayores FPO'),
 
- dict(id='macolla15', area='construccion', anio='2024 – 2025', estado='Culminado',
-   lista='Macolla 15 — vialidad y plataforma',
-   titulo='Macolla 15 — vialidad y plataforma',
-   sub='Centro Operativo Petromonagas (COPEM)',
-   texto='Construcción de la vialidad de acceso y plataforma de perforación para la Macolla 15 del Centro Operativo '
-         'Petromonagas, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y '
-         'canales de drenaje perimetrales con pases reforzados.',
-   cliente='Petromonagas'),
-
  dict(id='veladero', area='construccion', anio='2026', estado='En ejecución',
    lista='Oleoducto 30″ Veladero · Tramo I (5,9 km)',
    titulo='Oleoducto 30″ × 5,90 km',
@@ -160,6 +151,15 @@ PROYECTOS = [
          'Diluente Mesa 30 para la División Carabobo, Distrito Morichal y empresas mixtas, y la formulación de la '
          'segregación Merey 16.',
    cliente='PDVSA'),
+
+ dict(id='macolla15', area='construccion', anio='2024 – 2025', estado='Culminado',
+   lista='Macolla 15 — vialidad y plataforma',
+   titulo='Macolla 15 — vialidad y plataforma',
+   sub='Centro Operativo Petromonagas (COPEM)',
+   texto='Construcción de la vialidad de acceso y plataforma de perforación para la Macolla 15 del Centro Operativo '
+         'Petromonagas, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y '
+         'canales de drenaje perimetrales con pases reforzados.',
+   cliente='Petromonagas'),
 
  dict(id='valvulas', area='servicios', anio='2025 – 2026', estado='En ejecución',
    lista='Estaciones de válvulas — FPO HC',
