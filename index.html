@@ -108,22 +108,25 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .pt-f2{top:357px;height:363px;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
 .pt-f1 img,.pt-f2 img{width:100%;height:100%}
 
-/* ================================================  banda con titulo  ==== */
+/* ================================================  banda con titulo  ====
+   Todo lo que va encima de la foto (velo, titulo, fecha, chips) lleva
+   pointer-events:none, si no tapa la imagen y el editor no la deja
+   arrastrar ni cambiar. */
 .banda{position:absolute;left:0;top:0;width:1280px;overflow:hidden;background:var(--navy)}
 .banda>img{position:absolute;inset:0;width:100%;height:100%}
 /* el velo arranca abajo para no tapar la parte util de la foto; el titulo
    se apoya en su propia sombra suave, no en oscurecer toda la imagen */
-.banda .velo{position:absolute;inset:0;
+.banda .velo{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(12,23,52,.28) 0%,rgba(12,23,52,.04) 24%,
              rgba(12,23,52,.04) 68%,rgba(18,33,73,.24) 82%,
              rgba(18,33,73,.80) 94%,rgba(18,33,73,1) 100%)}
-.banda-txt{position:absolute;left:128px;bottom:36px;z-index:4}
+.banda-txt{position:absolute;left:128px;bottom:36px;z-index:4;pointer-events:none}
 .banda-txt::before{content:"";position:absolute;z-index:-1;
   left:-70px;right:-110px;top:-30px;bottom:-40px;
   background:radial-gradient(72% 130% at 24% 58%,rgba(9,17,42,.80) 0%,
              rgba(9,17,42,.52) 46%,rgba(9,17,42,0) 76%)}
 .banda-txt h2{color:#fff;font-size:54px;margin-top:12px;text-shadow:0 2px 30px rgba(6,12,30,.55)}
-.banda-fecha{position:absolute;right:128px;bottom:44px;z-index:4;text-align:right}
+.banda-fecha{position:absolute;right:128px;bottom:44px;z-index:4;text-align:right;pointer-events:none}
 .banda-fecha span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;
   color:var(--azul-suave)}
 .banda-fecha b{display:block;margin-top:3px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
@@ -181,7 +184,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .tarjeta .hero{position:relative;height:192px;flex:none;overflow:hidden;background:var(--hielo);
   clip-path:polygon(0 0,100% 0,calc(100% - 34px) 100%,0 100%)}
 .tarjeta .hero img{width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.3,1)}
-.tarjeta .hero .marca{position:absolute;left:-14px;top:0;display:flex}
+.tarjeta .hero .marca{position:absolute;left:-14px;top:0;display:flex;pointer-events:none}
 .insignias{display:flex;align-items:center;gap:16px;margin:16px 0 12px;flex:none}
 .insignias .anio{font-size:12px;font-weight:600;letter-spacing:.26em;color:var(--azul-suave)}
 .tarjeta h3,.l-destacado h3{font-size:30px;color:var(--navy);flex:none}
@@ -203,7 +206,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* proyecto impar: lamina completa */
 .l-destacado .hero{position:absolute;left:0;top:0;width:1280px;height:270px;overflow:hidden}
 .l-destacado .hero img{width:100%;height:100%}
-.l-destacado .hero .marca{position:absolute;left:42px;bottom:0;display:flex}
+.l-destacado .hero .marca{position:absolute;left:42px;bottom:0;display:flex;pointer-events:none}
 .l-destacado .cuerpo{position:absolute;left:56px;top:302px;width:1168px;height:390px;
   display:grid;grid-template-columns:470px 1fr;gap:54px}
 .l-destacado .izq{display:flex;flex-direction:column}
