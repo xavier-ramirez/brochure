@@ -1,0 +1,58 @@
+{
+ "total": 964,
+ "marcas": 43,
+ "pesada": 207,
+ "liviana": 692,
+ "tipos": [
+  {
+   "nombre": "Camionetas",
+   "cantidad": 171
+  },
+  {
+   "nombre": "Chutos",
+   "cantidad": 142
+  },
+  {
+   "nombre": "Volteos",
+   "cantidad": 128
+  },
+  {
+   "nombre": "Bateas",
+   "cantidad": 73
+  },
+  {
+   "nombre": "Camiones de soldadura",
+   "cantidad": 42
+  },
+  {
+   "nombre": "Payloaders",
+   "cantidad": 38
+  },
+  {
+   "nombre": "Retroexcavadoras",
+   "cantidad": 34
+  },
+  {
+   "nombre": "Lowboys",
+   "cantidad": 34
+  },
+  {
+   "nombre": "Excavadoras",
+   "cantidad": 32
+  },
+  {
+   "nombre": "Vacuums",
+   "cantidad": 28
+  },
+  {
+   "nombre": "Tractores de oruga",
+   "cantidad": 26
+  },
+  {
+   "nombre": "Otros equipos",
+   "cantidad": 216
+  }
+ ],
+ "excluidos": 231,
+ "tipos_distintos": 47
+}

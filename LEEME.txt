@@ -1,0 +1,87 @@
+BROCHURE CONSTRUCTORA VIDALSA 27
+================================
+
+Es el mismo diseno de la pagina, cortado en 17 laminas panoramicas.
+Cada lamina mide 1280 x 720 px = 13,333 x 7,5 pulgadas: el mismo tamano de una
+diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
+
+
+1) ABRIRLO PARA TRABAJAR
+------------------------
+   Doble clic en:   abrir.bat
+   o en una consola:  python servidor.py
+
+   Se abre solo en:   http://localhost:8787/index.html
+
+   (Si abres index.html con doble clic tambien se ve, pero NO se pueden
+    cambiar las fotos: para eso hace falta el servidor.)
+
+
+2) CAMBIAR Y ENCUADRAR LAS FOTOS
+--------------------------------
+   Con la pagina abierta en http://localhost:8787 :
+
+     doble clic sobre una foto  ->  se abre el buscador de archivos del PC
+                                    para elegir la nueva imagen
+     arrastrar sobre la foto    ->  mueve el encuadre: eliges que parte se ve
+     rueda del raton sobre ella ->  acerca o aleja (hasta 3x)
+     boton CENTRAR              ->  deja la foto como estaba
+
+   Todo se guarda solo (abajo aparece "Guardado"). La imagen nueva se guarda
+   en img/ ya redimensionada, y el encuadre en encuadre.css. Por eso el PDF
+   que exportes sale exactamente igual a lo que ves en pantalla.
+
+
+3) SACAR EL PDF
+---------------
+   python exportar_pdf.py        ->  Brochure_Vidalsa27.pdf  (17 paginas)
+
+   A mano: Ctrl+P en la pagina, Guardar como PDF,
+           Margenes = Ninguno  y  Graficos de fondo = activado.
+
+
+4) CAMBIAR UN TEXTO
+-------------------
+   1. Editar contenido.py
+   2. python generar.py
+   3. Recargar la pagina
+
+
+QUE HAY EN LA CARPETA
+---------------------
+   index.html        las 17 laminas
+   estilos.css       el diseno
+   contenido.py      todos los textos
+   generar.py        arma index.html con contenido.py + estilos.css
+   editor.js         el editor de fotos (no se imprime)
+   servidor.py       el servidor local, puerto 8787
+   encuadre.css      encuadre de cada foto (lo escribe el editor)
+   img/              las fotos, un archivo por foto
+   fonts/            Barlow y Barlow Condensed, incrustadas (no necesita internet)
+
+   revisar.py            avisa si algo se sale de la lamina o si un texto
+                         quedo cortado, y deja un PNG de cada lamina en revision/
+   preparar_imagenes.py  vuelve a sacar las fotos del Brochure.pdf original.
+                         Por defecto NO pisa las fotos que ya cambiaste;
+                         usa  python preparar_imagenes.py --rehacer  para
+                         devolverlas todas a las originales.
+   preparar_fuentes.py   vuelve a bajar las tipografias
+   preparar_logos.py     rehace los logotipos de los clientes y el mapa de la Faja
+                         a partir de Downloads\MONAGAS.jpg y Downloads\images.jpg.
+                         El de Sinovensa esta REHECHO (el original venia borroso):
+                         se toma el simbolo + "PDVSA" del de Petromonagas, que si
+                         tiene resolucion, y se rotula "PETROLERA SINOVENSA" debajo.
+
+
+NOMBRES DE LAS FOTOS
+--------------------
+   Por proyecto:   <id>_1.jpg  foto grande de arriba
+                   <id>_2.jpg  miniatura izquierda
+                   <id>_3.jpg  miniatura derecha
+   Los <id> estan en contenido.py (oleo30x17, veladero, curataqui, ...).
+
+   Tamano recomendado del original que subas:
+       fotos grandes y bandas   1600 px de ancho o mas
+       miniaturas                900 px de ancho o mas
+   El servidor las reduce y optimiza solo. Se recortan al centro, asi que
+   lo importante debe quedar mas o menos centrado (y si no, lo arrastras).

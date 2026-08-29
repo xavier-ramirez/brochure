@@ -1,0 +1,28 @@
+# Solo se versiona el brochure. Todo lo demas que hay en la carpeta
+# (trabajos anteriores, temporales, capturas) queda fuera.
+*
+!.gitignore
+!LEEME.txt
+!README.md
+!index.html
+!estilos.css
+!fuentes.css
+!encuadre.css
+!editor.js
+!abrir.bat
+!contenido.py
+!generar.py
+!servidor.py
+!revisar.py
+!exportar_pdf.py
+!preparar_imagenes.py
+!preparar_fuentes.py
+!preparar_logos.py
+!preparar_flota.py
+!flota.json
+!encuadre.json
+!img/
+!img/**
+!fonts/
+!fonts/**
+!Brochure_Vidalsa27.pdf
