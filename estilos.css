@@ -207,9 +207,13 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-destacado .caja-cliente{margin-top:auto;width:400px}
 .l-destacado .desc{font-size:12.5px}
 .l-destacado .der{display:block}
-/* las cuatro del mismo tamano exacto y con el mismo corte */
-.l-destacado .minis{padding-top:0;width:100%;height:100%;
-  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px}
+/* las cuatro del mismo tamano exacto y con el mismo corte.
+   Las filas van en pixeles, no en 1fr: con height:100% dentro de un bloque de
+   altura automatica el porcentaje no resuelve y la rejilla crecia con la foto,
+   sacando la segunda fila y la caja de cliente fuera de la lamina.
+   187 = (390 de alto del cuerpo - 16 de separacion) / 2 */
+.l-destacado .minis{padding-top:0;width:100%;
+  grid-template-columns:1fr 1fr;grid-template-rows:187px 187px;gap:16px}
 .l-destacado .minis figure{height:100%;
   clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
 
