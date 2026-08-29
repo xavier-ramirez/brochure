@@ -71,6 +71,10 @@
     }, 350);
   }
 
+  /* Se lee el encuadre de todas las fotos al abrir, no solo el de las que
+     toques: asi lo que se guarda siempre lleva el estado completo. */
+  fotos.forEach(leerActual);
+
   /* ---- barra de herramientas ------------------------------------------ */
   var barra = document.createElement('div');
   barra.id = 'ed-barra';

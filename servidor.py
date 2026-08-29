@@ -101,11 +101,21 @@ class Manejador(SimpleHTTPRequestHandler):
 
         if ruta.path == '/api/encuadre':
             try:
-                datos = json.loads(cuerpo.decode('utf-8'))
+                # El navegador solo manda las fotos que tocaste en ESTA sesion.
+                # Hay que FUSIONAR con lo ya guardado; si se reemplazara, cada
+                # visita borraria los encuadres de las anteriores.
+                nuevos = json.loads(cuerpo.decode('utf-8'))
+                datos = {}
+                if os.path.exists(ENCUADRE_JSON):
+                    try:
+                        datos = json.load(io.open(ENCUADRE_JSON, encoding='utf-8'))
+                    except ValueError:
+                        datos = {}
+                datos.update(nuevos)
                 io.open(ENCUADRE_JSON, 'w', encoding='utf-8').write(
-                    json.dumps(datos, indent=1, ensure_ascii=False))
+                    json.dumps(datos, indent=1, ensure_ascii=False, sort_keys=True))
                 escribir_css(datos)
-                return self.responder(200, {'ok': True})
+                return self.responder(200, {'ok': True, 'guardados': len(datos)})
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': str(err)})
 
