@@ -58,7 +58,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Clientes y Flota se quedan con el azul palido de arriba. */
 .l-nosotros .banda-txt .epigrafe,
 .l-portafolio .banda-txt .epigrafe{color:#fff}
-.epigrafe.suave{color:var(--azul-suave);letter-spacing:.18em;align-items:flex-start;line-height:1.65}
+.epigrafe.suave{color:#fff;letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
 
 .chip{display:inline-flex;align-items:center;justify-content:center;
@@ -225,7 +225,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cl-cols{position:absolute;left:128px;top:44px;width:1024px;
   display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .gerencias{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
-.gerencias li{position:relative;padding-left:24px;font-size:14.5px;font-weight:300;color:#D2D8E7}
+.gerencias li{position:relative;padding-left:24px;font-size:14.5px;font-weight:400;color:#fff}
 .gerencias li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:8px;
   background:var(--azul);clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 /* tarjetas de cliente: fondo claro para que el rojo del logotipo respire */

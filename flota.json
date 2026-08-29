@@ -1,18 +1,18 @@
 {
- "total": 885,
+ "total": 874,
  "marcas": 41,
- "excluidos": 316,
+ "excluidos": 327,
  "tipos_distintos": 47,
- "pesada": 586,
- "liviana": 299,
+ "pesada": 579,
+ "liviana": 295,
  "bloques": [
   {
    "titulo": "Flota pesada",
-   "total": 586,
+   "total": 579,
    "tipos": [
     {
      "nombre": "Chutos",
-     "cantidad": 139
+     "cantidad": 138
     },
     {
      "nombre": "Bateas",
@@ -24,7 +24,7 @@
     },
     {
      "nombre": "Payloaders",
-     "cantidad": 38
+     "cantidad": 36
     },
     {
      "nombre": "Lowboys",
@@ -32,19 +32,19 @@
     },
     {
      "nombre": "Retroexcavadoras",
-     "cantidad": 33
+     "cantidad": 32
     },
     {
      "nombre": "Excavadoras",
-     "cantidad": 31
-    },
-    {
-     "nombre": "Tractores de oruga",
-     "cantidad": 26
+     "cantidad": 30
     },
     {
      "nombre": "Vacuums",
      "cantidad": 25
+    },
+    {
+     "nombre": "Tractores de oruga",
+     "cantidad": 24
     },
     {
      "nombre": "Sidebooms",
@@ -62,7 +62,7 @@
   },
   {
    "titulo": "Flota liviana y de apoyo",
-   "total": 299,
+   "total": 295,
    "tipos": [
     {
      "nombre": "Camionetas",
@@ -78,7 +78,7 @@
     },
     {
      "nombre": "Ambulancias",
-     "cantidad": 15
+     "cantidad": 12
     },
     {
      "nombre": "Cuadrilleras",
@@ -86,7 +86,7 @@
     },
     {
      "nombre": "Otros equipos de apoyo",
-     "cantidad": 45
+     "cantidad": 44
     }
    ]
   }

@@ -148,6 +148,7 @@
   var elEstado = document.getElementById('ed-estado');
   var btnCambiar = document.getElementById('ed-cambiar');
   var btnCentrar = document.getElementById('ed-centrar');
+  var btnPdf = document.getElementById('ed-pdf');
   btnCambiar.disabled = btnCentrar.disabled = true;
 
   var reloj = null;

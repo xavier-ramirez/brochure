@@ -88,8 +88,8 @@ FLOTA = dict(
 # (nombre, subtitulo, archivo del logotipo en img/)
 CARTERA = [
     ('PDVSA',        'Petróleos de Venezuela, S.A.', 'logo_pdvsa'),
-    ('Petromonagas', 'Empresa mixta',                'logo_petromonagas'),
-    ('Sinovensa',    'Petrolera Sinovensa',          'logo_sinovensa'),
+    ('PETROMONAGAS', 'Empresa mixta',                'logo_petromonagas'),
+    ('SINOVENSA',    'PETROLERA SINOVENSA',          'logo_sinovensa'),
 ]
 
 AREAS = [('construccion', 'Construcción'), ('ambiente', 'Ambiente'), ('servicios', 'Servicios y alquiler')]
@@ -117,17 +117,17 @@ PROYECTOS = [
  dict(id='oleo30x14', area='construccion', anio='2025 – 2026', estado='Culminado',
    lista='Oleoducto 30″ × 14 km — Planta FF–Km 0',
    titulo='Oleoducto 30″ × 14 km',
-   sub='Planta FF – Km 0 · Petrolera Sinovensa',
-   texto='Construcción del Oleoducto de 30″ × 14 km desde la Estación de Flujo (FF) hasta el Km 0, Petrolera '
-         'Sinovensa, necesarios para incrementar la producción desde 105 MBPD hasta 330 MBPD de crudo extrapesado. '
+   sub='Planta FF – Km 0 · PETROLERA SINOVENSA',
+   texto='Construcción del Oleoducto de 30″ × 14 km desde la Estación de Flujo (FF) hasta el Km 0, PETROLERA '
+         'SINOVENSA, necesarios para incrementar la producción desde 105 MBPD hasta 330 MBPD de crudo extrapesado. '
          'Así como la instalación y puesta en marcha del sistema de protección catódica.',
-   cliente='Petrolera Sinovensa'),
+   cliente='PETROLERA SINOVENSA'),
 
  dict(id='tub12', area='construccion', anio='2026', estado='En ejecución',
    lista='Tubería 12″ agua salada × 29,6 km — COPEM – El Salto',
    titulo='Tubería 12″ × 29,6 km — agua salada',
    sub='COPEM – Pozos inyectores El Salto',
-   texto='Construcción de 29,60 km de tubería de 12″ de inyección de agua salada desde COPEM Petromonagas hasta los '
+   texto='Construcción de 29,60 km de tubería de 12″ de inyección de agua salada desde COPEM PETROMONAGAS hasta los '
          'pozos inyectores El Salto. Así como la instalación y puesta en marcha del sistema de protección catódica '
          'de tuberías enterradas.',
    cliente='Proyectos Mayores FPO'),
@@ -140,7 +140,7 @@ PROYECTOS = [
          'operacional, así como la integridad mecánica del oleoducto de 30″, en el cumplimiento del transporte de '
          'Diluente Mesa 30 para la División Carabobo, Distrito Morichal y empresas mixtas, y la formulación de la '
          'segregación Merey 16.',
-   cliente='PDVSA'),
+   cliente='Coordinación Operacional Faja (COF)'),
 
  dict(id='diluen20', area='construccion', anio='2023', estado='Culminado',
    lista='Diluenducto 20″ × 11,20 km — Palmichal–PTO',
@@ -155,11 +155,11 @@ PROYECTOS = [
  dict(id='macolla15', area='construccion', anio='2024 – 2025', estado='Culminado',
    lista='Macolla 15 — vialidad y plataforma',
    titulo='Macolla 15 — vialidad y plataforma',
-   sub='Centro Operativo Petromonagas (COPEM)',
+   sub='Centro Operativo PETROMONAGAS (COPEM)',
    texto='Construcción de la vialidad de acceso y plataforma de perforación para la Macolla 15 del Centro Operativo '
-         'Petromonagas, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y '
+         'PETROMONAGAS, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y '
          'canales de drenaje perimetrales con pases reforzados.',
-   cliente='Petromonagas'),
+   cliente='PETROMONAGAS'),
 
  dict(id='valvulas', area='servicios', anio='2025 – 2026', estado='En ejecución',
    lista='Estaciones de válvulas — FPO HC',
@@ -176,7 +176,7 @@ PROYECTOS = [
    texto='Remoción, recolección y recuperación de crudo sobrenadante, así como la carga, transporte, tratamiento y '
          'disposición final del suelo contaminado en instalaciones de PDVSA autorizadas por el MINEC, generado en '
          'las actividades de saneamiento realizadas en el Centro Operativo de Morichal (COMOR), División Carabobo.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='dragado', area='ambiente', anio='2025 – 2026', estado='Culminado',
    lista='Dragado SIAE COMOR — lagunas A, B, C y D',
@@ -184,7 +184,7 @@ PROYECTOS = [
    sub='Lagunas A, B, C y D del SIAE',
    texto='Saneamiento y posterior mantenimiento de las cuatro lagunas A, B, C y D del SIAE del Centro Operacional '
          'Morichal (COMOR), en la División Carabobo, a través del dragado de sólidos.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='trasegado', area='ambiente', anio='2025 – 2026', estado='En ejecución',
    lista='Movilización y trasegado de crudo — COMOR',
@@ -192,7 +192,7 @@ PROYECTOS = [
    sub='Centro Operativo Morichal',
    texto='Movilización y trasegado de crudo en el Sistema de Inyección y Efluentes (SIAE) ubicado en las '
          'instalaciones del Centro Operativo COMOR, con equipos de vacío tipo vacuum de mínimo 160 BLS.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='ef016', area='ambiente', anio='2025', estado='Culminado',
    lista='Saneamiento Estación de Flujo O-16',
@@ -202,7 +202,7 @@ PROYECTOS = [
          'de hidrocarburos: remoción, estabilización, homogeneización, apilamiento y tratamiento in situ del '
          'material impactado, contención y recolección de fluidos petrolizados, nivelación de terreno y carga de '
          'sólidos.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='transv', area='servicios', anio='2024 – 2026', estado='En ejecución',
    lista='Equipos transversales',
@@ -212,7 +212,7 @@ PROYECTOS = [
          'logísticos y misceláneos, contemplados en las operaciones de rehabilitación y reacondicionamiento de '
          'pozos, subestaciones eléctricas, estaciones de flujo y descarga, asociados a las labores operacionales de '
          'las divisiones pertenecientes a la Dirección Ejecutiva de Producción FPO.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='chuto', area='servicios', anio='2024 – 2027', estado='En ejecución',
    lista='Chuto con batea',
@@ -222,7 +222,7 @@ PROYECTOS = [
          'lubricantes, desde las instalaciones PDVSA a nivel nacional hasta las áreas operacionales de las '
          'divisiones Carabobo, Ayacucho, Junín y Boyacá, adscritas a la Dirección Adjunta de Logística perteneciente '
          'a la Dirección Ejecutiva de Producción FPO HC.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='bombeo', area='servicios', anio='2025', estado='Culminado',
    lista='Mantenimiento de equipos de bombeo — FPO',
@@ -233,12 +233,12 @@ PROYECTOS = [
    cliente='Gestión de Materiales DAL'),
 
  dict(id='sinovensa', area='servicios', anio='2025 – 2026', estado='Culminado',
-   lista='Alquiler de maquinaria — Sinovensa Morichal',
-   titulo='Alquiler de maquinaria — Sinovensa',
+   lista='Alquiler de maquinaria — SINOVENSA Morichal',
+   titulo='Alquiler de maquinaria — SINOVENSA',
    sub='Activación de pozos, División Carabobo',
    texto='Servicios de maquinaria pesada para realizar actividades operacionales que contribuyan con la activación '
          'de pozos en la División Carabobo.',
-   cliente='Petrolera Sinovensa'),
+   cliente='PETROLERA SINOVENSA'),
 
  dict(id='cortafuego', area='servicios', anio='2025 – 2026', estado='En ejecución',
    lista='Cortafuegos en corredores de tuberías',
@@ -247,7 +247,7 @@ PROYECTOS = [
    texto='Construcción y mantenimiento de cortafuegos en corredores de tubería y líneas eléctricas de oleoductos y '
          'diluenductos de la Faja. Incluyendo corrección de filtraciones por soldadura y encapsulamiento de grampas '
          'apernadas.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='xpmorichal', area='servicios', anio='2025 – 2027', estado='En ejecución',
    lista='Alquiler de equipos — XP Extrapesado Morichal',
@@ -256,7 +256,7 @@ PROYECTOS = [
    texto='Servicios para acondicionamiento y adecuación de vías de acceso y locaciones, los cuales son '
          'indispensables para el óptimo funcionamiento y operación de las unidades de producción de la División '
          'Carabobo.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 
  dict(id='curataqui', area='ambiente', anio='2024', estado='Culminado',
    lista='Saneamiento Laguna de Curataquiche',
@@ -266,5 +266,5 @@ PROYECTOS = [
          'desarrollando actividades de remoción de capa de hidrocarburos con barreras oleofílicas y material '
          'particulado; estabilización mecánica, carga y transporte del material contaminado; reforestación del área, '
          'toma y análisis de muestras en la laguna, ejecutadas en las diferentes fases del proceso de saneamiento.',
-   cliente='DAL FPO'),
+   cliente='Dirección Adjunta de Logística FPO'),
 ]

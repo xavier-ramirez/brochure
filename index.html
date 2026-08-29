@@ -65,7 +65,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Clientes y Flota se quedan con el azul palido de arriba. */
 .l-nosotros .banda-txt .epigrafe,
 .l-portafolio .banda-txt .epigrafe{color:#fff}
-.epigrafe.suave{color:var(--azul-suave);letter-spacing:.18em;align-items:flex-start;line-height:1.65}
+.epigrafe.suave{color:#fff;letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
 
 .chip{display:inline-flex;align-items:center;justify-content:center;
@@ -232,7 +232,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cl-cols{position:absolute;left:128px;top:44px;width:1024px;
   display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .gerencias{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
-.gerencias li{position:relative;padding-left:24px;font-size:14.5px;font-weight:300;color:#D2D8E7}
+.gerencias li{position:relative;padding-left:24px;font-size:14.5px;font-weight:400;color:#fff}
 .gerencias li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:8px;
   background:var(--azul);clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 /* tarjetas de cliente: fondo claro para que el rojo del logotipo respire */
@@ -365,47 +365,6 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     <figure class="pt-f2"><img src="img/portada_bombeo.jpg" data-foto="portada_bombeo" alt=""></figure>
   </div>
 </section>
-<div class="rotulo-prueba">Arriba, la portada como está hoy. Debajo, la misma portada con otra foto en el hueco de arriba. Estas copias no salen en el PDF.</div>
-<div class="rotulo-prueba">Opción A — patio de maquinaria (flota_3)</div>
-<section class="lamina l-portada prueba pr-cand">
-  <div class="pt-izq">
-    <span class="cuna-ice"></span><span class="esquina-navy"></span>
-    <div class="pt-cuerpo">
-      <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
-      <div class="linea"></div>
-      <div class="tagline"><span>DISEÑO</span><i>·</i><span>INGENIERÍA</span><i>·</i><span>OBRAS</span></div>
-      <h1>Construyendo la infraestructura<br>que mueve el país</h1>
-      <div class="guion"></div>
-      <p class="entrada">Desde 2017, sumamos 9 años de experiencia aportando soluciones integrales a la industria civil y petrolera del oriente del país. Nuestro compromiso se mide en resultados: obras entregadas con excelencia, operando siempre con flota propia y personal altamente calificado.</p>
-      <div class="barras"><i></i><i></i><i></i><i></i></div>
-    </div>
-  </div>
-  <div class="pt-der">
-    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
-    <figure class="pt-f1"><img src="img/flota_3.jpg" alt=""></figure>
-    <figure class="pt-f2"><img src="img/portada_bombeo.jpg" data-foto="portada_bombeo" alt=""></figure>
-  </div>
-</section>
-<div class="rotulo-prueba">Opción B — camiones y tubería en obra (tub12_1)</div>
-<section class="lamina l-portada prueba pr-cand">
-  <div class="pt-izq">
-    <span class="cuna-ice"></span><span class="esquina-navy"></span>
-    <div class="pt-cuerpo">
-      <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
-      <div class="linea"></div>
-      <div class="tagline"><span>DISEÑO</span><i>·</i><span>INGENIERÍA</span><i>·</i><span>OBRAS</span></div>
-      <h1>Construyendo la infraestructura<br>que mueve el país</h1>
-      <div class="guion"></div>
-      <p class="entrada">Desde 2017, sumamos 9 años de experiencia aportando soluciones integrales a la industria civil y petrolera del oriente del país. Nuestro compromiso se mide en resultados: obras entregadas con excelencia, operando siempre con flota propia y personal altamente calificado.</p>
-      <div class="barras"><i></i><i></i><i></i><i></i></div>
-    </div>
-  </div>
-  <div class="pt-der">
-    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
-    <figure class="pt-f1"><img src="img/tub12_1.jpg" alt=""></figure>
-    <figure class="pt-f2"><img src="img/portada_bombeo.jpg" data-foto="portada_bombeo" alt=""></figure>
-  </div>
-</section>
 <section class="lamina l-nosotros">
   <div class="banda" style="height:400px">
     <img src="img/flota_equipo.jpg" data-foto="flota_equipo" alt="">
@@ -435,7 +394,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     <div class="banda-txt"><div class="epigrafe claro">PORTAFOLIO</div><h2>Nuestros proyectos</h2></div>
     <div class="banda-fecha"><span>ACTUALIZADO AL</span><b>29 de agosto de 2026</b></div>
   </div>
-  <div class="pf-cols"><div class="pf-col"><header><h3>CONSTRUCCIÓN</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Oleoducto 30″ × 17 km — Planta PDD – COPEM</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Completación mecánica Oleoducto de 42″ — PTO–TAEJ</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Oleoducto 30″ × 14 km — Planta FF–Km 0</span><span class="pie">Petrolera Sinovensa <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Tubería 12″ agua salada × 29,6 km — COPEM – El Salto</span><span class="pie">Proyectos Mayores FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Oleoducto 30″ Veladero · Tramo I (5,9 km)</span><span class="pie">PDVSA <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Diluenducto 20″ × 11,20 km — Palmichal–PTO</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Macolla 15 — vialidad y plataforma</span><span class="pie">Petromonagas <span class="estado lista"><b>CULMINADO</b></span></span></li></ol></div><div class="pf-col"><header><h3>AMBIENTE</h3><span class="cuenta">05</span></header><ol><li><span class="nom">COMOR — Saneamiento de suelo contaminado</span><span class="pie">DAL FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Dragado SIAE COMOR — lagunas A, B, C y D</span><span class="pie">DAL FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Movilización y trasegado de crudo — COMOR</span><span class="pie">DAL FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Saneamiento Estación de Flujo O-16</span><span class="pie">DAL FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Laguna de Curataquiche</span><span class="pie">DAL FPO <span class="estado lista"><b>CULMINADO</b></span></span></li></ol></div><div class="pf-col"><header><h3>SERVICIOS Y ALQUILER</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Estaciones de válvulas — FPO HC</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Equipos transversales</span><span class="pie">DAL FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Chuto con batea</span><span class="pie">DAL FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Mantenimiento de equipos de bombeo — FPO</span><span class="pie">Gestión de Materiales DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Alquiler de maquinaria — Sinovensa Morichal</span><span class="pie">Petrolera Sinovensa <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Cortafuegos en corredores de tuberías</span><span class="pie">DAL FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Alquiler de equipos — XP Extrapesado Morichal</span><span class="pie">DAL FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div></div>
+  <div class="pf-cols"><div class="pf-col"><header><h3>CONSTRUCCIÓN</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Oleoducto 30″ × 17 km — Planta PDD – COPEM</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Completación mecánica Oleoducto de 42″ — PTO–TAEJ</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Oleoducto 30″ × 14 km — Planta FF–Km 0</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Tubería 12″ agua salada × 29,6 km — COPEM – El Salto</span><span class="pie">Proyectos Mayores FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Oleoducto 30″ Veladero · Tramo I (5,9 km)</span><span class="pie">Coordinación Operacional Faja (COF) <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Diluenducto 20″ × 11,20 km — Palmichal–PTO</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Macolla 15 — vialidad y plataforma</span><span class="pie">PETROMONAGAS <span class="estado lista"><b>CULMINADO</b></span></span></li></ol></div><div class="pf-col"><header><h3>AMBIENTE</h3><span class="cuenta">05</span></header><ol><li><span class="nom">COMOR — Saneamiento de suelo contaminado</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Dragado SIAE COMOR — lagunas A, B, C y D</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Movilización y trasegado de crudo — COMOR</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Saneamiento Estación de Flujo O-16</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Laguna de Curataquiche</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado lista"><b>CULMINADO</b></span></span></li></ol></div><div class="pf-col"><header><h3>SERVICIOS Y ALQUILER</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Estaciones de válvulas — FPO HC</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Equipos transversales</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Chuto con batea</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Mantenimiento de equipos de bombeo — FPO</span><span class="pie">Gestión de Materiales DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Alquiler de maquinaria — SINOVENSA Morichal</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Cortafuegos en corredores de tuberías</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Alquiler de equipos — XP Extrapesado Morichal</span><span class="pie">Dirección Adjunta de Logística FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div></div>
 </section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/oleo30x17_1.jpg" data-foto="oleo30x17_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
@@ -458,16 +417,16 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="hero"><img src="img/oleo30x14_1.jpg" data-foto="oleo30x14_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado lista"><b>CULMINADO</b></span></div>
       <h3>Oleoducto 30″ × 14 km</h3>
-      <div class="sub">Planta FF – Km 0 · Petrolera Sinovensa</div>
-      <p class="desc">Construcción del Oleoducto de 30″ × 14 km desde la Estación de Flujo (FF) hasta el Km 0, Petrolera Sinovensa, necesarios para incrementar la producción desde 105 MBPD hasta 330 MBPD de crudo extrapesado. Así como la instalación y puesta en marcha del sistema de protección catódica.</p>
+      <div class="sub">Planta FF – Km 0 · PETROLERA SINOVENSA</div>
+      <p class="desc">Construcción del Oleoducto de 30″ × 14 km desde la Estación de Flujo (FF) hasta el Km 0, PETROLERA SINOVENSA, necesarios para incrementar la producción desde 105 MBPD hasta 330 MBPD de crudo extrapesado. Así como la instalación y puesta en marcha del sistema de protección catódica.</p>
       <div class="minis"><figure><img src="img/oleo30x14_2.jpg" data-foto="oleo30x14_2" alt=""></figure><figure><img src="img/oleo30x14_3.jpg" data-foto="oleo30x14_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Petrolera Sinovensa</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>PETROLERA SINOVENSA</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/tub12_1.jpg" data-foto="tub12_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
       <h3>Tubería 12″ × 29,6 km — agua salada</h3>
       <div class="sub">COPEM – Pozos inyectores El Salto</div>
-      <p class="desc">Construcción de 29,60 km de tubería de 12″ de inyección de agua salada desde COPEM Petromonagas hasta los pozos inyectores El Salto. Así como la instalación y puesta en marcha del sistema de protección catódica de tuberías enterradas.</p>
+      <p class="desc">Construcción de 29,60 km de tubería de 12″ de inyección de agua salada desde COPEM PETROMONAGAS hasta los pozos inyectores El Salto. Así como la instalación y puesta en marcha del sistema de protección catódica de tuberías enterradas.</p>
       <div class="minis"><figure><img src="img/tub12_2.jpg" data-foto="tub12_2" alt=""></figure><figure><img src="img/tub12_3.jpg" data-foto="tub12_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Proyectos Mayores FPO</b></div>
     </article></div></section>
@@ -478,7 +437,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Tramo I del Oleoducto de 30″ Veladero</div>
       <p class="desc">Reemplazo del Tramo I del Oleoducto de 30″ × 5,9 km, a fin de garantizar la confiabilidad y continuidad operacional, así como la integridad mecánica del oleoducto de 30″, en el cumplimiento del transporte de Diluente Mesa 30 para la División Carabobo, Distrito Morichal y empresas mixtas, y la formulación de la segregación Merey 16.</p>
       <div class="minis"><figure><img src="img/veladero_2.jpg" data-foto="veladero_2" alt=""></figure><figure><img src="img/veladero_3.jpg" data-foto="veladero_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>PDVSA</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Coordinación Operacional Faja (COF)</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/diluen20_1.jpg" data-foto="diluen20_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2023</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -492,10 +451,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="hero"><img src="img/macolla15_1.jpg" data-foto="macolla15_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2024 – 2025</span><span class="estado lista"><b>CULMINADO</b></span></div>
       <h3>Macolla 15 — vialidad y plataforma</h3>
-      <div class="sub">Centro Operativo Petromonagas (COPEM)</div>
-      <p class="desc">Construcción de la vialidad de acceso y plataforma de perforación para la Macolla 15 del Centro Operativo Petromonagas, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y canales de drenaje perimetrales con pases reforzados.</p>
+      <div class="sub">Centro Operativo PETROMONAGAS (COPEM)</div>
+      <p class="desc">Construcción de la vialidad de acceso y plataforma de perforación para la Macolla 15 del Centro Operativo PETROMONAGAS, involucrando movimientos de tierra, conformación de taludes, construcción de 39 cellars y canales de drenaje perimetrales con pases reforzados.</p>
       <div class="minis"><figure><img src="img/macolla15_2.jpg" data-foto="macolla15_2" alt=""></figure><figure><img src="img/macolla15_3.jpg" data-foto="macolla15_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Petromonagas</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>PETROMONAGAS</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/valvulas_1.jpg" data-foto="valvulas_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -512,7 +471,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Centro Operativo Morichal · fases II, III y IV</div>
       <p class="desc">Remoción, recolección y recuperación de crudo sobrenadante, así como la carga, transporte, tratamiento y disposición final del suelo contaminado en instalaciones de PDVSA autorizadas por el MINEC, generado en las actividades de saneamiento realizadas en el Centro Operativo de Morichal (COMOR), División Carabobo.</p>
       <div class="minis"><figure><img src="img/comorsuelo_2.jpg" data-foto="comorsuelo_2" alt=""></figure><figure><img src="img/comorsuelo_3.jpg" data-foto="comorsuelo_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/dragado_1.jpg" data-foto="dragado_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -520,7 +479,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Lagunas A, B, C y D del SIAE</div>
       <p class="desc">Saneamiento y posterior mantenimiento de las cuatro lagunas A, B, C y D del SIAE del Centro Operacional Morichal (COMOR), en la División Carabobo, a través del dragado de sólidos.</p>
       <div class="minis"><figure><img src="img/dragado_2.jpg" data-foto="dragado_2" alt=""></figure><figure><img src="img/dragado_3.jpg" data-foto="dragado_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/trasegado_1.jpg" data-foto="trasegado_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
@@ -529,7 +488,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Centro Operativo Morichal</div>
       <p class="desc">Movilización y trasegado de crudo en el Sistema de Inyección y Efluentes (SIAE) ubicado en las instalaciones del Centro Operativo COMOR, con equipos de vacío tipo vacuum de mínimo 160 BLS.</p>
       <div class="minis"><figure><img src="img/trasegado_2.jpg" data-foto="trasegado_2" alt=""></figure><figure><img src="img/trasegado_3.jpg" data-foto="trasegado_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/ef016_1.jpg" data-foto="ef016_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
       <div class="insignias"><span class="anio">2025</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -537,7 +496,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Saneamiento O-16 · División Carabobo</div>
       <p class="desc">Operación de maquinaria pesada para realizar los trabajos de saneamiento de áreas afectadas por derrames de hidrocarburos: remoción, estabilización, homogeneización, apilamiento y tratamiento in situ del material impactado, contención y recolección de fluidos petrolizados, nivelación de terreno y carga de sólidos.</p>
       <div class="minis"><figure><img src="img/ef016_2.jpg" data-foto="ef016_2" alt=""></figure><figure><img src="img/ef016_3.jpg" data-foto="ef016_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/transv_1.jpg" data-foto="transv_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
@@ -546,7 +505,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Equipos para la producción de la FPO</div>
       <p class="desc">Servicio de movimientos relacionados con remoción de suelos, carga, descarga y traslado de materiales logísticos y misceláneos, contemplados en las operaciones de rehabilitación y reacondicionamiento de pozos, subestaciones eléctricas, estaciones de flujo y descarga, asociados a las labores operacionales de las divisiones pertenecientes a la Dirección Ejecutiva de Producción FPO.</p>
       <div class="minis"><figure><img src="img/transv_2.jpg" data-foto="transv_2" alt=""></figure><figure><img src="img/transv_3.jpg" data-foto="transv_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/chuto_1.jpg" data-foto="chuto_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2024 – 2027</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -554,7 +513,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Movilización de equipos y materiales de la FPO</div>
       <p class="desc">Movilización de todos los materiales y equipos (transformadores, generadores, plantas), misceláneos y lubricantes, desde las instalaciones PDVSA a nivel nacional hasta las áreas operacionales de las divisiones Carabobo, Ayacucho, Junín y Boyacá, adscritas a la Dirección Adjunta de Logística perteneciente a la Dirección Ejecutiva de Producción FPO HC.</p>
       <div class="minis"><figure><img src="img/chuto_2.jpg" data-foto="chuto_2" alt=""></figure><figure><img src="img/chuto_3.jpg" data-foto="chuto_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/bombeo_1.jpg" data-foto="bombeo_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
@@ -567,11 +526,11 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     </article><article class="tarjeta">
       <div class="hero"><img src="img/sinovensa_1.jpg" data-foto="sinovensa_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado lista"><b>CULMINADO</b></span></div>
-      <h3>Alquiler de maquinaria — Sinovensa</h3>
+      <h3>Alquiler de maquinaria — SINOVENSA</h3>
       <div class="sub">Activación de pozos, División Carabobo</div>
       <p class="desc">Servicios de maquinaria pesada para realizar actividades operacionales que contribuyan con la activación de pozos en la División Carabobo.</p>
       <div class="minis"><figure><img src="img/sinovensa_2.jpg" data-foto="sinovensa_2" alt=""></figure><figure><img src="img/sinovensa_3.jpg" data-foto="sinovensa_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Petrolera Sinovensa</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>PETROLERA SINOVENSA</b></div>
     </article></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/cortafuego_1.jpg" data-foto="cortafuego_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
@@ -580,7 +539,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Divisiones FPO</div>
       <p class="desc">Construcción y mantenimiento de cortafuegos en corredores de tubería y líneas eléctricas de oleoductos y diluenductos de la Faja. Incluyendo corrección de filtraciones por soldadura y encapsulamiento de grampas apernadas.</p>
       <div class="minis"><figure><img src="img/cortafuego_2.jpg" data-foto="cortafuego_2" alt=""></figure><figure><img src="img/cortafuego_3.jpg" data-foto="cortafuego_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article><article class="tarjeta">
       <div class="hero"><img src="img/xpmorichal_1.jpg" data-foto="xpmorichal_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2027</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -588,7 +547,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="sub">Unidad de Producción Extrapesado, Distrito Morichal</div>
       <p class="desc">Servicios para acondicionamiento y adecuación de vías de acceso y locaciones, los cuales son indispensables para el óptimo funcionamiento y operación de las unidades de producción de la División Carabobo.</p>
       <div class="minis"><figure><img src="img/xpmorichal_2.jpg" data-foto="xpmorichal_2" alt=""></figure><figure><img src="img/xpmorichal_3.jpg" data-foto="xpmorichal_3" alt=""></figure></div>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </article></div></section>
 <section class="lamina l-destacado">
   <div class="hero"><img src="img/curataqui_1.jpg" data-foto="curataqui_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
@@ -598,7 +557,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <h3>Laguna de Curataquiche</h3>
       <div class="sub">Saneamiento y restauración ambiental</div>
       <p class="desc">Saneamiento y restauración de la Laguna de Curataquiche, progresiva 15+000 del Oleoducto de 36″, desarrollando actividades de remoción de capa de hidrocarburos con barreras oleofílicas y material particulado; estabilización mecánica, carga y transporte del material contaminado; reforestación del área, toma y análisis de muestras en la laguna, ejecutadas en las diferentes fases del proceso de saneamiento.</p>
-      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>DAL FPO</b></div>
+      <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Dirección Adjunta de Logística FPO</b></div>
     </div>
     <div class="der">
       <div class="minis"><figure><img src="img/curataqui_2.jpg" data-foto="curataqui_2" alt=""></figure><figure><img src="img/curataqui_3.jpg" data-foto="curataqui_3" alt=""></figure><figure><img src="img/curataqui_4.jpg" data-foto="curataqui_4" alt=""></figure><figure><img src="img/curataqui_5.jpg" data-foto="curataqui_5" alt=""></figure></div>
@@ -614,11 +573,11 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p>Respaldamos cada obra con una flota 100% propia y en constante expansión. Tras la exitosa incorporación de equipos en 2025, este 2026 sumaremos nueva maquinaria para seguir garantizando total autonomía en los proyectos más exigentes.</p>
     </div>
     <div class="fl-total">
-      <b>885</b>
+      <b>874</b>
       <span>equipos propios</span>
       <div class="fl-sub"><span>47 tipos de equipo</span><span>41 marcas</span></div>
     </div>
-    <div class="fl-bloques"><section class="fl-bloque"><header><h3>FLOTA PESADA</h3><span class="fl-suma">586 equipos</span></header><ul><li><b>139</b><span>Chutos</span></li><li><b>73</b><span>Bateas</span></li><li><b>62</b><span>Volteos</span></li><li><b>38</b><span>Payloaders</span></li><li><b>33</b><span>Lowboys</span></li><li><b>33</b><span>Retroexcavadoras</span></li><li><b>31</b><span>Excavadoras</span></li><li><b>26</b><span>Tractores de oruga</span></li><li><b>25</b><span>Vacuums</span></li><li><b>16</b><span>Sidebooms</span></li><li><b>11</b><span>Camiones elevadores 12 t</span></li><li><b>99</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><header><h3>FLOTA LIVIANA Y DE APOYO</h3><span class="fl-suma">299 equipos</span></header><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>20</b><span>Automóviles</span></li><li><b>15</b><span>Ambulancias</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>45</b><span>Otros equipos de apoyo</span></li></ul></section></div>
+    <div class="fl-bloques"><section class="fl-bloque"><header><h3>FLOTA PESADA</h3><span class="fl-suma">579 equipos</span></header><ul><li><b>138</b><span>Chutos</span></li><li><b>73</b><span>Bateas</span></li><li><b>62</b><span>Volteos</span></li><li><b>36</b><span>Payloaders</span></li><li><b>33</b><span>Lowboys</span></li><li><b>32</b><span>Retroexcavadoras</span></li><li><b>30</b><span>Excavadoras</span></li><li><b>25</b><span>Vacuums</span></li><li><b>24</b><span>Tractores de oruga</span></li><li><b>16</b><span>Sidebooms</span></li><li><b>11</b><span>Camiones elevadores 12 t</span></li><li><b>99</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><header><h3>FLOTA LIVIANA Y DE APOYO</h3><span class="fl-suma">295 equipos</span></header><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>20</b><span>Automóviles</span></li><li><b>12</b><span>Ambulancias</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>44</b><span>Otros equipos de apoyo</span></li></ul></section></div>
   </div>
   <div class="tira tira-flota"><figure><img src="img/flota_1.jpg" data-foto="flota_1" alt=""></figure><figure><img src="img/flota_2.jpg" data-foto="flota_2" alt=""></figure><figure><img src="img/flota_3.jpg" data-foto="flota_3" alt=""></figure><figure><img src="img/flota_4.jpg" data-foto="flota_4" alt=""></figure></div>
 </section>
@@ -634,7 +593,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="cl-cols">
       <div><div class="epigrafe suave">CONTRATOS DIRECTOS CON SIETE GERENCIAS DE LA FPO</div><ul class="gerencias"><li>Gerencia de Proyectos Mayores de Producción FPO</li><li>Dirección Adjunta de Logística FPO (DAL)</li><li>Gerencia de Distribución y Transporte Faja</li><li>Gerencia de Logística Operacional DAL FPO</li><li>Gerencia de Gestión de Materiales DAL-FPO</li><li>Gerencia de Tratamiento y Calidad de Fluidos (TCF)</li><li>Gerencia de Perforación</li></ul></div>
-      <div><div class="epigrafe suave">TODA LA CARTERA</div><div class="cartera"><article><img src="img/logo_pdvsa.png" alt="PDVSA"><span>PETRÓLEOS DE VENEZUELA, S.A.</span></article><article><img src="img/logo_petromonagas.png" alt="Petromonagas"><span>EMPRESA MIXTA</span></article><article><img src="img/logo_sinovensa.png" alt="Sinovensa"><span>PETROLERA SINOVENSA</span></article></div></div>
+      <div><div class="cartera"><article><img src="img/logo_pdvsa.png" alt="PDVSA"><span>PETRÓLEOS DE VENEZUELA, S.A.</span></article><article><img src="img/logo_petromonagas.png" alt="PETROMONAGAS"><span>EMPRESA MIXTA</span></article><article><img src="img/logo_sinovensa.png" alt="SINOVENSA"><span>PETROLERA SINOVENSA</span></article></div></div>
     </div>
   </div>
 </section>

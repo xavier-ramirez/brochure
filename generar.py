@@ -28,10 +28,7 @@ PRUEBAS = [
 
 # Copias de la portada cambiando la foto de arriba, para comparar. Tampoco
 # salen en el PDF. Deja la lista vacia cuando ya hayas elegido.
-PORTADA_CANDIDATAS = [
-    ('flota_3', 'Opción A — patio de maquinaria (flota_3)'),
-    ('tub12_1', 'Opción B — camiones y tubería en obra (tub12_1)'),
-]
+PORTADA_CANDIDATAS = []
 
 
 def fecha_portafolio():
@@ -262,13 +259,13 @@ def lamina_clientes():
     %s
     <div class="cl-cols">
       <div>%s<ul class="gerencias">%s</ul></div>
-      <div>%s<div class="cartera">%s</div></div>
+      <div><div class="cartera">%s</div></div>
     </div>
   </div>
 </section>''' % (banda('clientes_equipo', 'Clientes', 'Nuestros clientes', 300),
                  rieles('rieles-panel'),
-                 epigrafe('Contratos directos con siete gerencias de la FPO', 'suave'), ger,
-                 epigrafe('Toda la cartera', 'suave'), cart)
+                 epigrafe('Contratos directos con siete gerencias de la FPO', 'suave'),
+                 ger, cart)
 
 
 ICONOS = {
