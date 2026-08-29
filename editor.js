@@ -31,17 +31,29 @@
 
   /* ---- estado de encuadre -------------------------------------------- */
   var encuadre = {};   // nombre -> {x, y, zoom}
+  window.__encuadre = encuadre;   // solo para poder comprobarlo desde fuera
+
+  /* Ojo: aqui NO se puede usar "|| 50". Un encuadre pegado al borde vale 0,
+     que en JavaScript es falso, y la foto se volvia al centro sola. */
+  function numero(txt, caja, porDefecto) {
+    var v = parseFloat(txt);
+    if (!isFinite(v)) return porDefecto;
+    // el navegador puede devolver pixeles en vez de porcentaje
+    if (/px\s*$/.test(String(txt).trim()) && caja > 0) v = v / caja * 100;
+    return Math.max(0, Math.min(100, v));
+  }
 
   function leerActual(img) {
     var n = img.dataset.foto;
     if (encuadre[n]) return encuadre[n];
     var cs = getComputedStyle(img);
-    var pos = (cs.objectPosition || '50% 50%').split(' ');
-    var z = parseFloat(cs.getPropertyValue('--zoom')) || 1;
+    var pos = (cs.objectPosition || '50% 50%').trim().split(/\s+/);
+    var caja = img.getBoundingClientRect();
+    var z = parseFloat(cs.getPropertyValue('--zoom'));
     encuadre[n] = {
-      x: parseFloat(pos[0]) || 50,
-      y: parseFloat(pos[1] !== undefined ? pos[1] : pos[0]) || 50,
-      zoom: z
+      x: numero(pos[0], caja.width, 50),
+      y: numero(pos.length > 1 ? pos[1] : pos[0], caja.height, 50),
+      zoom: isFinite(z) && z > 0 ? z : 1
     };
     return encuadre[n];
   }
@@ -57,8 +69,29 @@
   }
 
   var pendiente = null;
+  var sinGuardar = false;
+
+  /* si recargas o cierras antes de que salte el temporizador, se manda igual */
+  addEventListener('pagehide', volcar);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') volcar();
+  });
+  function volcar() {
+    if (!conServidor || !sinGuardar) return;
+    clearTimeout(pendiente);
+    sinGuardar = false;
+    var cuerpo = JSON.stringify(encuadre);
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/encuadre', new Blob([cuerpo], { type: 'application/json' }));
+    } else {
+      fetch('/api/encuadre', { method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json' }, body: cuerpo });
+    }
+  }
+
   function guardar() {
     if (!conServidor) { aviso('Para guardar, abre la pagina con: python servidor.py', true); return; }
+    sinGuardar = true;
     clearTimeout(pendiente);
     pendiente = setTimeout(function () {
       fetch('/api/encuadre', {
@@ -66,6 +99,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(encuadre)
       }).then(function (r) {
+        if (r.ok) sinGuardar = false;
         aviso(r.ok ? 'Guardado' : 'No se pudo guardar', !r.ok);
       }).catch(function () { aviso('No se pudo guardar', true); });
     }, 350);

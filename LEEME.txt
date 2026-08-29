@@ -66,6 +66,9 @@ QUE HAY EN LA CARPETA
                          usa  python preparar_imagenes.py --rehacer  para
                          devolverlas todas a las originales.
    preparar_fuentes.py   vuelve a bajar las tipografias
+   probar_encuadre.py    comprueba que el encuadre de una foto sobrevive a
+                         recargar la pagina (guarda valores extremos, recarga
+                         en el navegador, compara y devuelve los originales)
    preparar_logos.py     rehace los logotipos de los clientes y el mapa de la Faja
                          a partir de Downloads\MONAGAS.jpg y Downloads\images.jpg.
                          El de Sinovensa esta REHECHO (el original venia borroso):
