@@ -267,10 +267,16 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   clip-path:polygon(0 26%,100% 0,100% 100%,0 100%)}
 .cr-izq .pt-cuerpo{padding:56px 56px 34px 100px}
 .l-cierre h2{font-size:44px;margin-top:38px;color:var(--navy)}
-.cr-der{position:absolute;left:699px;top:0;width:581px;height:467px;overflow:hidden}
+/* sin overflow:hidden, si no los rieles diagonales se cortan a media altura
+   al inclinarse hacia la izquierda (la figura ya recorta la foto por su cuenta) */
+.cr-der{position:absolute;left:699px;top:0;width:581px;height:467px}
 .cr-der figure{position:absolute;inset:0;overflow:hidden;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
 .cr-der img{width:100%;height:100%}
-.l-cierre .rieles-portada{left:-56px;top:-10px;height:487px;width:56px}
+/* la foto se funde con el pie azul en vez de cortarse en seco */
+.cr-der figure::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;
+  background:linear-gradient(180deg,rgba(12,23,52,0) 0%,rgba(12,23,52,.55) 62%,
+             rgba(12,23,52,.92) 88%,#0C1734 100%)}
+.l-cierre .rieles-portada{left:-56px;top:-10px;height:477px;width:56px}
 .pie-navy{position:absolute;left:0;top:467px;width:1280px;height:253px;background:var(--navy-hondo);overflow:hidden}
 .contacto{position:absolute;left:128px;top:46px;width:1024px;display:grid;grid-template-columns:repeat(4,1fr);gap:34px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
