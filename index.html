@@ -192,7 +192,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .desc{margin-top:13px;font-size:12px;line-height:1.72;color:var(--texto);text-align:justify;hyphens:auto;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.minis figure{height:128px;overflow:hidden;background:var(--hielo);
+.minis figure{height:142px;overflow:hidden;background:var(--hielo);
   clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
 .minis img{width:100%;height:100%;transition:transform .6s ease}
 .caja-cliente{flex:none;margin-top:16px;height:66px;background:var(--navy);color:#fff;
@@ -210,10 +210,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-destacado h3{font-size:38px}
 .l-destacado .caja-cliente{margin-top:auto;width:400px}
 .l-destacado .desc{font-size:12.5px}
-.l-destacado .der{display:flex}
-.l-destacado .minis{padding-top:0;width:100%;grid-template-columns:1fr 1fr;
-  grid-auto-rows:1fr;gap:16px}
-.l-destacado .minis figure{height:auto}
+.l-destacado .der{display:block}
+/* las cuatro del mismo tamano exacto y con el mismo corte */
+.l-destacado .minis{padding-top:0;width:100%;height:100%;
+  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px}
+.l-destacado .minis figure{height:100%;
+  clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
 
 /* ==================================================  14. CLIENTES  ===== */
 .cl-cols{position:absolute;left:128px;top:44px;width:1024px;
@@ -232,26 +234,36 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 
 /* =====================================================  FLOTA PROPIA  == */
-.fl-cab{position:absolute;left:128px;top:46px;width:540px}
-.l-flota h2{color:#fff;font-size:44px;margin-top:14px}
-.l-flota .fl-cab p{margin-top:20px;font-size:13.5px;line-height:1.82;font-weight:300;
+.fl-cab{position:absolute;left:128px;top:44px;width:540px}
+.l-flota h2{color:#fff;font-size:42px;margin-top:12px}
+.l-flota .fl-cab p{margin-top:16px;font-size:13px;line-height:1.78;font-weight:300;
   color:#C6CDDE;text-align:justify;hyphens:auto}
-.fl-total{position:absolute;left:756px;top:46px;width:396px}
+.fl-total{position:absolute;left:756px;top:44px;width:396px}
 .fl-total>b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:96px;line-height:.9;color:#fff;letter-spacing:-.01em}
-.fl-total>span{display:block;margin-top:6px;font-size:13px;font-weight:600;
+  font-weight:700;font-size:88px;line-height:.9;color:#fff;letter-spacing:-.01em}
+.fl-total>span{display:block;margin-top:5px;font-size:12.5px;font-weight:600;
   letter-spacing:.3em;text-transform:uppercase;color:var(--azul-suave)}
-.fl-sub{display:flex;gap:26px;margin-top:20px;padding-top:16px;
+.fl-sub{display:flex;gap:26px;margin-top:16px;padding-top:14px;
   border-top:1px solid rgba(124,139,186,.32)}
 .fl-sub span{font-size:12.5px;font-weight:500;color:#C6CDDE}
-.fl-familias{position:absolute;left:128px;top:262px;width:1024px;list-style:none;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:22px 18px}
-.fl-familias li{border-top:3px solid var(--azul);padding-top:12px}
-.fl-familias b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:32px;line-height:1;color:#fff}
-.fl-familias span{display:block;margin-top:4px;font-size:10.5px;font-weight:500;
-  line-height:1.4;color:var(--azul-suave);min-height:2.8em}
-.tira-flota{top:486px;height:234px;grid-template-columns:repeat(4,1fr)}
+
+/* los dos bloques: primero la pesada, debajo la liviana */
+.fl-bloques{position:absolute;left:128px;top:204px;width:1024px;
+  display:flex;flex-direction:column;gap:18px}
+.fl-bloque header{display:flex;align-items:baseline;gap:16px;
+  border-bottom:1px solid rgba(124,139,186,.3);padding-bottom:6px;margin-bottom:11px}
+.fl-bloque h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;
+  letter-spacing:.3em;color:#fff}
+.fl-suma{margin-left:auto;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
+  font-weight:700;font-size:19px;color:var(--azul-suave);line-height:1}
+.fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
+  gap:13px 20px}
+.fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}
+.fl-bloque b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
+  font-weight:700;font-size:31px;line-height:1;color:#fff}
+.fl-bloque span{display:block;margin-top:4px;font-size:12.5px;font-weight:400;
+  line-height:1.35;color:#DCE2EE}
+.tira-flota{top:530px;height:190px;grid-template-columns:repeat(4,1fr)}
 
 /* ====================================================  15. CIERRE  ===== */
 .cr-izq{position:absolute;left:0;top:0;width:700px;height:467px;background:#fff}
@@ -526,7 +538,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   </div>
 </section>
 <section class="lamina l-flota">
-  <div class="panel" style="top:0;height:486px">
+  <div class="panel" style="top:0;height:530px">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="fl-cab">
       <div class="epigrafe claro">FLOTA PROPIA</div>
@@ -534,11 +546,11 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p>Todo lo que ponemos en obra es nuestro. No subcontratamos maquinaria: cada equipo es propio, con mantenimiento y operadores de la casa, y el parque crece año tras año para responder a frentes cada vez mas grandes y mas exigentes.</p>
     </div>
     <div class="fl-total">
-      <b>961</b>
+      <b>966</b>
       <span>equipos propios</span>
-      <div class="fl-sub"><span>46 tipos de equipo</span><span>42 marcas</span></div>
+      <div class="fl-sub"><span>47 tipos de equipo</span><span>41 marcas</span></div>
     </div>
-    <ul class="fl-familias"><li><b>169</b><span>Camionetas</span></li><li><b>142</b><span>Chutos</span></li><li><b>128</b><span>Volteos</span></li><li><b>73</b><span>Bateas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>38</b><span>Payloaders</span></li><li><b>34</b><span>Retroexcavadoras</span></li><li><b>34</b><span>Lowboys</span></li><li><b>32</b><span>Excavadoras</span></li><li><b>28</b><span>Vacuums</span></li><li><b>26</b><span>Tractores de oruga</span></li><li><b>215</b><span>Otros equipos</span></li></ul>
+    <div class="fl-bloques"><section class="fl-bloque"><header><h3>FLOTA PESADA</h3><span class="fl-suma">665 equipos</span></header><ul><li><b>142</b><span>Chutos</span></li><li><b>128</b><span>Volteos</span></li><li><b>73</b><span>Bateas</span></li><li><b>38</b><span>Payloaders</span></li><li><b>34</b><span>Lowboys</span></li><li><b>34</b><span>Retroexcavadoras</span></li><li><b>32</b><span>Excavadoras</span></li><li><b>26</b><span>Tractores de oruga</span></li><li><b>26</b><span>Vacuums</span></li><li><b>17</b><span>Sidebooms</span></li><li><b>14</b><span>Mototraíllas</span></li><li><b>101</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><header><h3>FLOTA LIVIANA Y DE APOYO</h3><span class="fl-suma">301 equipos</span></header><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>20</b><span>Automóviles</span></li><li><b>15</b><span>Ambulancias</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>47</b><span>Otros equipos de apoyo</span></li></ul></section></div>
   </div>
   <div class="tira tira-flota"><figure><img src="img/flota_1.jpg" data-foto="flota_1" alt=""></figure><figure><img src="img/flota_2.jpg" data-foto="flota_2" alt=""></figure><figure><img src="img/flota_3.jpg" data-foto="flota_3" alt=""></figure><figure><img src="img/flota_4.jpg" data-foto="flota_4" alt=""></figure></div>
 </section>

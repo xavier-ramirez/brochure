@@ -212,12 +212,18 @@ def lamina_proyecto_solo(p):
 
 def lamina_flota():
     d = datos_flota()
-    fam = ''.join(
-        '<li><b>%s</b><span>%s</span></li>' % (miles(t['cantidad']), t['nombre'])
-        for t in d['tipos'])
+    bloques = ''
+    for b in d['bloques']:
+        celdas = ''.join(
+            '<li><b>%s</b><span>%s</span></li>' % (miles(t['cantidad']), t['nombre'])
+            for t in b['tipos'])
+        bloques += ('<section class="fl-bloque">'
+                    '<header><h3>%s</h3><span class="fl-suma">%s equipos</span></header>'
+                    '<ul>%s</ul></section>'
+                    % (espaciada(b['titulo']), miles(b['total']), celdas))
     fotos = ''.join('<figure>%s</figure>' % foto('flota_%d' % i) for i in (1, 2, 3, 4))
     return '''<section class="lamina l-flota">
-  <div class="panel" style="top:0;height:486px">
+  <div class="panel" style="top:0;height:530px">
     %s
     <div class="fl-cab">
       %s
@@ -229,13 +235,13 @@ def lamina_flota():
       <span>equipos propios</span>
       <div class="fl-sub"><span>%s tipos de equipo</span><span>%s marcas</span></div>
     </div>
-    <ul class="fl-familias">%s</ul>
+    <div class="fl-bloques">%s</div>
   </div>
   <div class="tira tira-flota">%s</div>
 </section>''' % (rieles('rieles-panel'), epigrafe(FLOTA['epigrafe'], 'claro'),
                  FLOTA['titulo'], FLOTA['texto'],
                  miles(d['total']), miles(d['tipos_distintos']), miles(d['marcas']),
-                 fam, fotos)
+                 bloques, fotos)
 
 
 def lamina_clientes():

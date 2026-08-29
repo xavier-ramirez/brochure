@@ -1,58 +1,94 @@
 {
- "total": 961,
- "marcas": 42,
- "pesada": 207,
- "liviana": 689,
- "tipos": [
+ "total": 966,
+ "marcas": 41,
+ "excluidos": 235,
+ "tipos_distintos": 47,
+ "pesada": 665,
+ "liviana": 301,
+ "bloques": [
   {
-   "nombre": "Camionetas",
-   "cantidad": 169
+   "titulo": "Flota pesada",
+   "total": 665,
+   "tipos": [
+    {
+     "nombre": "Chutos",
+     "cantidad": 142
+    },
+    {
+     "nombre": "Volteos",
+     "cantidad": 128
+    },
+    {
+     "nombre": "Bateas",
+     "cantidad": 73
+    },
+    {
+     "nombre": "Payloaders",
+     "cantidad": 38
+    },
+    {
+     "nombre": "Lowboys",
+     "cantidad": 34
+    },
+    {
+     "nombre": "Retroexcavadoras",
+     "cantidad": 34
+    },
+    {
+     "nombre": "Excavadoras",
+     "cantidad": 32
+    },
+    {
+     "nombre": "Tractores de oruga",
+     "cantidad": 26
+    },
+    {
+     "nombre": "Vacuums",
+     "cantidad": 26
+    },
+    {
+     "nombre": "Sidebooms",
+     "cantidad": 17
+    },
+    {
+     "nombre": "Mototraíllas",
+     "cantidad": 14
+    },
+    {
+     "nombre": "Otra maquinaria pesada",
+     "cantidad": 101
+    }
+   ]
   },
   {
-   "nombre": "Chutos",
-   "cantidad": 142
-  },
-  {
-   "nombre": "Volteos",
-   "cantidad": 128
-  },
-  {
-   "nombre": "Bateas",
-   "cantidad": 73
-  },
-  {
-   "nombre": "Camiones de soldadura",
-   "cantidad": 42
-  },
-  {
-   "nombre": "Payloaders",
-   "cantidad": 38
-  },
-  {
-   "nombre": "Retroexcavadoras",
-   "cantidad": 34
-  },
-  {
-   "nombre": "Lowboys",
-   "cantidad": 34
-  },
-  {
-   "nombre": "Excavadoras",
-   "cantidad": 32
-  },
-  {
-   "nombre": "Vacuums",
-   "cantidad": 28
-  },
-  {
-   "nombre": "Tractores de oruga",
-   "cantidad": 26
-  },
-  {
-   "nombre": "Otros equipos",
-   "cantidad": 215
+   "titulo": "Flota liviana y de apoyo",
+   "total": 301,
+   "tipos": [
+    {
+     "nombre": "Camionetas",
+     "cantidad": 169
+    },
+    {
+     "nombre": "Camiones de soldadura",
+     "cantidad": 42
+    },
+    {
+     "nombre": "Automóviles",
+     "cantidad": 20
+    },
+    {
+     "nombre": "Ambulancias",
+     "cantidad": 15
+    },
+    {
+     "nombre": "Cuadrilleras",
+     "cantidad": 8
+    },
+    {
+     "nombre": "Otros equipos de apoyo",
+     "cantidad": 47
+    }
+   ]
   }
- ],
- "excluidos": 232,
- "tipos_distintos": 46
+ ]
 }

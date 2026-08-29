@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Lee la flota del sistema (MySQL de XAMPP, base 'cd' del proyecto
-vidalsa_sistema) y deja en flota.json el conteo POR TIPO DE EQUIPO que usa
-la lamina de flota.
+vidalsa_sistema) y deja en flota.json el conteo POR TIPO DE EQUIPO,
+separado en FLOTA PESADA y FLOTA LIVIANA, que usa la lamina de flota.
 
     python preparar_flota.py
 
@@ -10,11 +10,17 @@ QUE NO SE CUENTA (y por que):
   - Todo el frente POR DEFINIR (id 2)                      -> lo pediste tu.
   - Todo el frente CONTROL DE ACTIVOS VENDIDOS (id 56)     -> ya no es flota propia.
   - Equipos con estado DESINCORPORADO                      -> ya no operan.
-Tampoco entran los EQUIPOS AUXILIARES: viven en otra tabla (equipos_auxiliares)
-y esta consulta solo mira la tabla 'equipos'.
-Cambia EXCLUIR de abajo si quieres contarlos.
+  - Vacuums anteriores a 2025 y los que no tienen año      -> lo pediste tu.
+  - Cualquier equipo que diga ALQUILADO en marca, modelo,
+    codigo de patio, etiqueta o detalle de ubicacion       -> no es propio.
+De la tabla equipos_auxiliares solo entran los MONTACARGAS.
 
-Si MySQL esta apagado, generar.py sigue usando el ultimo flota.json guardado.
+OJO CON LA CLASIFICACION PESADA / LIVIANA
+-----------------------------------------
+No se usa la columna CATEGORIA_FLOTA de la base porque no cuadra: ahi los
+chutos, bateas, volteos y lowboys estan marcados como FLOTA LIVIANA y en el
+brochure quedarian en el bloque equivocado. Se usa la lista PESADA de abajo;
+para mover un tipo de bloque, sacalo o metelo en esa lista.
 """
 import io, json, os, subprocess
 
@@ -22,16 +28,23 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 MYSQL = os.path.join('C:' + chr(92) + 'xampp', 'mysql', 'bin', 'mysql.exe')
 SALIDA = os.path.join(BASE, 'flota.json')
 
-TIPOS_EN_LAMINA = 11          # los demas se suman en "Otros equipos"
+TIPOS_PESADA = 11        # cuantos tipos se detallan; el resto va a "Otra/Otros"
+TIPOS_LIVIANA = 5
 
-FRENTES_FUERA = (2, 56)        # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
+FRENTES_FUERA = (2, 56)  # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
+VACUUM_DESDE = 2025      # solo vacuums de este año en adelante
 
-EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
-           "AND (e.ID_FRENTE_ACTUAL NOT IN (%s) OR e.ID_FRENTE_ACTUAL IS NULL) "
-           "AND e.ESTADO_OPERATIVO <> 'DESINCORPORADO'"
-           % ','.join(str(f) for f in FRENTES_FUERA))
+# maquinaria y transporte pesado
+PESADA = {
+    'CHUTO', 'VOLTEO', 'BATEA', 'PAYLOADER', 'RETROEXCAVADORA', 'LOWBOY',
+    'EXCAVADORA', 'MINI EXCAVADORAS', 'TRACTOR DE ORUGA', 'TRACTOR AGRICOLA',
+    'SIDEBOOM', 'MOTOTRAILLA', 'MOTONIVELADORA', 'VIBROCOMPACTADORA',
+    'COMPACTADORA', 'VACUUM', 'CHUTO CON BRAZO 16 TON', 'CAMION GRUA',
+    'CAMION ELEVADOR 8 TON', 'CAMION ELEVADOR 12 TON', 'CAMION ARTICULADO',
+    'TRAILERS', 'CAMA BAJA', 'BATEA/SILOS', 'BATEA/VOLQUETA', 'GRUA REMOLQUE',
+    'DRAGA', 'BALLENA', 'TARA', 'MONTACARGA',
+}
 
-# como se escribe cada tipo en la lamina (la tabla los guarda en mayuscula y sin tildes)
 NOMBRES = {
     'CAMIONETA': 'Camionetas', 'CHUTO': 'Chutos', 'VOLTEO': 'Volteos',
     'BATEA': 'Bateas', 'CAMION DE SOLDADURA': 'Camiones de soldadura',
@@ -49,7 +62,29 @@ NOMBRES = {
     'MINI EXCAVADORAS': 'Miniexcavadoras', 'COMPACTADORA': 'Compactadoras',
     'CAMION DE SERVICIO': 'Camiones de servicio', 'AUTOBUS': 'Autobuses',
     'CAMION CISTERNA': 'Camiones cisterna', 'DRAGA': 'Dragas',
+    'CAMION ARTICULADO': 'Camiones articulados', 'TRAILERS': 'Tráilers',
+    'CAMION PLATAFORMA': 'Camiones plataforma', 'CAVA': 'Cavas',
+    'MINI SHOWER': 'Mini showers', 'MONTACARGA': 'Montacargas',
+    'PLATAFORMA / BRAZO HIDRAULICO': 'Brazos hidráulicos',
+    'CAMION CON BRAZO 4 TON': 'Camiones con brazo 4 t',
+    'CAMION CON BRAZO 6 TON': 'Camiones con brazo 6 t',
+    'CAMION PRUEBA HIDROSTATICA': 'Camiones de prueba hidrostática',
+    'GRUA REMOLQUE': 'Grúas de remolque', 'MOTOCICLETA': 'Motocicletas',
+    'BATEA/SILOS': 'Bateas/silos', 'BATEA/VOLQUETA': 'Bateas/volquetas',
+    'CAMION': 'Camiones', 'CAMION  HIDROJET': 'Camiones hidrojet',
 }
+
+ALQUILADO = " OR ".join(
+    "COALESCE(e.%s,'') LIKE '%%ALQUIL%%'" % c
+    for c in ('MARCA', 'MODELO', 'CODIGO_PATIO', 'NUMERO_ETIQUETA',
+              'DETALLE_UBICACION_ACTUAL', 'CAPACIDAD'))
+
+EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
+           "AND (e.ID_FRENTE_ACTUAL NOT IN (%s) OR e.ID_FRENTE_ACTUAL IS NULL) "
+           "AND e.ESTADO_OPERATIVO <> 'DESINCORPORADO' "
+           "AND NOT (t.nombre = 'VACUUM' AND (e.ANIO IS NULL OR e.ANIO < %d)) "
+           "AND NOT (%s)"
+           % (','.join(str(f) for f in FRENTES_FUERA), VACUUM_DESDE, ALQUILADO))
 
 
 def consultar(sql):
@@ -63,31 +98,54 @@ def consultar(sql):
 DESDE = ("FROM equipos e LEFT JOIN tipo_equipos t ON t.id = e.id_tipo_equipo "
          "WHERE e.deleted_at IS NULL AND " + EXCLUIR)
 
-filas = consultar("SELECT COALESCE(t.nombre,'SIN TIPO'), COUNT(*) %s "
-                  "GROUP BY 1 ORDER BY 2 DESC" % DESDE)
-por_tipo = [(n, int(c)) for n, c in filas]
+por_tipo = [(n, int(c)) for n, c in consultar(
+    "SELECT COALESCE(t.nombre,'SIN TIPO'), COUNT(*) %s GROUP BY 1" % DESDE)]
+
+# los montacargas viven en equipos_auxiliares, no en equipos
+montacargas = int(consultar(
+    "SELECT COUNT(*) FROM equipos_auxiliares WHERE TIPO='MONTACARGA' AND deleted_at IS NULL "
+    "AND NOT (COALESCE(MARCA,'') LIKE '%ALQUIL%' OR COALESCE(MODELO,'') LIKE '%ALQUIL%' "
+    "OR COALESCE(OBSERVACIONES,'') LIKE '%ALQUIL%')")[0][0])
+if montacargas:
+    por_tipo.append(('MONTACARGA', montacargas))
+
+por_tipo.sort(key=lambda x: -x[1])
 total = sum(c for _, c in por_tipo)
 marcas = int(consultar("SELECT COUNT(DISTINCT e.MARCA) %s" % DESDE)[0][0])
-pesada = int(consultar("SELECT COUNT(*) %s AND e.CATEGORIA_FLOTA='FLOTA PESADA'" % DESDE)[0][0])
-liviana = int(consultar("SELECT COUNT(*) %s AND e.CATEGORIA_FLOTA='FLOTA LIVIANA'" % DESDE)[0][0])
 excluidos = int(consultar("SELECT COUNT(*) FROM equipos e "
                           "LEFT JOIN tipo_equipos t ON t.id = e.id_tipo_equipo "
                           "WHERE e.deleted_at IS NULL AND NOT (%s)" % EXCLUIR)[0][0])
 
-cabeza = por_tipo[:TIPOS_EN_LAMINA]
-cola = por_tipo[TIPOS_EN_LAMINA:]
-tipos = [{'nombre': NOMBRES.get(n, n.capitalize()), 'cantidad': c} for n, c in cabeza]
-if cola:
-    tipos.append({'nombre': 'Otros equipos', 'cantidad': sum(c for _, c in cola)})
 
-datos = {'total': total, 'marcas': marcas, 'pesada': pesada, 'liviana': liviana,
-         'tipos': tipos, 'excluidos': excluidos,
-         'tipos_distintos': len(por_tipo)}
+def bloque(lista, cuantos, sobrante):
+    cabeza, cola = lista[:cuantos], lista[cuantos:]
+    filas = [{'nombre': NOMBRES.get(n, n.capitalize()), 'cantidad': c} for n, c in cabeza]
+    fuera = sum(c for _, c in cola)
+    if fuera:
+        filas.append({'nombre': sobrante, 'cantidad': fuera})
+    return filas, sum(c for _, c in lista)
+
+
+pesada = [(n, c) for n, c in por_tipo if n in PESADA]
+liviana = [(n, c) for n, c in por_tipo if n not in PESADA]
+filas_pesada, total_pesada = bloque(pesada, TIPOS_PESADA, 'Otra maquinaria pesada')
+filas_liviana, total_liviana = bloque(liviana, TIPOS_LIVIANA, 'Otros equipos de apoyo')
+
+datos = {
+    'total': total, 'marcas': marcas, 'excluidos': excluidos,
+    'tipos_distintos': len(por_tipo),
+    'pesada': total_pesada, 'liviana': total_liviana,
+    'bloques': [
+        {'titulo': 'Flota pesada', 'total': total_pesada, 'tipos': filas_pesada},
+        {'titulo': 'Flota liviana y de apoyo', 'total': total_liviana, 'tipos': filas_liviana},
+    ],
+}
 io.open(SALIDA, 'w', encoding='utf-8').write(json.dumps(datos, indent=1, ensure_ascii=False))
 
-print('equipos contados: %d   (excluidos %d)   |   %d tipos distintos   |   %d marcas'
+print('equipos contados: %d   (excluidos %d)   |   %d tipos   |   %d marcas'
       % (total, excluidos, len(por_tipo), marcas))
-print('pesada %d   liviana %d' % (pesada, liviana))
-for t in tipos:
-    print('  %4d  %s' % (t['cantidad'], t['nombre']))
-print('->', SALIDA)
+for b in datos['bloques']:
+    print('\n%s  (%d)' % (b['titulo'].upper(), b['total']))
+    for t in b['tipos']:
+        print('  %4d  %s' % (t['cantidad'], t['nombre']))
+print('\n->', SALIDA)

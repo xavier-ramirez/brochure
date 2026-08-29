@@ -7,7 +7,7 @@ Para cambiar una foto suelta basta con reemplazar el archivo dentro de img/.
 """
 import io, os, sys
 import fitz
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 PDF = os.path.join(os.path.expanduser('~'), 'Downloads', 'Brochure.pdf')
 LOGO = os.path.join(os.path.expanduser('~'), 'Desktop', 'vidalsa_sistema',
@@ -100,13 +100,34 @@ blanco.save(os.path.join(OUT, 'logo_blanco.png'), optimize=True)
 # para que la lamina no quede vacia. Son PROVISIONALES: cambialos por tus fotos
 # desde el editor. Nunca se pisa un archivo que ya exista.
 SEMILLAS = [
-    ('flota_1',     'flota_equipo.jpg',          (0.00, 0.42)),
-    ('flota_2',     'flota_equipo.jpg',          (0.38, 0.74)),
-    ('flota_3',     'flota_equipo.jpg',          (0.66, 1.00)),
-    ('flota_4',     'servicio_5_maquinaria.jpg', None),
-    ('curataqui_4', 'curataqui_1.jpg',           (0.00, 0.52)),
-    ('curataqui_5', 'curataqui_1.jpg',           (0.48, 1.00)),
+    ('flota_1', 'flota_equipo.jpg',          (0.00, 0.42)),
+    ('flota_2', 'flota_equipo.jpg',          (0.38, 0.74)),
+    ('flota_3', 'flota_equipo.jpg',          (0.66, 1.00)),
+    ('flota_4', 'servicio_5_maquinaria.jpg', None),
 ]
+
+# Huecos sin foto propia en el PDF original: se deja una placa que se ve como
+# lo que es, un sitio por llenar. Asi no se cuela una foto repetida.
+PENDIENTES = ['curataqui_4', 'curataqui_5']
+
+
+def placa_pendiente(ruta, w=900, h=536):
+    im = Image.new('RGB', (w, h), (0xEB, 0xEE, 0xF6))
+    d = ImageDraw.Draw(im)
+    for i, (x, ancho, color) in enumerate(
+            [(0, 14, (0x2A, 0x3C, 0x78)), (22, 14, (0x49, 0x66, 0xAD)),
+             (44, 14, (0x96, 0xA3, 0xC8)), (66, 14, (0xC3, 0xCA, 0xD9))]):
+        cx = w // 2 - 90 + x
+        d.polygon([(cx + 26, h // 2 - 74), (cx + 26 + ancho, h // 2 - 74),
+                   (cx + ancho, h // 2 + 6), (cx, h // 2 + 6)], fill=color)
+    texto = 'DOBLE CLIC PARA PONER UNA FOTO'
+    try:
+        f = ImageFont.truetype(os.path.join('C:' + chr(92) + 'Windows', 'Fonts', 'arial.ttf'), 26)
+    except OSError:
+        f = ImageFont.load_default()
+    ancho_txt = d.textlength(texto, font=f)
+    d.text(((w - ancho_txt) / 2, h / 2 + 46), texto, font=f, fill=(0x72, 0x7B, 0x93))
+    im.save(ruta, 'JPEG', quality=90, optimize=True)
 for destino, origen, corte in SEMILLAS:
     ruta = os.path.join(OUT, destino + '.jpg')
     if os.path.exists(ruta) and not REHACER:
@@ -118,5 +139,10 @@ for destino, origen, corte in SEMILLAS:
     if im.width > 900:
         im = im.resize((900, round(im.height * 900 / im.width)), Image.LANCZOS)
     im.save(ruta, 'JPEG', quality=88, optimize=True, progressive=True)
+
+for nombre in PENDIENTES:
+    ruta = os.path.join(OUT, nombre + '.jpg')
+    if not os.path.exists(ruta) or REHACER:
+        placa_pendiente(ruta)
 
 print('imagenes listas en', OUT, '->', len(os.listdir(OUT)), 'archivos')
