@@ -1,14 +1,14 @@
 {
- "total": 901,
+ "total": 900,
  "marcas": 41,
- "excluidos": 300,
+ "excluidos": 301,
  "tipos_distintos": 47,
- "pesada": 600,
+ "pesada": 599,
  "liviana": 301,
  "bloques": [
   {
    "titulo": "Flota pesada",
-   "total": 600,
+   "total": 599,
    "tipos": [
     {
      "nombre": "Chutos",
@@ -44,7 +44,7 @@
     },
     {
      "nombre": "Vacuums",
-     "cantidad": 26
+     "cantidad": 25
     },
     {
      "nombre": "Sidebooms",

@@ -11,6 +11,7 @@ QUE NO SE CUENTA (y por que):
   - Todo el frente CONTROL DE ACTIVOS VENDIDOS (id 56)     -> ya no es flota propia.
   - Equipos con estado DESINCORPORADO                      -> ya no operan.
   - Vacuums anteriores a 2025 y los que no tienen año      -> lo pediste tu.
+  - El vacuum del frente GOBERNACION APURE (7)             -> lo pediste tu.
   - Volteos de CVG PUERTO ORDAZ (44) y MINISTERIO DE
     OBRAS PUBLICAS (45)                                    -> lo pediste tu.
   - Cualquier equipo que diga ALQUILADO (o alquilada/os) en
@@ -40,6 +41,7 @@ TIPOS_LIVIANA = 5
 FRENTES_FUERA = (2, 56)     # POR DEFINIR, CONTROL DE ACTIVOS VENDIDOS
 VACUUM_DESDE = 2025         # solo vacuums de este año en adelante
 VOLTEOS_FUERA = (44, 45)    # CVG PUERTO ORDAZ, MINISTERIO DE OBRAS PUBLICAS
+VACUUM_FUERA = (7,)         # GOBERNACION APURE
 
 # maquinaria y transporte pesado
 PESADA = {
@@ -92,9 +94,11 @@ EXCLUIR = ("NOT (e.ID_FRENTE_ACTUAL = 23 AND t.nombre = 'CAMIONETA') "
            "AND (e.ID_FRENTE_ACTUAL NOT IN (%s) OR e.ID_FRENTE_ACTUAL IS NULL) "
            "AND e.ESTADO_OPERATIVO <> 'DESINCORPORADO' "
            "AND NOT (t.nombre = 'VACUUM' AND (e.ANIO IS NULL OR e.ANIO < %d)) "
+           "AND NOT (t.nombre = 'VACUUM' AND e.ID_FRENTE_ACTUAL IN (%s)) "
            "AND NOT (t.nombre = 'VOLTEO' AND e.ID_FRENTE_ACTUAL IN (%s)) "
            "AND NOT (%s)"
            % (','.join(str(f) for f in FRENTES_FUERA), VACUUM_DESDE,
+              ','.join(str(f) for f in VACUUM_FUERA),
               ','.join(str(f) for f in VOLTEOS_FUERA), ALQUILADO))
 
 

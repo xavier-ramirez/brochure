@@ -32,7 +32,23 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
    que exportes sale exactamente igual a lo que ves en pantalla.
 
 
-3) SACAR EL PDF
+3) MONTAR VARIAS FOTOS DE GOLPE
+-------------------------------
+   Hay una carpeta por proyecto en  fotos_para_montar/
+       comor/       COMOR - Saneamiento de suelo contaminado
+       trasegado/   Movilizacion y trasegado de crudo
+       dragado/     Dragado lagunas del SIAE COMOR
+
+   Deja ahi tus fotos (como salen de la camara, sin recortar) y corre:
+       python montar_fotos.py            ve el orden en que las pondria
+       python montar_fotos.py --montar   las monta
+
+   Orden alfabetico: la 1a es la foto grande, la 2a y la 3a las miniaturas.
+   Renombralas 1_..., 2_..., 3_... para mandar tu el orden.
+   Guarda copia de lo que sustituye y endereza las fotos del telefono.
+
+
+4) SACAR EL PDF
 ---------------
    python exportar_pdf.py        ->  Brochure_Vidalsa27.pdf  (17 paginas)
 
@@ -40,7 +56,7 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
            Margenes = Ninguno  y  Graficos de fondo = activado.
 
 
-4) CAMBIAR UN TEXTO
+5) CAMBIAR UN TEXTO
 -------------------
    1. Editar contenido.py
    2. python generar.py

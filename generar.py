@@ -26,6 +26,13 @@ PRUEBAS = [
     ('pr-d', 'D — velo claro encima, el corte se mantiene'),
 ]
 
+# Copias de la portada cambiando la foto de arriba, para comparar. Tampoco
+# salen en el PDF. Deja la lista vacia cuando ya hayas elegido.
+PORTADA_CANDIDATAS = [
+    ('flota_3', 'Opción A — patio de maquinaria (flota_3)'),
+    ('tub12_1', 'Opción B — camiones y tubería en obra (tub12_1)'),
+]
+
 
 def fecha_portafolio():
     if PORTAFOLIO.get('fecha'):
@@ -305,6 +312,18 @@ def lamina_cierre():
 def construir():
     portada = lamina_portada()
     laminas = [portada]
+    if PORTADA_CANDIDATAS:
+        arriba = foto('portada_valvulas')
+        laminas.append('<div class="rotulo-prueba">Arriba, la portada como está hoy. '
+                       'Debajo, la misma portada con otra foto en el hueco de arriba. '
+                       'Estas copias no salen en el PDF.</div>')
+        for archivo, rotulo in PORTADA_CANDIDATAS:
+            # sin data-foto: son solo para mirar, no se editan ni se guardan
+            copia = portada.replace(arriba, '<img src="img/%s.jpg" alt="">' % archivo)
+            copia = copia.replace('class="lamina l-portada"',
+                                  'class="lamina l-portada prueba pr-cand"')
+            laminas.append('<div class="rotulo-prueba">%s</div>' % rotulo)
+            laminas.append(copia)
     if PRUEBA_PORTADA:
         laminas.append('<div class="rotulo-prueba">A — como esta ahora (arriba) · '
                        'debajo, las opciones con degradado</div>')
@@ -337,6 +356,10 @@ def construir():
     if PRUEBA_PORTADA:
         print('   + %d clones de portada para comparar degradados '
               '(no salen en el PDF; se quitan con PRUEBA_PORTADA = False)' % len(PRUEBAS))
+    if PORTADA_CANDIDATAS:
+        print('   + %d copias de la portada con otra foto arriba '
+              '(no salen en el PDF; se quitan vaciando PORTADA_CANDIDATAS)'
+              % len(PORTADA_CANDIDATAS))
 
 
 if __name__ == '__main__':
