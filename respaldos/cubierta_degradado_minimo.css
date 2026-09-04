@@ -1,0 +1,19 @@
+/* Retirado el 2026-09-04: el usuario pidio dejar solo dos alternativas de
+   cubierta -una con el blanco arriba y otra con el blanco abajo-, y esta era
+   una tercera. El velo en si no llego a descartarse; si se quiere, se pega
+   esto en estilos.css y se le pone la clase .cb-degradado a la cubierta que
+   toque -o se le quita el .cb-degradado al selector para que valga para las
+   dos-. */
+
+/* --- la misma cubierta, con un velo MINIMO sobre la foto (.cb-degradado) ---
+   Va de nada por la izquierda a poco mas de un tercio pegado a la costura con
+   el panel navy, asi que la foto se funde con el panel en vez de cortarse a
+   filo. El edificio -el tercio de la izquierda y el centro- no se toca.
+   Es un ::before y no toca al ::after de la foto, que es el degradado del pie
+   que sostiene el sello: los dos conviven, cada uno por su canto. El z-index
+   de 2 lo pone por encima de la foto y por debajo del sello, que va en 3. */
+.cb-degradado .cbp-foto::before{content:'';position:absolute;inset:0;z-index:2;
+  pointer-events:none;
+  background:linear-gradient(100deg,rgba(9,17,42,0) 42%,rgba(9,17,42,.26) 78%,
+             rgba(9,17,42,.5) 100%)}
+

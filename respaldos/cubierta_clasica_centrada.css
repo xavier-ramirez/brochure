@@ -1,0 +1,51 @@
+/* Retirada de estilos.css el 2026-09-04, a peticion del usuario: la vio en
+   pantalla y se quedo con la de la izquierda. Es como estaba el texto de la
+   cubierta antes del epigrafe -razon social de titulo, la raya de los rieles
+   tumbada debajo, el titular en un parrafo y todo CENTRADO-.
+   Para volver a ponerla: pegar esto en estilos.css, devolver a generar.py el
+   argumento clasica=True de lamina_cubierta_partida() con su <h2>, su
+   <span class="cbp-raya"> y su <p>, y anadirla a la lista de alternativas de
+   construir(). En carta.css iban ademas sus dos cuerpos:
+     .cb-clasica .cbp-titulo h2{font-size:33.5px}
+     .cb-clasica .cbp-titulo p{font-size:23.5px}  */
+
+/* --- la cubierta CLASICA (.cb-clasica) -------------------------------
+   Como estaba el texto antes del epigrafe: la razon social de titulo, la raya
+   debajo y el titular en un parrafo, todo CENTRADO. Se guarda a peticion del
+   usuario, para comparar. Solo vive en las laminas .prueba -no se imprime-,
+   pero se escribe aqui y no en una hoja aparte para que no haya dos sitios
+   donde tocar la cubierta.
+   Devuelve el centrado y el padding que tenia; lo demas -foto, sello,
+   logotipo, riel- ya lo comparte con la version buena. */
+.cb-clasica .cbp-titulo{padding:0 40px;align-items:center;text-align:center}
+/* nowrap: la razon social va SIEMPRE en una linea, que es como se lee. A 38 px
+   cabia justo, y bastaba con que la condensada no cargara -y entrara el Arial
+   Narrow de reserva, mas ancho- para que se partiera en dos; a 35 entra con
+   holgura incluso con la letra de reserva. */
+.cb-clasica .cbp-titulo h2{font-size:35px;line-height:1.15;margin-top:0;
+  white-space:nowrap;text-transform:uppercase}
+/* La raya entre el nombre y el titular es la pieza de los RIELES tumbada:
+   las mismas dos barras que bajan en diagonal por el canto de las laminas de
+   contenido -rieles() en generar.py-, con su mismo sesgo y sus mismos dos
+   azules, pero en horizontal y mas finas -alli son 9 y 5 px, una barra
+   vertical que se puede permitir ese grosor; tumbada como raya se veia
+   demasiado gruesa-.
+   El angulo sale de --sesgo-riel, la misma variable que usan las diagonales:
+   si alli se cambia, esta raya se inclina con ellas y no se quedan a dos
+   angulos distintos. Los colores si se repiten aqui -rieles() los lleva en
+   linea, en el HTML-; al tocarlos alli, tocarlos tambien aqui. */
+.cb-clasica .cbp-raya{display:flex;align-items:center;gap:14px;margin:26px 0 24px}
+.cb-clasica .cbp-raya::before,
+.cb-clasica .cbp-raya::after{content:'';transform:skewX(var(--sesgo-riel,-9deg))}
+.cb-clasica .cbp-raya::before{width:92px;height:4px;background:#4966AD}
+.cb-clasica .cbp-raya::after{width:38px;height:3px;background:rgba(124,139,186,.5)}
+/* El titular va en la MISMA letra que los titulos de las laminas -Barlow
+   Condensed- y no en la Barlow de texto con que salio. En 600 y no en el 700
+   de los h2: es la frase que acompana al nombre, no un segundo titulo que
+   compita con el. El 600 no es capricho: de la Condensada solo van embebidos
+   el 600 y el 700 (ver fuentes.css), y pedir un 500 obligaria al navegador a
+   fabricarlo. */
+.cb-clasica .cbp-titulo p{color:#fff;font-size:24.5px;line-height:1.32;
+  font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;
+  text-transform:uppercase}
+

@@ -222,10 +222,12 @@ def hoja_carta(lamina, numero, total):
         '<div class="enc-hoja">%s%s<img src="img/logo.png"'
         ' alt="Constructora Vidalsa 27, C.A."></div>' % (rieles, raya),
         '<div class="hoja-diseno">', lamina[abre:cierra], '</div>',
-        # La CUBIERTA va sin folio -numero None-: una portada no se numera,
-        # y ademas no cuenta para el total, asi que la primera pagina numerada
-        # es la 01 de 18 y no la 02 de 19. El encabezado y las rayas si se
-        # quedan, para que la hoja no cambie de altura ni de reparto.
+        # Con numero None el pie se arma igual -rieles, etiqueta y raya- pero
+        # sin el folio. Van asi la CUBIERTA -una portada no se numera- y la
+        # lamina de CIERRE, que la pidio el usuario sin numero. Ninguna de las
+        # dos cuenta para el total, de modo que la numeracion va de 01 a 17
+        # de 17 sin huecos. El encabezado y las rayas si se quedan, para que
+        # la hoja no cambie de altura ni de reparto.
         '<div class="pie-hoja">%s%s%s%s</div>'
         % (rieles, pie_etiqueta, raya,
            '' if numero is None else '<b>%02d / %02d</b>' % (numero, total)),
@@ -705,7 +707,7 @@ def lamina_cubierta(variante):
                  espaciada('Brochure corporativo'))
 
 
-def lamina_cubierta_partida():
+def lamina_cubierta_partida(inversa=False, prueba=False):
     """La cubierta que se imprime: la hoja partida en dos de arriba abajo.
 
     Foto del edificio de la sede a la IZQUIERDA, a todo el alto, y a la
@@ -719,45 +721,65 @@ def lamina_cubierta_partida():
     La foto es FOTO_SEDE y va por su nombre, asi que el encuadre que el
     usuario ya le dio -la entrada del 177- se le aplica solo.
 
+    El texto del panel navy va como el de cualquier lamina de contenido -el
+    par "QUIENES SOMOS / Nuestra empresa"-: la razon social arriba en el
+    EPIGRAFE, con su rayita sesgada delante, y debajo el titular como titulo
+    grande. Lo pidio asi el usuario, y de paso la cubierta deja de tener una
+    tipografia propia: usa epigrafe(), la misma pieza que el resto. Antes eran
+    la razon social como <h2> y el titular como <p>, separados por .cbp-raya
+    -esa raya ya no hace falta aqui, porque la trae el epigrafe delante-. Esa
+    manera no se perdio: se probo al lado de esta -el usuario la pidio para
+    comparar- y, ya vista, se quedo con la nueva; aquella quedo guardada
+    entera en respaldos/cubierta_clasica_centrada.css, con la receta para
+    devolverla. Va alineado a la IZQUIERDA, tambien a peticion del usuario.
+
     El sello -"BROCHURE CORPORATIVO" y el ano- va SOBRE la foto y no en el
     panel blanco: lo pidio el usuario al modo de las portadas de informe anual
     que trajo de muestra. El panel blanco se queda entonces solo con el
     logotipo, que gana aire, y la foto gana un pie que la ancla.
 
-    Los rieles diagonales -rieles(), la misma pieza que llevan todas las
-    laminas de contenido- faltaban aqui: el usuario los pidio. Primero uno
-    solo, a caballo entre el navy y el blanco; el usuario lo vio y pidio que
-    se guiara por "Mision y vision" -que no lleva uno que cruce la foto y el
-    panel de corrido, sino UNO PARA CADA UNO, el suyo dentro de la banda y el
-    suyo dentro del panel (ver banda() y lamina_nosotros())-. Aqui es el
-    mismo criterio: uno dentro de .cbp-titulo (el navy) y otro dentro de
-    .cbp-logo (el blanco), cada uno a la altura de su propia caja y no de la
-    columna entera.
+    Bajo el titular van las BARRAS -.barras, las mismas cuatro cunas que el
+    cierre lleva bajo su titulo-: el usuario las vio alli y pidio traerlas
+    aqui, al panel navy. Es la misma pieza y el mismo marcado, sin una clase
+    propia; lo unico que cambia -en estilos.css- es que aqui se pintan con el
+    tramo CLARO de la escala de azules, porque sobre el navy el tramo oscuro
+    no se veria.
 
-    Los dos nacieron en la costura, pegados al canto izquierdo de su caja
-    -como en el resto del brochure-, pero el usuario los quiso en el EXTREMO
-    DERECHO de la cubierta en vez de ahi: el override esta en estilos.css
-    (".cb-partida .cbp-titulo .rieles-panel, .cb-partida .cbp-logo
-    .rieles-panel"), no aqui, porque la pieza en si -rieles()- se queda
-    igual que en todas las demas laminas; solo cambia donde cae.
+    NO lleva, en cambio, rieles diagonales. Es la unica lamina del brochure
+    sin ellos, y no por descuido: se probaron en todas las posiciones que fue pidiendo el
+    usuario -dos, uno por caja, al modo de "Mision y vision"; los mismos dos
+    pegados al canto derecho; sobre la foto; uno solo cruzando la pagina de
+    arriba abajo; y dos enmarcando el panel blanco- y ninguna le convencio.
+    La cubierta se queda limpia: la costura entre la foto y el navy ya hace
+    ese trabajo. Antes de volver a ponerlos, mirar esta lista.
+
+    inversa: da la vuelta a la columna derecha -el blanco con el logotipo
+    ARRIBA y el navy con el texto ABAJO-. Es la misma lamina y el mismo HTML;
+    lo unico que cambia es la clase .cb-inversa, que en estilos.css intercambia
+    las dos cajas. Se hizo asi y no con una funcion aparte para que cualquier
+    arreglo de la cubierta valga para las dos sin tener que acordarse de la
+    otra.
+    prueba: la marca .prueba -se ve en la pagina para comparar, pero no entra
+    ni en el PDF ni en el PowerPoint-.
     """
-    return '''<section class="lamina l-cubierta cb-partida">
+    clases = 'lamina l-cubierta cb-partida'
+    if inversa: clases += ' cb-inversa'
+    if prueba:  clases = 'lamina prueba ' + clases[7:]
+    return '''<section class="%s">
   <div class="cbp-foto">%s%s</div>
   <div class="cbp-der">
     <div class="cbp-titulo">
       %s
-      <h2>Constructora Vidalsa 27, C.A.</h2>
-      <span class="cbp-raya"></span>
-      <p>%s</p>
+      <h2>%s</h2>
+      <div class="barras"><i></i><i></i><i></i><i></i></div>
     </div>
     <div class="cbp-logo">
-      %s
       <img src="img/logo_cuadrado.png" alt="Constructora Vidalsa 27, C.A.">
     </div>
   </div>
-</section>''' % (foto(FOTO_SEDE), sello_brochure('cbp-sello'),
-                 rieles('rieles-panel'), EMPRESA['titular_portada'],
-                 rieles('rieles-panel'))
+</section>''' % (clases, foto(FOTO_SEDE), sello_brochure('cbp-sello'),
+                 epigrafe('Constructora Vidalsa 27, C.A.'),
+                 EMPRESA['titular_portada'])
 
 
 
@@ -765,6 +787,17 @@ def lamina_cubierta_partida():
 def construir():
     cubierta = lamina_cubierta_partida()
     laminas = [cubierta]
+    # Las otras dos maneras de resolver la MISMA cubierta, para compararlas en
+    # pantalla: van marcadas .prueba, asi que se ven en la pagina pero no se
+    # imprimen ni se numeran. Para quedarse con una: pasarle su argumento a la
+    # llamada de arriba -lamina_cubierta_partida(inversa=True), por ejemplo- y
+    # quitarla de esta lista.
+    for rotulo, comodin in (
+            ('Cubierta INVERSA · el blanco con el logotipo arriba '
+             'y el navy con el texto abajo', dict(inversa=True)),):
+        laminas.append('<div class="rotulo-prueba"><span>%s</span></div>'
+                       % espaciada(rotulo))
+        laminas.append(lamina_cubierta_partida(prueba=True, **comodin))
     if PORTADA_BUENA:
         laminas.append(lamina_portada())
     laminas += [lamina_empresa(), lamina_nosotros(), lamina_valores(), lamina_servicios(), lamina_portafolio()]
@@ -775,7 +808,8 @@ def construir():
         laminas.append(lamina_proyecto_solo(PROYECTOS[-1]))
     laminas.append(lamina_flota())
     laminas.append(lamina_clientes())
-    laminas.append(lamina_cierre())
+    cierre = lamina_cierre()
+    laminas.append(cierre)
 
     css = io.open(os.path.join(BASE, 'estilos.css'), encoding='utf-8').read()
 
@@ -804,10 +838,15 @@ def construir():
     # Lleva editor.js, igual que la panoramica: aqui tambien se encuadran las
     # fotos -lo pidio el usuario- y el mismo script sabe en que hoja esta, asi
     # que su boton "Descargar PDF" saca el de carta y no el panoramico.
-    # La cubierta no entra en la cuenta: no se numera a si misma.
+    # Ni la cubierta ni el CIERRE entran en la cuenta: la primera no se numera
+    # a si misma y la ultima la pidio el usuario sin folio. Al dejarlas fuera
+    # del total la numeracion cierra redonda -la ultima numerada es la 17 de
+    # 17- en vez de saltarse un numero al final.
     def se_imprime(l):
         return 'class="lamina ' in l and 'lamina prueba' not in l
-    total = sum(1 for l in laminas if se_imprime(l) and l is not cubierta)
+    sin_folio = (cubierta, cierre)
+    total = sum(1 for l in laminas
+                if se_imprime(l) and not any(l is x for x in sin_folio))
     hojas, numero = [], 0
     for l in laminas:
         if not se_imprime(l):
@@ -820,6 +859,11 @@ def construir():
             # y no los 720 del diseno- gracias al --alto-diseno propio que le
             # da .l-cubierta en carta.css.
             hojas.append(l)
+        elif l is cierre:
+            # El cierre SI lleva encabezado y pie -con sus rieles, su raya y
+            # su etiqueta de seccion- pero sin folio: hoja_carta() con
+            # numero None quita el numero y deja el pie tal cual.
+            hojas.append(hoja_carta(l, None, total))
         else:
             numero += 1
             hojas.append(hoja_carta(l, numero, total))
@@ -830,7 +874,7 @@ def construir():
                '<script src="editor.js" defer></script>\n'))
 
     # `numero` cuenta las laminas NUMERADAS, que ya no son todas: la cubierta
-    # va sin folio. Se dice aparte para que el aviso no se lea como si se
+    # y el cierre van sin folio. Se dice aparte para que el aviso no se lea como si se
     # hubiera perdido una lamina por el camino.
     print('index.html (13,333 x 7,5 pulg) y carta.html (11 x 8,5 pulg) listos '
           '-> cubierta + %d laminas numeradas' % numero)

@@ -104,13 +104,15 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* Todas las laminas llevan el epigrafe en blanco: el usuario lo fue pidiendo
    una por una -Quienes somos, Nuestra empresa, Valores, Portafolio,
    Clientes y por ultimo Flota-, asi que ya no queda ninguna en el azul
-   palido de .epigrafe.claro. */
+   palido de .epigrafe.claro. La CUBIERTA se sumo despues, cuando su texto
+   paso a resolverse con este mismo par: tambien va sobre navy. */
 .l-nosotros .banda-txt .epigrafe,
 .l-empresa .qse-cab .epigrafe,
 .l-valores .va-cab .epigrafe,
 .l-portafolio .banda-txt .epigrafe,
 .l-clientes .banda-txt .epigrafe,
-.l-flota .fl-cab .epigrafe{color:#fff}
+.l-flota .fl-cab .epigrafe,
+.cb-partida .cbp-titulo .epigrafe{color:#fff}
 .epigrafe.suave{color:#fff;letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
 
@@ -437,66 +439,76 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* Arriba el nombre, centrado; abajo el logotipo sobre blanco. El corte al
    52% deja el nombre en el aire que necesita y al logotipo una caja casi
    cuadrada, que es como mejor se lee la marca cuadrada. */
+/* Alineado a la IZQUIERDA -lo pidio el usuario-, que es ademas como se
+   colocan el epigrafe y el titulo en todas las laminas de contenido. El
+   padding sube de 40 a 52 px por el lado que ahora manda: centrado los 40
+   solo eran el tope por el que no podia pasar el texto, y de izquierda son
+   el margen que se ve. */
+/* El epigrafe de la cubierta va MAS GRANDE que el de las laminas -13,5 px-:
+   lo pidio el usuario. Aqui es la razon social de la portada y no un rotulo
+   de seccion, asi que aguanta el cuerpo. 17 px es el tope: con el espaciado
+   de .32em la linea mide 465 px medidos, y el hueco util de la columna es de
+   485; a 18 ya no cabria en un renglon. */
+.cb-partida .cbp-titulo .epigrafe{font-size:17px}
 .cb-partida .cbp-titulo{position:absolute;left:0;top:0;width:100%;height:52%;
-  box-sizing:border-box;padding:0 40px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center}
-/* nowrap: el nombre va SIEMPRE en una linea, que es como se lee una razon
-   social. A 38 px cabia justo, y bastaba con que la fuente condensada no
-   cargara -y entrara el Arial Narrow de reserva, mas ancho- para que se
-   partiera en dos. A 34 px y con el panel menos acolchado entra con holgura
-   incluso con la letra de reserva. */
-.cb-partida .cbp-titulo h2{color:#fff;font-size:35px;line-height:1.15;
-  white-space:nowrap;text-transform:uppercase}
-/* La raya entre el nombre y el titular es la pieza de los RIELES tumbada:
-   las mismas dos barras que bajan en diagonal por el canto izquierdo de las
-   laminas de contenido -rieles() en generar.py-, con su mismo sesgo y sus
-   mismos dos azules, pero en horizontal y mas finas -alli son 9 y 5 px, una
-   barra vertical que se puede permitir ese grosor; tumbada como raya se veia
-   demasiado gruesa, el usuario lo pidio mas fina-.
-   El angulo sale de --sesgo-riel, la misma variable que usan las diagonales:
-   si alli se cambia, esta raya se inclina con ellas y no se quedan a dos
-   angulos distintos. Los colores si se repiten aqui -rieles() los lleva en
-   linea, en el HTML-; al tocarlos alli, tocarlos tambien aqui. */
-.cb-partida .cbp-raya{display:flex;align-items:center;gap:14px;margin:26px 0 24px}
-.cb-partida .cbp-raya::before,
-.cb-partida .cbp-raya::after{content:'';transform:skewX(var(--sesgo-riel,-9deg))}
-.cb-partida .cbp-raya::before{width:92px;height:4px;background:#4966AD}
-.cb-partida .cbp-raya::after{width:38px;height:3px;background:rgba(124,139,186,.5)}
-/* El titular va en la MISMA letra que los titulos de las laminas -Barlow
-   Condensed, la de "Nuestra empresa"- y no en la Barlow de texto con que
-   salio: lo pidio el usuario, y asi las dos lineas de la portada hablan el
-   mismo idioma tipografico. En 600 y no en el 700 de los h2: es la frase que
-   acompana al nombre, no un segundo titulo que compita con el. El 600 no es
-   capricho: de la Condensada solo van embebidos el 600 y el 700 (ver
-   fuentes.css), y pedir un 500 obligaria al navegador a fabricarlo. */
-.cb-partida .cbp-titulo p{color:#fff;font-size:24.5px;line-height:1.32;
-  font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;
-  text-transform:uppercase}
+  box-sizing:border-box;padding:0 52px;
+  display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:center;text-align:left}
+/* El h2 de la cubierta ya no es la razon social -esa se fue al epigrafe-
+   sino el TITULAR, y se resuelve como el de las laminas: mismo cuerpo
+   relativo, mismo aire bajo el epigrafe (12 px, igual que .banda-txt h2) y
+   sin caja alta, que en "Nuestra empresa" tampoco la hay.
+   38 px y no los 54 de las bandas: alli el titulo cruza una lamina entera y
+   aqui vive en una columna de 588 px que, quitados los 52 de padding a cada
+   lado, deja 484. El titular trae su propio <br> -contenido.py-, asi que la
+   linea larga es "Construyendo la infraestructura": a 54 px medía unos 700
+   px y se partia sola en un sitio feo; a 38 entra en su renglon. */
+.cb-partida .cbp-titulo h2{color:#fff;font-size:38px;line-height:1.1;
+  margin-top:12px}
 /* Solo el logotipo: el sello se fue a la foto, asi que aqui no hay que
    repartir dos piezas y la marca se queda sola en el centro del blanco. */
 .cb-partida .cbp-logo{position:absolute;left:0;bottom:0;width:100%;height:48%;
   background:#fff;display:flex;align-items:center;justify-content:center}
-/* 170 px: el usuario lo pidio mas grande, otra vez. El panel blanco mide
-   48% de 720 -unos 345 px-, asi que a este cuerpo el logotipo sigue
-   teniendo aire por arriba y por abajo y no toca los cantos. */
-.cb-partida .cbp-logo img{height:170px;width:auto}
-/* Los rieles de .cbp-titulo y .cbp-logo -uno para cada caja, ver la nota de
-   lamina_cubierta_partida()- nacen pegados al canto IZQUIERDO de su caja,
-   que es donde cae esta pieza en el resto del brochure -la costura entre la
-   foto y el panel-. El usuario los quiso en el canto DERECHO de la cubierta
-   en su lugar: right y no left, con pointer-events ya heredado de la regla
-   comun -no hace falta repetirlo-.
-   La caja de 80 px solo lleva barras hasta su propio px 29 -el resto es
-   aire, el mismo que a la izquierda deja sitio para el sesgo-, asi que a
-   right:16 la barra mas cercana al canto quedaba a 33 px de el. El usuario
-   la pidio mas cerca, y luego "mucho mas" todavia. A -38 se paso: la barra
-   GRUESA -mas ancha, se nota mas- quedaba cortada por el overflow:hidden
-   de la lamina, 20 px de ella por fuera del canto. A -18, medido igual con
-   getBoundingClientRect, las dos barras quedan enteras y la mas cercana al
-   canto a unos 13 px de el. */
-.cb-partida .cbp-titulo .rieles-panel,
-.cb-partida .cbp-logo .rieles-panel{left:auto;right:-18px}
+/* 205 px. El usuario lo fue pidiendo mas grande -140, 170- y por ultimo la
+   mitad mas, 255; a ese cuerpo lo vio pasado y pidio bajarlo un poco. El panel
+   blanco mide 48% de 720 -unos 345 px-, asi que a 205 le quedan 70 px de aire
+   por arriba y por abajo, y de ancho se separa de los dos rieles que ahora lo
+   enmarcan, que es lo que a 255 se comia. */
+.cb-partida .cbp-logo img{height:205px;width:auto}
+/* Las cuatro cunas bajo el titular: la misma pieza del cierre -.barras-, aqui
+   sobre el navy. Dos ajustes y nada mas:
+   1. la escala. La de serie va de #0C1734 a #4966AD, el tramo OSCURO, que es
+      el que se lee sobre el blanco del cierre; sobre este panel se perderia,
+      asi que se le da el tramo CLARO -los cuatro azules siguientes de la
+      misma escala, ver .barras i:nth-child()-. Es el mismo gesto invertido,
+      igual que ya se invierte la direccion de la fila.
+   2. el sitio. En el cierre cuelgan del fondo de su columna (margin-top:auto)
+      y van sangradas 64 px. Aqui NO: se quedan con el bloque de texto -epigrafe,
+      titular y barras, las tres piezas centradas juntas en el panel-, y al
+      mismo margen que el texto, que es el que manda en toda esta caja. Se
+      probo tambien colgandolas del pie del panel, como en el cierre: alli
+      abajo se acercan tanto a la costura con el blanco que dejan de leerse
+      como el cierre del titular y empiezan a parecer del panel del logotipo.
+   3. la separacion. 52 px y no los 34 con que salieron: las barras miden 52
+      de alto y pesan como una pieza, no como un renglon mas, asi que a 34
+      quedaban metidas debajo del titular. Con 52 respiran y se leen como lo
+      que son, el remate del bloque. Los 12 px que separan el epigrafe del
+      titular no se tocan: esos dos SI son una pareja y tienen que ir juntos. */
+.cb-partida .cbp-titulo .barras{margin:52px 0 0 0}
+.cb-partida .cbp-titulo .barras i:nth-child(1){background:#4966AD}
+.cb-partida .cbp-titulo .barras i:nth-child(2){background:#7C8BBA}
+.cb-partida .cbp-titulo .barras i:nth-child(3){background:#96A3C8}
+.cb-partida .cbp-titulo .barras i:nth-child(4){background:#C3CAD9}
+
+/* --- la misma cubierta, del reves (.cb-inversa) ----------------------
+   El blanco con el logotipo pasa ARRIBA y el navy con el texto ABAJO. No hay
+   HTML propio: son las mismas dos cajas intercambiadas de sitio, asi que
+   cualquier arreglo de la cubierta vale tambien para esta variante y no hay
+   una segunda maqueta que mantener.
+   Las alturas no se tocan -52% el texto, 48% el logotipo-: lo unico que
+   cambia es por que canto se ancla cada caja. */
+.cb-inversa .cbp-titulo{top:auto;bottom:0}
+.cb-inversa .cbp-logo{bottom:auto;top:0}
 /* El sello va SOBRE la foto, al pie y pegado al margen, como en las portadas
    de informe anual que trajo el usuario. Alineado a la izquierda y no
    centrado: la columna de la foto es angosta y centrado se leia como un pie
@@ -512,10 +524,13 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    dos en el AZUL de la casa -el mismo var(--azul) del panel, los rieles y los
    epigrafes-, que es el que ata la portada con el resto de las laminas; el
    azul palido con el que salio primero se leia como un color de fuera.
-   62 px y no los 92 con que se probo: a ese cuerpo el ano competia con el
-   nombre de la empresa en vez de acompanarlo. El <i> son las dos primeras
-   -lo parte sello_brochure()-; el resto hereda el color de la <b>. */
-.cb-partida .cbp-foto .cbp-sello b{font-size:62.5px;line-height:.94;margin:0;
+   Salio a 62 px -y no a los 92 con que se probo, que a ese cuerpo el ano
+   competia con el nombre de la empresa en vez de acompanarlo-, y el usuario
+   lo pidio despues un tercio mas grande: 81. Sigue por debajo de aquellos 92,
+   asi que el ano gana peso sin volver a comerse la portada.
+   El <i> son las dos primeras cifras -lo parte sello_brochure()-; el resto
+   hereda el color de la <b>. */
+.cb-partida .cbp-foto .cbp-sello b{font-size:81px;line-height:.94;margin:0;
   letter-spacing:.01em;color:var(--azul)}
 .cb-partida .cbp-foto .cbp-sello b i{font-style:normal;color:#fff}
 .cb-partida .cbp-foto .cbp-sello span{color:#fff;font-size:15.5px}
@@ -586,16 +601,15 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .qse-foto figure{position:relative;overflow:hidden;margin:0;min-height:0;
   background:var(--navy)}
 .qse-foto img{width:100%;height:100%;min-height:0}
-/* Un velo que entra por el canto izquierdo de cada franja -del lado del
-   texto, no por el medio-: ata la columna de fotos con el panel, en vez de
-   dejar tres rectangulos pegados. Llevaba ademas una linea azul al filo -el
-   usuario tampoco la habia pedido y la quito: "los bordes de cada foto
-   tienen unas rayas azules, yo no pedi eso nunca"-. */
-.qse-foto figure::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(9,17,42,.55) 0%,rgba(9,17,42,.12) 26%,
-             rgba(9,17,42,0) 52%)}
+/* Las tres fotos van LIMPIAS: ni velo ni degradado que las oscurezca. Lo
+   pidio el usuario -"que ninguna foto tenga efecto de degradado que las ponga
+   oscuras"- y por eso no hay aqui ninguna regla que pinte encima; si alguna
+   vez vuelve a hacer falta atar la columna con el panel, era un
+   .qse-foto figure::after en degradado por el canto izquierdo, y antes de eso
+   llevo tambien una linea azul al filo que el usuario ya habia quitado.
+   El rotulo no depende de ese velo: el chip trae su propio fondo. */
 /* El rotulo de cada franja: el chip con el nombre de la obra, abajo a la
-   izquierda, sobre el velo que ya oscurece ese canto. */
+   izquierda. */
 .qse-foto figcaption{position:absolute;z-index:3;left:22px;bottom:18px}
 /* z-index:4 -por encima del riel diagonal, que atraviesa los 720 px del
    panel entero-: sin esto la barra palida pasaba por encima del texto. El
@@ -995,13 +1009,25 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   <div class="cbp-foto"><img src="img/sede_edificio.jpg" data-foto="sede_edificio" alt=""><div class="cbp-sello"><span>BROCHURE CORPORATIVO</span><b><i>20</i>26</b></div></div>
   <div class="cbp-der">
     <div class="cbp-titulo">
-      <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-      <h2>Constructora Vidalsa 27, C.A.</h2>
-      <span class="cbp-raya"></span>
-      <p>Construyendo la infraestructura<br>que mueve el país</p>
+      <div class="epigrafe ">CONSTRUCTORA VIDALSA 27, C.A.</div>
+      <h2>Construyendo la infraestructura<br>que mueve el país</h2>
+      <div class="barras"><i></i><i></i><i></i><i></i></div>
     </div>
     <div class="cbp-logo">
-      <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
+      <img src="img/logo_cuadrado.png" alt="Constructora Vidalsa 27, C.A.">
+    </div>
+  </div>
+</section>
+<div class="rotulo-prueba"><span>CUBIERTA INVERSA · EL BLANCO CON EL LOGOTIPO ARRIBA Y EL NAVY CON EL TEXTO ABAJO</span></div>
+<section class="lamina prueba l-cubierta cb-partida cb-inversa">
+  <div class="cbp-foto"><img src="img/sede_edificio.jpg" data-foto="sede_edificio" alt=""><div class="cbp-sello"><span>BROCHURE CORPORATIVO</span><b><i>20</i>26</b></div></div>
+  <div class="cbp-der">
+    <div class="cbp-titulo">
+      <div class="epigrafe ">CONSTRUCTORA VIDALSA 27, C.A.</div>
+      <h2>Construyendo la infraestructura<br>que mueve el país</h2>
+      <div class="barras"><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="cbp-logo">
       <img src="img/logo_cuadrado.png" alt="Constructora Vidalsa 27, C.A.">
     </div>
   </div>

@@ -396,11 +396,29 @@
 .l-portafolio .pf-col .pie{font-size:12.1px}
 .l-portafolio .pf-col .estado{font-size:10.6px}
 
-/* --- portada, solo en hoja carta ------------------------------------
-   Medio punto menos en el nombre y en el titular. Lo pidio el usuario para
-   ESTA hoja y no para la panoramica: aqui la lamina se dibuja mas chica -1056
-   px de ancho contra 1280- y el mismo cuerpo se veia mas apretado contra el
-   canto del panel. Solo el cuerpo cambia; el nowrap del nombre sigue mandando
-   desde estilos.css. */
-.cb-partida .cbp-titulo h2{font-size:33.5px}
-.cb-partida .cbp-titulo p{font-size:23.5px}
+/* --- cubierta, solo en hoja carta -----------------------------------
+   Aqui la lamina se dibuja mas chica -1056 px de ancho contra 1280-, asi que
+   la columna del texto pasa de 589 a 486 px y hay que rebajar el titular para
+   que su linea larga siga entrando en un renglon: medido, "Construyendo la
+   infraestructura" ocupa 11,6 px de ancho por cada px de cuerpo, o sea 442 px
+   a los 38 de la panoramica y 372 a estos 32. Se probo a 33 -384 px- y entraba,
+   pero dejaba solo 14 px de sobra en un renglon de 398: a 32 sobran 26, la
+   misma holgura en proporcion que tiene la panoramica, y asi el titular sigue
+   en DOS renglones -"Construyendo la infraestructura" / "que mueve el pais",
+   como lo quiere el usuario- aunque la Barlow Condensed no cargue y entre la
+   Arial Narrow de reserva, que es mas ancha.
+   El padding baja de 52 a 44 px por lo mismo -es el mismo margen de la
+   panoramica a esta escala-, y de paso deja los 14 px de aire que el titular
+   necesitaba para no rozar el canto.
+   El epigrafe no se toca: mide 380 px en las dos hojas y cabe en las dos.
+   Antes habia aqui una tercera regla, .cbp-titulo p, del tiempo en que el
+   titular era un <p>; se fue con el. */
+.cb-partida .cbp-titulo{padding:0 44px}
+.cb-partida .cbp-titulo h2{font-size:32px}
+/* El epigrafe tambien: a los 17 px de la panoramica la razon social medía 465
+   px y aqui solo hay 398 de renglon, asi que se partia en dos. Baja a 15,5 y
+   con el espaciado de .2em en vez de .32 -el mismo recurso que ya usa
+   "SERVICIOS Y ALQUILER" en el portafolio de esta hoja-: asi mide 374 y sigue
+   leyendose espaciada y grande. */
+.cb-partida .cbp-titulo .epigrafe{font-size:15.5px;letter-spacing:.2em}
+
