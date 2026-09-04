@@ -12,6 +12,13 @@ EMPRESA = dict(
     elaborado='Elaborado por Fernando Sánchez  ·  Ingeniero Industrial',
 )
 
+#: La direccion de Caracas se escribe UNA vez: la usan el pie de contacto del
+#: cierre -aqui debajo- y la tarjeta de Caracas de la lamina de oficinas. Sin
+#: la ciudad al final, que cada sitio la pone a su manera: el pie la remata
+#: con " — Caracas." y en la tarjeta la ciudad ya va en el chip de la foto.
+DIR_CARACAS = ('Calle París entre New York y Caroní, Edif.&nbsp;#177, '
+               'Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda')
+
 CONTACTO = [
     # SIN <br>: los saltos los decide el ANCHO de la columna, que no es el mismo
     # en las dos hojas. Con los saltos escritos a mano, la hoja que no fuera la
@@ -25,9 +32,50 @@ CONTACTO = [
     # Siguen siendo espacios normales al leerlos.
     # El edificio se nombraba "Edf. Pedreañera #177"; el usuario quito el nombre
     # propio y queda el numeral con el numero.
-    ('Sede corporativa', 'Calle París entre New York y Caroní, Edif.&nbsp;#177, '
-                         'Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda — Caracas.'),
+    ('Sede corporativa', DIR_CARACAS + ' — Caracas.'),
     ('Sede operativa',   'Lechería, estado Anzoátegui.'),
+]
+
+#: LAS OFICINAS (lamina "Nuestras oficinas"). Una foto por ciudad; el nombre de
+#: la foto es el que usa el editor, asi que el usuario las cambia con doble
+#: clic sin tocar nada de aqui. La de El Tigre ya es la de verdad -el patio con
+#: la gente y la flota-; las otras tres siguen siendo un marcador de posicion,
+#: a la espera de las suyas.
+#:
+#: Las direcciones de los dos centros operativos salen del propio sistema de la
+#: empresa (tabla frentes_trabajo, frentes "PATIO I EL TIGRE" y "PATIO
+#: MATURIN", los dos clasificados alli como RESGUARDO). Los puntos de
+#: referencia -la Finca La Valentina en El Tigre, la Urb. Sabana Club en
+#: Maturin- los dio el usuario, que es como se dan las direcciones alli. Van
+#: escritos como "adyacente a" y no como "al lado de": lo pidio el 2026-09-04
+#: para que la direccion se lea igual de formal que las otras dos.
+#:
+#: La sede de Oriente estuvo un tiempo puesta en BARCELONA, hasta que el
+#: usuario aclaro que esta en LECHERIA -que es ademas lo que decia ya el pie de
+#: contacto del cierre (CONTACTO), asi que las dos partes del brochure vuelven
+#: a decir lo mismo-. Su direccion la dio el, no el sistema: alli ese frente
+#: sigue "POR DEFINIR".
+#:
+#: Con 'dir' vacio el bloque sale sin esa linea, no rota.
+#:
+#: 'tipo' es el rotulo de la sede que va detras del nombre, dentro de la
+#: pildora gris. Se escribe TAL CUAL sale impreso -mayuscula en cada palabra,
+#: "Sede Administrativa Oriente", que es como lo pidio el usuario- y ya no
+#: pasa por epigrafe() ni por espaciada(), que son las piezas que lo ponian entero en
+#: versalita ("SEDE CORPORATIVA"), que es lo que no queria.
+OFICINAS = [
+    dict(foto='oficina_caracas',   ciudad='Caracas', tipo='Sede Corporativa',
+         dir=DIR_CARACAS + '.'),
+    dict(foto='oficina_lecheria',  ciudad='Lechería', tipo='Sede Administrativa Oriente',
+         dir='Avenida Intercomunal, entre el Banco Venezolano de Crédito y el '
+             'Centro Médico Meditotal, planta baja del Spa Hotel, '
+             'estado Anzoátegui.'),
+    dict(foto='oficina_eltigre',   ciudad='El Tigre', tipo='Centro Operativo',
+         dir='Patio de máquinas. Avenida La Bomba, adyacente a la Finca '
+             'La Valentina, municipio Simón Rodríguez, estado Anzoátegui.'),
+    dict(foto='oficina_maturin',   ciudad='Maturín', tipo='Centro Operativo',
+         dir='Patio de máquinas. Vía El Rincón de Monagas, adyacente a la '
+             'Urb. Sabana Club, municipio Maturín, estado Monagas.'),
 ]
 
 # Telefono y correo van APARTE de CONTACTO, no mezclados en la misma lista:
@@ -78,25 +126,30 @@ VALORES = dict(
     ],
 )
 
+# Los cuatro titulos van en MAYUSCULA INICIAL palabra por palabra -lo pidio
+# el usuario el 2026-09-04: los ve mas elegantes asi-. Las palabras de
+# enlace -"y", "de"- se quedan en minuscula, que es como se titula en
+# castellano; en versalita no se notarian, pero estos titulos salen tal cual
+# se escriben aqui.
 SERVICIOS = [
-    ('01', 'Construcción de ductos petroleros', [
+    ('01', 'Construcción de Ductos Petroleros', [
         'Soldadura de 3/4″ a 42″ calificada',
         'Tubería enterrada y superficial',
         'Revestimiento y protección de tuberías',
         'Ingeniería, topografía y excavación',
         'Prueba hidrostática y flushing']),
-    ('02', 'Servicios de alquiler de equipos', [
+    ('02', 'Servicios de Alquiler de Equipos', [
         'Maquinaria pesada y liviana',
         'Izamiento e instalación de equipos',
         'Chuto/batea y lowboy con escoltas',
         'Vacuum y brazo hidráulico',
         'Cortafuegos y estaciones de válvulas']),
-    ('03', 'Ambiente y saneamiento', [
+    ('03', 'Ambiente y Saneamiento', [
         'Saneamiento de áreas por afectaciones con derrame de crudo',
         'Trasegado con vacuum',
         'Tratamiento y disposición de suelo',
         'Saneamiento de lagunas a través del dragado de sólidos']),
-    ('04', 'Suministro y procura', [
+    ('04', 'Suministro y Procura', [
         'Válvulas bridadas de compuerta y globo',
         'Bridas, codos, te y reducciones',
         'Weldolets, niples y tapones',
@@ -162,9 +215,9 @@ PROYECTOS = [
    cliente='Proyectos Mayores FPO'),
 
  dict(id='oleo30x14', area='construccion', anio='2025 – 2026', estado='Culminado',
-   lista='Oleoducto 30″ × 14 km — Planta FF–Km 0',
+   lista='Oleoducto 30″ × 14 km — Planta FF–Trampa de envío',
    titulo='Oleoducto 30″ × 14 km',
-   sub='Planta FF – Km 0 · PETROLERA SINOVENSA',
+   sub='Planta FF – Trampa de envío · PETROLERA SINOVENSA',
    texto='Construcción del Oleoducto de 30″ × 14 km desde la Estación de Flujo (FF) hasta el Km 0, PETROLERA '
          'SINOVENSA, necesarios para incrementar la producción desde 105 MBPD hasta 330 MBPD de crudo extrapesado. '
          'Así como la instalación y puesta en marcha del sistema de protección catódica.',

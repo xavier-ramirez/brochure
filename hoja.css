@@ -1,0 +1,112 @@
+/* ============================================================
+   Las franjas de la hoja impresa: encabezado y pie.
+
+   Lo comparten las DOS hojas que se imprimen -carta.css (apaisada) y
+   vertical.css (de pie)-, porque en las dos es la misma pieza: el diseno de
+   siempre metido en .hoja-diseno y, arriba y abajo, dos franjas blancas con
+   los rieles, la raya y el logo o el numero. Quien las arma en el marcado es
+   hoja_impresa() en generar.py.
+
+   Lo que NO esta aqui es el tamano: cada hoja declara en su propio :root
+   --ancho-lamina, --alto-lamina, --alto-diseno y el reparto --enc/--pie. Este
+   archivo solo coloca, y por eso funciona igual en las dos.
+
+   Va SIEMPRE antes que la hoja que lo usa, para que aquella pueda corregir lo
+   que su formato pida. Hoy solo lo hace la de pie, y solo en la cubierta: alli
+   lleva pie pero no encabezado (ver .l-cubierta en vertical.css).
+   ============================================================ */
+
+/* ------------------------------------------------- las tres franjas --- */
+/* El diseno entero vive aqui dentro. Al ir en absoluto es la caja contra
+   la que se colocan todas las piezas de la lamina, asi que dentro de el
+   los top y los height de estilos.css siguen valiendo tal cual, como si
+   la hoja fuera la panoramica. El overflow recorta lo que asoma -rieles,
+   fotos- para que no invada las franjas de arriba y de abajo. */
+.hoja-diseno{position:absolute;left:0;top:var(--enc);
+  width:var(--ancho-lamina);height:var(--alto-diseno);overflow:hidden}
+
+/* Las dos franjas son la MISMA fila: los tres rieles diagonales de la portada
+   en pequeno, una raya que cruza la hoja y algo al final -arriba el logo,
+   abajo el numero-. La raya es la que los ata: sale del riel y muere en la
+   pieza del otro extremo. Asi la hoja queda cerrada por los dos cantos con el
+   mismo gesto, y el ojo entra por el logo y sale por el numero. */
+.enc-hoja,.pie-hoja{position:absolute;left:var(--lado);right:var(--lado);
+  display:flex;align-items:center;gap:14px;z-index:5}
+/* El encabezado va CENTRADO en su franja pero empujado hacia abajo: la hoja se
+   encuaderna por el canto de arriba -el resorte- y con los 9,5 px de antes el
+   logo quedaba dentro de la zona que muerde la espiral. El padding baja la
+   fila entera y deja ~19 px (medio centimetro) entre el filo del papel y el
+   logo, y ~4 px entre el logo y donde empieza el diseno.
+   El aire NO sale del pie -ver el reparto 62/34 de --enc/--pie, que ya iba
+   justo por los dos cantos- sino del propio logo, que se estrecha a 216 px
+   (ver .enc-hoja img). Si se vuelve a agrandar, este aire se pierde. */
+.enc-hoja{top:0;height:var(--enc);padding-top:15px}
+.pie-hoja{bottom:0;height:var(--pie)}
+
+/* Los rieles no van en absoluto como los de la banda: aqui son una pieza mas
+   de la fila, asi que se les devuelve el sitio en el flujo y se les da el
+   tamano; los tres <i> de dentro siguen en absoluto. El ancho es el que ocupan
+   las tres barras: 40 + 4 px. Los del encabezado son los mismos al doble de
+   tamano: se agrandan con zoom y no con otro tamano porque las barras llevan
+   sus anchos y sus huecos escritos en el marcado -los pone rieles_trio()-, y
+   asi crecen las tres a la vez sin tocarlos. */
+/* 36 px = donde acaba la ultima barra del trio APRETADO que pone generar.py
+   para esta hoja (32 + 4). Es la suma, no un numero elegido: si se cambian
+   aquellas separaciones, este ancho cambia con ellas o la caja deja aire de
+   sobra por la derecha y la raya arranca separada de las barras. */
+.hoja-rieles{position:relative;flex:none;width:36px;height:15px}
+.enc-hoja .hoja-rieles{zoom:2}
+/* La raya crece hasta topar con la pieza que cierra la fila, asi que llega
+   justo hasta donde empieza el logo -o el numero, abajo-. La de arriba va un
+   punto mas gruesa que la de abajo: el encabezado abre la hoja y el pie solo
+   la cierra. */
+.hoja-raya{flex:1;height:1.5px;background:rgba(18,33,73,.22)}
+.enc-hoja .hoja-raya{height:2.5px}
+
+/* el logo mide 1184 x 211, asi que estos 240 px de ancho son 43 de alto:
+   dentro de la franja de 62 el aire ya no se reparte a partes iguales: la fila
+   va empujada hacia abajo para dejarle sitio al resorte (ver .enc-hoja). Se
+   estrecho desde 300 -y de 240 a 216 por lo del resorte- para que el
+   encabezado Y el pie tuvieran aire a la vez, que con el logo grande era
+   imposible (ver --enc/--pie). */
+/* display:block no es cosmetico: al imprimir, Chrome deja fuera el logo si
+   entra como imagen en linea dentro del flex. Con esto sale en el PDF. */
+.enc-hoja img{width:216px;flex:none;display:block}
+/* Tres laminas -cubierta, portada y cierre- no quieren el encabezado completo,
+   y por el mismo motivo: las tres ensenan ya el logo a tamano grande y arrancan
+   con sus propios rieles diagonales en la esquina, asi que repetir las dos
+   cosas arriba las abarata. En ellas la franja se queda SOLO con la raya -de
+   ahi el :not-, que cruza la hoja de lado a lado y mantiene el gesto de las
+   otras quince. */
+:is(.l-portada,.l-cierre) .enc-hoja>*:not(.hoja-raya){display:none}
+/* La CUBIERTA de la hoja carta APAISADA no lleva ni encabezado ni pie -no es
+   una pagina de la secuencia, por eso tampoco se numera- y no los deja en
+   blanco de margen: el usuario los quiso fuera del todo, "que todo cubra
+   todo". Alli construir() no la envuelve en hoja_impresa() -no hay .enc-hoja
+   ni .pie-hoja que ocultar-, y esta linea le da un --alto-diseno propio, igual
+   al --alto-lamina entero (816, no los 720 del resto): todo lo que dentro de
+   la cubierta mide var(--alto-diseno) -.cbp-foto, .cbp-der, y con ellos sus
+   hijos en porcentaje- crece con el, y la cubierta llega a sangre por arriba y
+   por abajo igual que ya llegaba por los lados.
+   La hoja carta DE PIE hace otra cosa -alli el usuario si quiso pie- y por eso
+   vertical.css pisa esta linea; ver .l-cubierta alli. */
+.l-cubierta{--alto-diseno:var(--alto-lamina)}
+
+/* El numero va centrado en su franja, asi que queda a la misma distancia del
+   canto del papel que del borde de la maqueta. Para subirlo hay que ensanchar
+   la franja -y estrechar el encabezado-, no moverlo dentro: pegado arriba
+   tocaria el azul de las laminas que llegan hasta abajo, y pegado abajo se
+   sale al filo de la hoja.
+   Los 2 px de subida si son un ajuste OPTICO: la caja del numero reserva abajo
+   el hueco de las letras con cola -la g, la p-, que aqui no hay, asi que
+   centrada de caja el "08" se ve caido respecto a la raya. */
+.pie-hoja b{font-family:"Barlow Condensed","Arial Narrow",sans-serif;
+  font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--navy);
+  flex:none;line-height:1;position:relative;bottom:2px}
+
+/* La seccion que va corriendo por el pie de cada hoja: que hoja suelta se
+   identifique sin tener que buscar el titulo grande. En caps y espaciada,
+   como los epigrafes de las laminas, pero achicada a la franja de 34 px del
+   pie -a 13.5px, su tamano de siempre, se comia media franja-. */
+.hoja-etiqueta{font-size:9.5px;font-weight:600;letter-spacing:.18em;
+  color:var(--navy-medio);flex:none;white-space:nowrap;text-transform:uppercase}

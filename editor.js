@@ -127,6 +127,7 @@
     ? '<b>Editor de fotos &middot; hoja carta</b>' +
       /* No genera nada: vuelve a la panoramica, que es la hoja que se edita. */
       '<a href="index.html">Ver la panoramica</a>' +
+      '<a href="vertical.html" target="_blank" rel="noopener">Ver en vertical</a>' +
       '<button type="button" id="ed-pptx">Descargar PowerPoint</button>' +
       '<button type="button" id="ed-pdf" class="ed-primario">Descargar PDF</button>' +
       '<span class="ed-estado" id="ed-estado"></span>'
@@ -136,6 +137,11 @@
          poder abrirlo en otra pestana y dejar esta como esta. */
       '<a href="carta.html" target="_blank" rel="noopener">' +
       'Ver en hoja carta</a>' +
+      /* La hoja de pie: por ahora solo lleva las fichas de proyecto (ver
+         vertical.css). Como la de carta, va como enlace en otra pestana
+         para no perder de vista esta. */
+      '<a href="vertical.html" target="_blank" rel="noopener">' +
+      'Ver en vertical</a>' +
       '<button type="button" id="ed-pptx" class="ed-derecha">Descargar PowerPoint</button>' +
       '<button type="button" id="ed-pdf" class="ed-primario">Descargar PDF</button>' +
       '<span class="ed-estado" id="ed-estado"></span>';

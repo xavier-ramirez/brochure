@@ -119,7 +119,7 @@ def main():
     # Comparar contra un PDF viejo es peor que no comparar: da por bueno algo
     # que ya no existe. Si alguna fuente es mas nueva que un PDF, se para.
     fuentes = ['generar.py', 'contenido.py', 'estilos.css', 'carta.css',
-               'encuadre.css', 'fuentes.css']
+               'hoja.css', 'encuadre.css', 'fuentes.css']
     ultima = max(os.path.getmtime(os.path.join(BASE, f)) for f in fuentes
                  if os.path.exists(os.path.join(BASE, f)))
     viejos = [os.path.basename(r) for r in (PANO, CARTA)

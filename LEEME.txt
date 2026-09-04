@@ -1,7 +1,8 @@
 BROCHURE CONSTRUCTORA VIDALSA 27
 ================================
 
-Es el mismo diseno de la pagina, cortado en 19 laminas panoramicas.
+Es el mismo diseno de la pagina, cortado en 20 laminas panoramicas
+(la cubierta, 18 numeradas y el cierre).
 Cada lamina mide 1280 x 720 px = 13,333 x 7,5 pulgadas: el mismo tamano de una
 diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
@@ -100,7 +101,7 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
 QUE HAY EN LA CARPETA
 ---------------------
-   index.html        las 19 laminas
+   index.html        las 20 laminas
    estilos.css       el diseno
    contenido.py      todos los textos
    generar.py        arma index.html y carta.html con contenido.py + estilos.css

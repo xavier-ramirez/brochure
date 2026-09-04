@@ -1,6 +1,6 @@
 # Presentación — Constructora Vidalsa 27, C.A.
 
-Brochure corporativo en HTML, maquetado como **18 láminas panorámicas de
+Brochure corporativo en HTML, maquetado como **20 láminas panorámicas de
 1280 × 720 px (13,333 × 7,5 pulgadas)**: el mismo tamaño de una diapositiva de
 PowerPoint. Cada lámina sale como **una página del PDF**.
 
@@ -37,8 +37,8 @@ El botón **Descargar PDF** de la barra genera y descarga el archivo.
 
 | Archivo | Para qué |
 | --- | --- |
-| `index.html` | las 19 láminas panorámicas 16:9 (generado) |
-| `carta.html` | las mismas 19 en hoja carta apaisada, con encabezado y pie (generado) |
+| `index.html` | las 20 láminas panorámicas 16:9 (generado) |
+| `carta.html` | las mismas 20 en hoja carta apaisada, con encabezado y pie (generado) |
 | `estilos.css` | el diseño |
 | `carta.css` | lo poco que cambia en la hoja carta: las franjas y el ancho |
 | `contenido.py` | todos los textos |

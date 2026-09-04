@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Exporta el brochure a PDF, una lamina por pagina.
 
-    python exportar_pdf.py          -> Brochure_Vidalsa27.pdf
-                                       panoramico 16:9, 13,333 x 7,5 pulgadas,
-                                       igual que una diapositiva de PowerPoint
-
-    python exportar_pdf.py carta    -> Brochure_Vidalsa27_Carta.pdf
-                                       hoja carta apaisada, 11 x 8,5 pulgadas,
-                                       con encabezado y pie de pagina
+    python exportar_pdf.py               -> los dos
+    python exportar_pdf.py panoramico    -> Brochure_Vidalsa27.pdf
+                                            panoramico 16:9, 13,333 x 7,5 pulgadas,
+                                            igual que una diapositiva de PowerPoint
+    python exportar_pdf.py carta         -> Brochure_Vidalsa27_Carta.pdf
+                                            hoja carta apaisada, 11 x 8,5 pulgadas,
+                                            con encabezado y pie de pagina
 
 Las dos salen de las mismas laminas y con la misma letra, del mismo tamano en
 milimetros: la de carta solo lee carta.html en vez de index.html, y quien la
@@ -56,14 +56,20 @@ def generar(carta=False):
             os.remove(salida)
         except PermissionError:
             raise RuntimeError('El PDF esta abierto en otro programa. Cierralo y vuelve a intentar.')
-    subprocess.run([
-        nav, '--headless=new', '--disable-gpu',
-        '--virtual-time-budget=25000',
-        '--no-pdf-header-footer',
-        '--print-to-pdf-no-header',
-        '--print-to-pdf=' + salida.replace(chr(92), '/'),
-        'file:///' + D + '/' + pagina,
-    ], capture_output=True, timeout=300, **SIN_VENTANA)
+    try:
+        subprocess.run([
+            nav, '--headless=new', '--disable-gpu',
+            '--virtual-time-budget=25000',
+            '--no-pdf-header-footer',
+            '--print-to-pdf-no-header',
+            '--print-to-pdf=' + salida.replace(chr(92), '/'),
+            'file:///' + D + '/' + pagina,
+        ], capture_output=True, timeout=300, **SIN_VENTANA)
+    except subprocess.TimeoutExpired:
+        # Chrome colgado: sin esto salia el traceback pelado de subprocess, que
+        # no dice que hacer. Es el mismo aviso que las demas averias de aqui.
+        raise RuntimeError('Chrome tardo mas de 5 minutos y se cancelo. '
+                           'Cierra las ventanas de Chrome y vuelve a intentar.')
     if not os.path.exists(salida):
         raise RuntimeError('No se genero el PDF. Prueba con Ctrl+P -> Guardar como PDF, '
                            'margenes "Ninguno" y "Graficos de fondo" activado.')

@@ -93,18 +93,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   display:flex;align-items:center;gap:16px;
 }
 .epigrafe::before{content:"";width:38px;height:3px;background:currentColor;flex:none;transform:skewX(-22deg)}
-.epigrafe.claro{color:#C3CCE2}
-/* Todas las laminas llevan el epigrafe en blanco: el usuario lo fue pidiendo
-   una por una -Quienes somos, Nuestra empresa, Valores, Portafolio,
-   Clientes y por ultimo Flota-, asi que ya no queda ninguna en el azul
-   palido de .epigrafe.claro. La CUBIERTA se sumo despues, cuando su texto
-   paso a resolverse con este mismo par: tambien va sobre navy. */
-.l-nosotros .banda-txt .epigrafe,
-.l-empresa .qse-cab .epigrafe,
-.l-valores .va-cab .epigrafe,
-.l-portafolio .banda-txt .epigrafe,
-.l-clientes .banda-txt .epigrafe,
-.l-flota .fl-cab .epigrafe,
+/* BLANCO, no el azul palido con el que nacio: el usuario lo fue pidiendo
+   lamina por lamina -Quienes somos, Nuestra empresa, Valores, Portafolio,
+   Clientes, Flota, la cubierta y por ultimo Nuestras oficinas- hasta que no
+   quedo ninguna en palido. Estuvo un tiempo como una lista de siete
+   selectores que lo iban corrigiendo uno a uno; ya no hace falta: el blanco
+   es el color de .claro y punto. La otra cara de .claro no cambia: sigue
+   siendo "el epigrafe va sobre navy", y de ahi que el suyo tambien sea
+   blanco. */
+.epigrafe.claro{color:#fff}
+/* La CUBIERTA es el unico epigrafe blanco que NO pasa por .claro -su texto se
+   resuelve con otro par-, asi que necesita decirlo por su cuenta. Sin esta
+   linea sale en el navy de .epigrafe, invisible sobre su propio fondo. */
 .cb-partida .cbp-titulo .epigrafe{color:#fff}
 .epigrafe.suave{color:#fff;letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
@@ -214,6 +214,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Todo lo que va encima de la foto (velo, titulo, fecha, chips) lleva
    pointer-events:none, si no tapa la imagen y el editor no la deja
    arrastrar ni cambiar. */
+/* Donde empieza y cuanto mide el panel de cada lamina. Estaba escrito en el
+   style= de cada <div class="panel"> en generar.py, y de ahi no habia forma de
+   corregirlo para otra hoja: un estilo en linea le gana a cualquier regla y las
+   hojas impresas -carta apaisada y carta de pie- no podian recolocarlo sin
+   recurrir a !important. Aqui son cuatro lineas que cualquiera de las tres
+   hojas puede pisar. Los valores son los de siempre, no se toco ninguno. */
+.l-nosotros  .panel{top:470px;height:250px}
+.l-servicios .panel{top:160px;height:281px}
+.l-flota     .panel{top:0;height:546px}
+.l-clientes  .panel{top:300px;height:420px}
+.l-cubierta  .panel{top:470px;height:250px}
+
 .banda{position:absolute;left:0;top:0;width:var(--ancho-lamina);overflow:hidden;background:var(--navy)}
 .banda>img{position:absolute;inset:0;width:100%;height:100%}
 /* el velo arranca abajo para no tapar la parte util de la foto; el titulo
@@ -238,7 +250,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    se sostenga sobre la foto: este chip no anuncia nada del proyecto, solo
    dice donde esta tomada la imagen, y en navy pesaba como si fuera un dato
    mas de la lamina. */
-.banda-lugar .chip,.qse-foto figcaption .chip{background:rgba(95,105,128,.92)}
+.banda-lugar .chip,.qse-foto figcaption .chip,
+.l-oficinas figcaption .chip{background:rgba(95,105,128,.92)}
 .banda-fecha span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;
   color:#fff}
 .banda-fecha b{display:block;margin-top:3px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
@@ -283,8 +296,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   /* Fondo del bloque. Las barras van inclinadas, asi que en la esquina de
      abajo a la derecha queda una cuna donde no llega ninguna; con este gris
      esa cuna es parte del bloque y no un hueco blanco. NO se tapa metiendo
-     mas barras: si se salen del contenedor, al imprimir Chrome encoge las 18
-     laminas para que quepan. */
+     mas barras: si se salen del contenedor, al imprimir Chrome encoge TODAS
+     las laminas para que quepan. */
   background:#F1F3F9}
 .cb-trama i{position:absolute;top:-12%;height:124%;transform:skewX(-22deg)}
 
@@ -429,9 +442,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cb-partida .cbp-foto img{position:absolute;inset:0;width:100%;height:100%}
 .cb-partida .cbp-der{position:absolute;left:calc(var(--ancho-lamina) * .54);top:0;
   width:calc(var(--ancho-lamina) * .46);height:var(--alto-diseno);background:var(--navy)}
-/* Arriba el nombre, centrado; abajo el logotipo sobre blanco. El corte al
-   52% deja el nombre en el aire que necesita y al logotipo una caja casi
-   cuadrada, que es como mejor se lee la marca cuadrada. */
+/* Arriba el logotipo sobre blanco; abajo el nombre sobre el navy -el orden
+   con que se quedo el usuario el 2026-09-04-. El corte al 52% deja el nombre
+   en el aire que necesita y al logotipo una caja casi cuadrada, que es como
+   mejor se lee la marca cuadrada. Las alturas no dependen del orden: lo unico
+   que dice cual va arriba es el canto por el que se ancla cada caja -bottom
+   el texto, top el logotipo-; invertir esos dos da la vuelta a la cubierta. */
 /* Alineado a la IZQUIERDA -lo pidio el usuario-, que es ademas como se
    colocan el epigrafe y el titulo en todas las laminas de contenido. El
    padding sube de 40 a 52 px por el lado que ahora manda: centrado los 40
@@ -443,7 +459,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    de .32em la linea mide 465 px medidos, y el hueco util de la columna es de
    485; a 18 ya no cabria en un renglon. */
 .cb-partida .cbp-titulo .epigrafe{font-size:17px}
-.cb-partida .cbp-titulo{position:absolute;left:0;top:0;width:100%;height:52%;
+.cb-partida .cbp-titulo{position:absolute;left:0;bottom:0;width:100%;height:52%;
   box-sizing:border-box;padding:0 52px;
   display:flex;flex-direction:column;align-items:flex-start;
   justify-content:center;text-align:left}
@@ -460,7 +476,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   margin-top:12px}
 /* Solo el logotipo: el sello se fue a la foto, asi que aqui no hay que
    repartir dos piezas y la marca se queda sola en el centro del blanco. */
-.cb-partida .cbp-logo{position:absolute;left:0;bottom:0;width:100%;height:48%;
+.cb-partida .cbp-logo{position:absolute;left:0;top:0;width:100%;height:48%;
   background:#fff;display:flex;align-items:center;justify-content:center}
 /* 205 px. El usuario lo fue pidiendo mas grande -140, 170- y por ultimo la
    mitad mas, 255; a ese cuerpo lo vio pasado y pidio bajarlo un poco. El panel
@@ -493,15 +509,6 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cb-partida .cbp-titulo .barras i:nth-child(3){background:#96A3C8}
 .cb-partida .cbp-titulo .barras i:nth-child(4){background:#C3CAD9}
 
-/* --- la misma cubierta, del reves (.cb-inversa) ----------------------
-   El blanco con el logotipo pasa ARRIBA y el navy con el texto ABAJO. No hay
-   HTML propio: son las mismas dos cajas intercambiadas de sitio, asi que
-   cualquier arreglo de la cubierta vale tambien para esta variante y no hay
-   una segunda maqueta que mantener.
-   Las alturas no se tocan -52% el texto, 48% el logotipo-: lo unico que
-   cambia es por que canto se ancla cada caja. */
-.cb-inversa .cbp-titulo{top:auto;bottom:0}
-.cb-inversa .cbp-logo{bottom:auto;top:0}
 /* El sello va SOBRE la foto, al pie y pegado al margen, como en las portadas
    de informe anual que trajo el usuario. Alineado a la izquierda y no
    centrado: la columna de la foto es angosta y centrado se leia como un pie
@@ -588,7 +595,34 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    lamina-. Va en position:absolute, asi que el grid de arriba no lo cuenta
    como una franja mas -las piezas absolutas no entran en el reparto del
    grid- y no descuadra las tres fotos. */
-.qse-foto .rieles-banda{left:auto;right:16px}
+/* Uno por franja y pegado al canto DERECHO de la lamina.
+   La caja se ESTRECHA a 34 px -la medida de .rieles-derecha- en vez de sacarla
+   fuera con un right negativo, que es como estuvo primero (-46 y luego -66).
+   Aquello se veia igual pero rompia el PDF: con la caja asomando por el canto,
+   Chrome daba la pagina por mas ancha de lo que es y ENCOGIA el documento
+   entero un 1%, dejando una tira blanca en el canto derecho y en el de abajo
+   de TODAS las hojas, en las dos versiones. Con la caja dentro y estrecha, las
+   barras caen donde las quiere el usuario y el PDF vuelve a llenar el papel.
+   Medido: 9 px de blanco a 80 ppp antes, 0 despues. No volver a un right
+   negativo aqui.
+   Para arrimarlas mas al canto se estrecha la caja y se corre la barra fina
+   DENTRO de ella -nunca fuera-: con 20 px la gruesa queda a 11 px del filo y
+   la fina justo en el filo. El sesgo si puede asomar; eso no rompe nada -lo
+   recorta la franja y Chrome no lo cuenta-, lo que no puede salirse es la
+   caja. */
+.qse-foto figure .rieles-banda{left:auto;right:0;width:20px}
+/* !important porque rieles() escribe el left en el propio atributo style:
+   sin el, las barras se quedan donde las puso el HTML, se salen de la caja de
+   20 y vuelven a encoger el PDF -medido: 4 px de blanco-. */
+.qse-foto figure .rieles-banda i:nth-child(1){left:4px!important}
+.qse-foto figure .rieles-banda i:nth-child(2){left:15px!important}
+/* Lo que de verdad metia las rayas dentro de la foto no era su sitio sino el
+   SESGO: a -9 grados, una barra de 418 px de alto barre 33 px a cada lado, y
+   ese barrido es el que entraba en la imagen. Aqui bajan a -4, que sobre una
+   franja apaisada sigue leyendose como diagonal pero solo se mueve 15 px. El
+   resto del brochure se queda en -9: esta es la unica lamina donde las rayas
+   cruzan una foto por el canto. */
+.qse-foto figure .rieles-banda i{--sesgo-riel:-4deg}
 /* Cada franja va en su <figure> para poder ponerle encima el velo y, cuando
    el usuario mande las fotos de las oficinas, su rotulo de ciudad. */
 .qse-foto figure{position:relative;overflow:hidden;margin:0;min-height:0;
@@ -601,9 +635,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    .qse-foto figure::after en degradado por el canto izquierdo, y antes de eso
    llevo tambien una linea azul al filo que el usuario ya habia quitado.
    El rotulo no depende de ese velo: el chip trae su propio fondo. */
-/* El rotulo de cada franja: el chip con el nombre de la obra, abajo a la
-   izquierda. */
-.qse-foto figcaption{position:absolute;z-index:3;left:22px;bottom:18px}
+/* El rotulo de cada franja: el chip con el nombre de la obra, ARRIBA y pegado
+   a la ESQUINA -lo pidio el usuario asi, como la insignia de area que llevan
+   las fotos grandes de las tarjetas de proyecto (.tarjeta .hero .marca)-.
+   Estuvo abajo a la izquierda, y despues arriba con 22 px de sangria, hasta el
+   2026-09-04.
+   El -14 no lo saca de la foto: el chip es un paralelogramo y su punta
+   izquierda sobresale por el canto, donde la corta el overflow:hidden de la
+   franja. Asi el chip toma la forma del borde -recto contra la foto, sesgado
+   solo por el lado de dentro- en vez de dejar el triangulo de hueco que se ve
+   si se apoya el paralelogramo entero en la esquina. Es el mismo gesto que
+   .tira figure:first-child, que tambien endereza el canto de fuera. */
+.qse-foto figcaption{position:absolute;z-index:3;left:-14px;top:0}
 /* z-index:4 -por encima del riel diagonal, que atraviesa los 720 px del
    panel entero-: sin esto la barra palida pasaba por encima del texto. El
    riel sigue en absoluto -su regla de siempre- asi que el flex de arriba no
@@ -685,6 +728,65 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   font-size:14.5px;letter-spacing:.2em}
 .va-lista .v-texto p{margin-top:6px;color:#fff;font-weight:300;
   font-size:13.5px;line-height:1.6}
+
+/* ====================================================  2c. OFICINAS  ===== */
+/* Donde estamos: las tres oficinas.
+   Habla el idioma de la casa y no uno propio: es el mismo reparto de "Nuestra
+   empresa" -panel navy con el texto a la IZQUIERDA y collage de franjas a la
+   DERECHA-. Ese lado lo eligio el usuario ("foto del lado derecho y el texto
+   del lado izquierdo"); se probo tambien al reves, para que dos laminas del
+   mismo bloque no se leyeran iguales, y no lo quiso. Antes de eso fue una
+   rejilla de cuatro cuadros sobre blanco y la vio pobre al lado de las demas:
+   sin panel navy, sin rieles y sin fotos a sangre, era la unica lamina que no
+   pertenecia al brochure.
+   Las franjas son APAISADAS -730 x 240- porque las fotos son de grupo, hechas
+   a lo ancho delante de cada oficina.
+   Cada bloque del panel es el par epigrafe + titulo de siempre: arriba que
+   sede es, con su rayita sesgada, y debajo la ciudad. Si a una oficina le
+   falta todavia el nombre de la sede, se queda sin epigrafe y el bloque
+   aguanta igual. */
+.l-oficinas .ofi-fotos{position:absolute;left:calc(var(--ancho-lamina) * .43);top:0;
+  width:calc(var(--ancho-lamina) * .57);height:var(--alto-diseno);
+  overflow:hidden;background:var(--navy);
+  display:grid;grid-auto-rows:1fr;gap:0}
+.l-oficinas figure{position:relative;overflow:hidden;margin:0;min-height:0;
+  background:var(--navy)}
+.l-oficinas figure img{width:100%;height:100%;min-height:0}
+/* El rotulo de la ciudad, pegado a la esquina: el mismo chip y la misma
+   colocacion que en el collage de "Nuestra empresa" -la punta del
+   paralelogramo sale por el canto y la corta el overflow de la franja-. */
+.l-oficinas figcaption{position:absolute;z-index:3;left:-14px;top:0}
+.l-oficinas .ofi-panel{position:absolute;left:0;top:0;
+  width:calc(var(--ancho-lamina) * .43);height:var(--alto-diseno);
+  background:var(--navy);overflow:hidden;box-sizing:border-box;
+  padding:0 var(--lado-medio);display:flex;flex-direction:column;justify-content:center}
+/* z-index:4, por encima del riel diagonal: sin esto la barra palida cruza el
+   texto (el mismo caso que .qse-cab). */
+.l-oficinas .ofi-cab{position:relative;z-index:4}
+.l-oficinas h2{color:#fff;font-size:38px;margin-top:12px}
+.l-oficinas .ofi-lista{position:relative;z-index:4;margin-top:38px;
+  display:flex;flex-direction:column;gap:28px}
+/* Que sede es y donde esta, en un solo renglon: el epigrafe y la ciudad en
+   fila, apoyados en la misma linea de base.
+   Los separa el aire y nada mas -no un punto medio ni una barra-: el rotulo
+   mas largo, el de Oriente, no cabe de ancho y la ciudad baja sola a la linea
+   siguiente; cualquier signo se quedaria alli huerfano abriendo el renglon.
+   Con solo el hueco, ese caso se lee igual que el diseno de antes.
+   El tamano y el peso ya distinguen una pieza de la otra. */
+/* Ciudad y rotulo de sede en el MISMO renglon; si el par no cabe de ancho, el
+   que baja es el rotulo, que es el largo. */
+/* align-items:center y no baseline: la pildora es una caja con fondo, y
+   alineada por la base se montaba sobre el renglon del nombre. */
+.l-oficinas .ofi-rotulo{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+/* El rotulo de la sede va en la pildora .estado -la de "CULMINADO" de las
+   fichas de proyecto-, en gris con la letra blanca. Aqui solo se le da color:
+   la forma, el cuerpo y el sesgo salen de .estado, que es la misma pieza.
+   El gris es el de los chips de lugar, subido a .92 para que se sostenga
+   sobre el navy del panel. */
+.estado.sede{background:rgba(95,105,128,.92)}
+.estado.sede b{color:#fff}
+.l-oficinas .ofi-lista h3{color:#fff;font-size:22px;line-height:1.12}
+.l-oficinas .ofi-lista p{font-size:12.5px;line-height:1.6;color:#fff;margin-top:8px}
 
 /* ==================================================  3. SERVICIOS  ===== */
 .cabecera{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado))}
