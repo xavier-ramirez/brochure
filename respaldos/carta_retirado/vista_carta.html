@@ -24,25 +24,14 @@
   --gris:#5F6980;          /* datos secundarios */
   --texto:#3E4A63;         /* parrafos sobre fondo claro */
 
-  /* La hoja. La panoramica mide 1280 x 720 px = 13,333 x 7,5 pulg a 96 ppp.
-     Va en variables porque carta.css dibuja la MISMA maqueta en una hoja
-     carta apaisada -1056 x 816 px = 11 x 8,5 pulg, tambien a 96 ppp- y le
-     basta con cambiar estas dos: la letra y las separaciones siguen midiendo
-     los mismos milimetros en el papel, solo cambia la forma de la hoja.
-     Todos los anchos de dentro salen de --ancho-lamina, nunca de un 1280
-     escrito a mano, o al estrechar la hoja se quedarian colgando. */
-  --ancho-lamina:1280px;
-  --alto-lamina:720px;    /* la hoja entera */
-  --alto-diseno:720px;    /* lo que ocupa la maqueta. En carta la hoja crece a
-                             816 px, pero la maqueta se queda en estos 720 y la
-                             pulgada de mas se va en el encabezado y el pie. */
-
   /* El aire lateral del diseno, del mas suelto al mas apretado: el general,
      el de la portada y el portafolio, y el de la rejilla de proyectos, que ya
      iba justa. Estan aqui -y no repetidos en cada regla- para poder apretarlos
      todos a la vez sin que se descuadren entre si; los anchos salen restando
-     el aire de los dos lados al ancho de la lamina.
-     */
+     el aire de los dos lados a los 1280 px de la lamina.
+     La version de carta los vuelve a pisar con los suyos, mas estrechos
+     todavia, porque en el folio la mancha se lee de cerca (LADO en
+     exportar_pdf_carta.py). */
   --lado:96px;
   --lado-medio:80px;
   --lado-rejilla:44px;
@@ -61,23 +50,23 @@ img{display:block;max-width:100%}
 h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;line-height:1.03}
 
 .lamina{
-  position:relative;width:var(--ancho-lamina);height:var(--alto-lamina);overflow:hidden;
+  position:relative;width:1280px;height:720px;overflow:hidden;
   background:#fff;margin:0 auto 24px;box-shadow:0 12px 34px rgba(0,0,0,.4);
 }
 /* La lamina se centra sola con el margin:auto, pero la barra de scroll de la
    derecha se come 15 px y todo parecia corrido hacia la izquierda. Con el
    hueco reservado a los dos lados, el centro es el centro de verdad.
-   Falta el otro caso: si la ventana es mas angosta que la lamina, el
-   margin:auto ya no tiene sitio que repartir y la lamina se pega a la
-   izquierda y se sale por la derecha. --encaje -lo mide encaje.js con el
-   ancho util de la ventana y --ancho-lamina- la achica lo justo para que
-   quepa entera y vuelva a quedar en el medio; si la lamina ya cabe, vale 1 y
-   no toca nada. Es solo para mirar la pagina: quien captura o imprime trabaja
-   sin encaje.js -y sin este @media screen-, con la lamina a su ancho exacto. */
+   Falta el otro caso: si la ventana es mas angosta que las 1280 px de la
+   lamina, el margin:auto ya no tiene sitio que repartir y la lamina se pega a
+   la izquierda y se sale por la derecha. --encaje -lo mide encaje.js con el
+   ancho util de la ventana- la achica lo justo para que quepa entera y vuelva
+   a quedar en el medio; si la lamina ya cabe, vale 1 y no toca nada. Es solo
+   para mirar la pagina: quien captura o imprime trabaja sin encaje.js -y sin
+   este @media screen-, con la lamina a sus 1280 px exactos. */
 @media screen{
   html{scrollbar-gutter:stable both-edges}
-  /* el rotulo de las alternativas mide lo mismo que una lamina: si no encoge
-     con ellas, es el quien saca la barra de scroll de abajo */
+  /* el rotulo de las alternativas tambien mide 1280 px: si no encoge con
+     las laminas, es el quien saca la barra de scroll de abajo */
   .lamina,.rotulo-prueba{zoom:var(--encaje,1)}
 }
 
@@ -101,16 +90,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 }
 .epigrafe::before{content:"";width:38px;height:3px;background:currentColor;flex:none;transform:skewX(-22deg)}
 .epigrafe.claro{color:#C3CCE2}
-/* Todas las laminas llevan el epigrafe en blanco: el usuario lo fue pidiendo
-   una por una -Quienes somos, Nuestra empresa, Valores, Portafolio,
-   Clientes y por ultimo Flota-, asi que ya no queda ninguna en el azul
-   palido de .epigrafe.claro. */
+/* Quienes somos y Portafolio llevan el epigrafe en blanco;
+   Clientes y Flota se quedan con el azul palido de arriba. */
 .l-nosotros .banda-txt .epigrafe,
-.l-empresa .qse-cab .epigrafe,
-.l-valores .va-cab .epigrafe,
-.l-portafolio .banda-txt .epigrafe,
-.l-clientes .banda-txt .epigrafe,
-.l-flota .fl-cab .epigrafe{color:#fff}
+.l-portafolio .banda-txt .epigrafe{color:#fff}
 .epigrafe.suave{color:#fff;letter-spacing:.18em;align-items:flex-start;line-height:1.65}
 .epigrafe.suave::before{margin-top:.62em}
 
@@ -123,83 +106,34 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .estado.marcha{background:rgba(73,102,173,.16);color:#3A5599}
 .estado.lista{background:rgba(18,33,73,.09);color:#5C6580}
 
-/* rieles diagonales azules. .hoja-rieles solo aparece en carta.html -es la
-   miniatura de esta misma pieza, que va en el encabezado y en el pie de cada
-   hoja-, pero la forma se define aqui, con las otras tres, para no tener dos
-   sitios que tocar. Solo la forma: donde se coloca cada uno ya es cosa suya,
-   y el de la hoja va en el flujo de su fila y no en absoluto, asi que no
-   entra en esta regla -si entrara, carta.css tendria que deshacerla-. */
-.rieles-banda,.rieles-panel,.rieles-portada,.rieles-derecha{position:absolute;pointer-events:none;z-index:3}
-.rieles-banda i,.rieles-panel i,.rieles-portada i,.rieles-derecha i,.hoja-rieles i{position:absolute;top:0;height:100%;transform:skewX(var(--sesgo-riel,-9deg))}
-/* El sesgo es un ANGULO, no un desplazamiento: en las barras altas -cientos
-   de px- esos -9 grados se leen como una buena diagonal, pero en el encabezado
-   y el pie de la hoja carta, donde la pieza mide 15 px, mueven 2 px y las tres
-   barras se ven rectas. Alli se sube a los -22 grados que ya llevan los chips,
-   el tope de .linea y las barras de la portada, para que a ese tamano se vea la
-   misma diagonal. Se cambia la variable, no el transform: sigue habiendo un
-   solo sitio donde se dibuja la pieza. */
-.hoja-rieles{--sesgo-riel:-22deg;pointer-events:none}
-.rieles-banda,.rieles-panel{left:16px;top:-8%;height:116%;width:80px}
-/* El mismo juego de barras, pero pegado al canto DERECHO de su caja. Hoy solo
-   lo usa "Nuestra empresa", donde las dos diagonales enmarcan el parrafo, una
-   a cada lado. Mismo alto y mismo ancho que las de la izquierda: es la misma
-   pieza, cambiada de lado. */
-/* Al filo del panel -right:0- y mas estrecha que las de la izquierda: a 80 px
-   y separadas del canto se metian en el espacio del parrafo. Con 56 px pegadas
-   al borde caen justo en el margen que el texto ya deja libre, asi que marcan
-   el limite con el collage sin comerse la lamina. */
-/* width:34 y no 56: las dos barras se dibujan pegadas al BORDE IZQUIERDO de
-   su caja -en left:0 y left:24, ver rieles() en generar.py-, asi que estrechar
-   la caja es lo que las corre hacia la derecha. Con 34 px la gruesa queda a 34
-   del canto del panel y la fina a 10: es lo mas a la derecha que pueden ir sin
-   que la fina se salga del panel, que recorta lo que asome (overflow:hidden). */
-.rieles-derecha{right:0;top:-8%;height:116%;width:34px}
+/* rieles diagonales azules */
+.rieles-banda,.rieles-panel,.rieles-portada{position:absolute;pointer-events:none;z-index:3}
+.rieles-banda i,.rieles-panel i,.rieles-portada i{position:absolute;top:0;height:100%;transform:skewX(-9deg)}
+.rieles-banda{left:16px;top:-8%;height:116%;width:80px}
+.rieles-panel{left:16px;top:-8%;height:116%;width:80px}
 
-/* =====================================================  1. PORTADA  ====
-   La portada es la lamina de CIERRE al derecho. Se rehizo entera asi porque
-   lo pidio el usuario -"de cero, tal cual la ultima diapositiva"-, y no hay
-   maqueta nueva que mantener: usa las mismas tres piezas, con el mismo CSS,
-   escrito una sola vez en "15. CIERRE":
-
-       .cr-izq    el bloque claro con su cuna en diagonal
-       .cr-der    la foto, cortada por el filo en diagonal
-       .pie-navy  el pie oscuro de lado a lado
-
-   Aqui solo se escribe lo que cambia de una a otra, que es el CONTENIDO del
-   pie: en la portada, la entrada; en el cierre, las columnas de contacto. El
-   titular comparte regla con el del cierre, y el bloque de la izquierda no
-   necesita ni una linea.
-
-   Lo que habia antes -dos columnas propias con la cuna en curva, dos fotos
-   con su corte y cuatro alternativas- se borro entero: no quedan piezas
-   sueltas de aquello en ningun sitio. */
-
-/* La entrada va en el pie, en DOS columnas: es el mismo renglon que las
-   columnas de contacto del cierre, asi que las dos laminas reparten el pie
-   igual. En una sola columna de lado a lado el parrafo pasaba de los 90
-   caracteres por linea y se leia a saltos. */
-.l-portada .pie-navy .entrada{position:absolute;left:var(--lado);right:var(--lado);
-  top:44px;width:auto;columns:2;column-gap:54px;color:#C6CDDE}
-
-/* ------------------------------------------------- piezas de la cabecera ---
-   Las comparten la portada, el cierre y la cubierta 'bloque': el bloque del
-   logotipo con su raya, el epigrafe cuando lo lleva, el parrafo de entrada y
-   el racimo de barras del pie. */
+/* =====================================================  1. PORTADA  ==== */
+.pt-izq{position:absolute;left:0;top:0;width:672px;height:720px}
+/* La cuna gris, con la misma forma que la de la ultima lamina: sube muy poco
+   -unos 6 grados, 71 px en los 672 de ancho- en vez de los 135 px que subia
+   antes, que se leian como un pico. Y su punta acaba a la altura a la que
+   termina la foto de arriba, asi que las dos figuras se dan la mano en la
+   junta en vez de cortarse cada una por su lado.
+   En la alternativa, mas abajo, apunta a la junta ENTRE las dos fotos. */
+.pt-izq .cuna-ice{position:absolute;left:0;bottom:0;width:100%;height:52.5%;background:var(--hielo);
+  clip-path:polygon(0 19%,100% 0,100% 100%,0 100%)}
+.pt-izq .esquina-navy{position:absolute;left:0;bottom:0;width:152px;height:82px;background:var(--navy);
+  clip-path:polygon(0 0,100% 100%,0 100%)}
 .pt-cuerpo{position:absolute;inset:0;padding:64px 56px 40px var(--lado-medio);display:flex;flex-direction:column}
 .pt-cuerpo .logo{width:364px}
 .linea{height:1px;background:rgba(18,33,73,.22);width:470px;margin:26px 0 15px;position:relative}
 .linea::before{content:"";position:absolute;left:0;top:-3px;width:112px;height:5px;background:var(--navy);transform:skewX(-22deg)}
-/* En bandera, no justificado: con el texto de esta entrada, justificado
-   abria rios entre palabras. (En otras columnas si sale parejo, ver la nota
-   de .pilar p: depende de si el navegador encuentra donde partir palabras
-   con el texto que traiga cada una). */
-.entrada{font-size:15px;line-height:1.85;color:#fff;width:468px}
-/* row-reverse: en blanco la escala moria en el claro; sobre el azul muere
-   en el oscuro, que es el mismo gesto al reves. Los colores no se tocan.
-   Al invertir la fila, el principio pasa a ser la derecha, asi que hace
-   falta flex-end para que las barras sigan apoyadas en el margen izquierdo. */
-.barras{display:flex;flex-direction:row-reverse;justify-content:flex-end;
-  gap:7px;margin-top:auto;margin-left:64px}
+.tagline{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:.3em;color:var(--navy-medio)}
+.tagline i{color:var(--azul-suave);font-style:normal}
+.l-portada h1{font-size:42px;width:560px;margin-top:46px}
+.guion{width:112px;height:5px;background:var(--navy);transform:skewX(-22deg);margin:40px 0 22px 4px}
+.entrada{font-size:15px;line-height:1.85;color:var(--texto);width:468px;text-align:justify}
+.barras{display:flex;gap:7px;margin-top:auto;margin-left:64px}
 .barras i{width:13px;height:52px;transform:skewX(-22deg)}
 /* la escala completa de azules, de la mas oscura a la mas clara */
 .barras i:nth-child(1){background:#0C1734}
@@ -210,16 +144,20 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .barras i:nth-child(6){background:#96A3C8}
 .barras i:nth-child(7){background:#C3CAD9}
 .barras i:nth-child(8){background:#DCE2EE}
-/* El trio de rieles diagonales que cuelga del canto. La medida base es la de
-   la cubierta 'bloque', que los lleva a toda la altura de la hoja; la portada
-   y el cierre los ajustan a su bloque de 467 px, ahi abajo. */
+
+.pt-der{position:absolute;left:671px;top:0;width:609px;height:720px}
 .rieles-portada{left:-62px;top:-16px;height:752px;width:62px}
+.pt-f1,.pt-f2{position:absolute;left:0;width:609px;overflow:hidden}
+.pt-f1{top:0;height:344px;clip-path:polygon(9% 0,100% 0,100% 100%,0 100%)}
+.pt-f2{top:357px;height:363px;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
+.pt-f1 img,.pt-f2 img{width:100%;height:100%}
+
 
 /* ================================================  banda con titulo  ====
    Todo lo que va encima de la foto (velo, titulo, fecha, chips) lleva
    pointer-events:none, si no tapa la imagen y el editor no la deja
    arrastrar ni cambiar. */
-.banda{position:absolute;left:0;top:0;width:var(--ancho-lamina);overflow:hidden;background:var(--navy)}
+.banda{position:absolute;left:0;top:0;width:1280px;overflow:hidden;background:var(--navy)}
 .banda>img{position:absolute;inset:0;width:100%;height:100%}
 /* el velo arranca abajo para no tapar la parte util de la foto; el titulo
    se apoya en su propia sombra suave, no en oscurecer toda la imagen */
@@ -234,41 +172,181 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
              rgba(9,17,42,.52) 46%,rgba(9,17,42,0) 76%)}
 .banda-txt h2{color:#fff;font-size:54px;margin-top:12px;text-shadow:0 2px 30px rgba(6,12,30,.55)}
 .banda-fecha{position:absolute;right:var(--lado);bottom:44px;z-index:4;text-align:right;pointer-events:none}
-/* El rotulo de LUGAR de una banda -hoy "Patio de maquinas · Maturin" en Mision
-   y vision-. Se coloca como .banda-fecha, en la esquina de enfrente del
-   titular, para que ninguna de las dos piezas le pase por encima a la otra. */
-.banda-lugar{position:absolute;right:var(--lado);bottom:44px;z-index:4;pointer-events:none}
-/* En GRIS y no en el navy del resto de los chips, que lo pidio asi el usuario.
-   Es --gris, el de los datos secundarios, subido a .92 de opacidad para que
-   se sostenga sobre la foto: este chip no anuncia nada del proyecto, solo
-   dice donde esta tomada la imagen, y en navy pesaba como si fuera un dato
-   mas de la lamina. */
-.banda-lugar .chip,.qse-foto figcaption .chip{background:rgba(95,105,128,.92)}
 .banda-fecha span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;
   color:#fff}
 .banda-fecha b{display:block;margin-top:3px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
   font-weight:700;font-size:22px;color:#fff;text-shadow:0 2px 20px rgba(6,12,30,.6)}
 
 /* ==================================================  0. CUBIERTA  =====
-   La hoja que va ANTES de la portada. Hay cuatro propuestas escritas con el
-   mismo esqueleto, y generar.py imprime SOLO la que diga su CUBIERTA: las
-   otras tres no llegan siquiera al HTML. Las cuatro hablan el mismo idioma
-   que "Mision y vision" -banda arriba con los rieles diagonales,
-   panel abajo y los chips en diagonal-; lo que cambia es como se rellenan:
-       cb-limpia  la trama de barras de la marca, pie claro y letra navy
-       cb-azul    la misma trama, pero el pie en navy y la letra en blanco
-       cb-foto    una foto con el mismo velo azul de las demas laminas,
-                  y el logo en blanco encima
-       cb-edificio campo BLANCO con la foto de la sede entrando por la
-                  derecha en diagonal -la que se usa-
- */
+   Dos propuestas de cubierta, la hoja que va ANTES de la portada. Ambas con
+   el mismo lenguaje que "Mision, vision y objetivo":
+   banda arriba con los rieles diagonales, panel abajo y los chips en diagonal.
+   La diferencia es la banda: en cb-limpia son las barras de la marca, en
+   cb-foto es una foto en blanco y negro con su velo.
+   Se marcan .prueba, asi que NO salen ni en el PDF ni en el PowerPoint hasta
+   que se elija una. */
+
+/* ------------------------------------------------------ encabezado ------
+   La misma franja en todas las hojas de la version de CARTA: blanco a la
+   izquierda y, tras un corte en diagonal -el mismo gesto de los chips y los
+   rieles-, el navy de la lamina de Clientes con el logo en blanco encima.
+   Aqui va solo COMO se ve; DONDE se pone -alto de la franja, margenes y
+   encendido- lo decide exportar_pdf_carta.py, que es quien conoce el folio.
+   En la panoramica va apagado. */
+.encabezado-hoja{display:none;position:absolute;left:0;top:0;width:1280px;
+  z-index:6;pointer-events:none}
+.encabezado-hoja .enc-cuna{position:absolute;right:0;top:0;bottom:0;
+  background:var(--navy);   /* el mismo azul del panel de Clientes */
+  clip-path:polygon(9% 0,100% 0,100% 100%,0 100%)}
+/* el logo va sobre el blanco de la izquierda, no sobre el navy; solo se le
+   da el ancho, asi que conserva su proporcion */
+.encabezado-hoja img{position:absolute;top:50%;transform:translateY(-50%)}
+
+/* ------------------------------------------------------- pie de pagina ---
+   Solo lo enciende la version de CARTA, que es la que se imprime: alli la
+   lamina deja una franja blanca al pie -y otra igual arriba, para que quede
+   centrada en el folio- y el pie vive en esa franja. En la panoramica va
+   apagado: en pantalla no hay hoja que numerar.
+
+   Cuatro piezas, de izquierda a derecha, con el lenguaje del brochure:
+     · la escala de azules de la marca en miniatura, inclinada como las
+       barras de la portada;
+     · la seccion en la que va la hoja -QUIENES SOMOS, PORTAFOLIO...-, con
+       la misma cuna que separa los datos en el resto de las laminas;
+     · el filete de un pelo que se desvanece y, al final, el numero de hoja
+       en condensada con su cuna delante.
+
+   Dos pieles. La clara es la de siempre, para las hojas que acaban en
+   blanco. La oscura -.pie-oscuro-, que pone generar.py, es para las tres que
+   acaban en navy: alli exportar_pdf_carta.py baja ese azul hasta el canto del
+   papel y el pie se lee encima, con la tinta al reves, en vez de quedar
+   flotando en un recorte blanco.
+
+   Aqui va solo COMO se ve; DONDE se pone -franja, margenes y encendido- lo
+   decide exportar_pdf_carta.py, que es quien conoce el folio. */
+.pie-hoja{display:none;position:absolute;left:0;right:0;bottom:0;
+  align-items:center;gap:16px;z-index:6;pointer-events:none;
+  font-family:"Barlow","Segoe UI",Arial,sans-serif;
+  /* la tinta del pie en un solo sitio: la piel oscura solo cambia esto */
+  --pie-seccion:#8A93AC;
+  --pie-filete:124,139,186;
+  --pie-numero:var(--navy);
+  --pie-cuna:var(--azul-suave)}
+
+/* la escala de azules de la marca, en miniatura: cuatro barras inclinadas */
+.pie-hoja .pie-escala{flex:none;width:33px;height:20px;transform:skewX(-22deg);
+  background:linear-gradient(90deg,var(--pie-b1) 0 5px,transparent 5px 10px,
+    var(--pie-b2) 10px 15px,transparent 15px 19px,var(--pie-b3) 19px 24px,
+    transparent 24px 28px,var(--pie-b4) 28px 33px);
+  --pie-b1:#122149;--pie-b2:#2A3C78;--pie-b3:#4966AD;--pie-b4:#96A3C8}
+
+/* la seccion de la hoja, con la cuna de la casa por delante */
+.pie-hoja .pie-seccion{font-size:12.5px;font-weight:600;letter-spacing:.22em;
+  font-style:normal;text-transform:uppercase;color:var(--pie-seccion);
+  white-space:nowrap;display:flex;align-items:center;gap:13px}
+.pie-hoja .pie-seccion::before{content:"";width:9px;height:5px;flex:none;
+  background:currentColor;transform:skewX(-22deg);opacity:.85}
+
+/* El filete que los une: inclinado como las cunas y las barras de la marca
+   -de un pelo no se le notaba la diagonal, asi que tiene cuerpo- y apagandose
+   hacia la derecha, igual que los rieles del resto del brochure. */
+.pie-hoja .pie-filete{flex:1;height:5px;min-width:24px;transform:skewX(-22deg);
+  background:linear-gradient(90deg,rgba(var(--pie-filete),.42),
+    rgba(var(--pie-filete),.10))}
+
+/* el numero, en condensada, con la cuna inclinada de la marca delante */
+.pie-hoja .pie-num{font-family:"Barlow Condensed","Arial Narrow",sans-serif;
+  font-weight:700;font-size:25px;line-height:1;color:var(--pie-numero)}
+.pie-hoja .pie-num::before{content:"";display:inline-block;width:13px;height:4px;
+  margin-right:13px;vertical-align:.30em;background:var(--pie-cuna);
+  transform:skewX(-22deg)}
+
+/* La piel de las hojas que acaban en navy. La franja NO cambia de color -es
+   el mismo blanco del papel que en las otras quince, y el pie se lee igual
+   que alli-: lo que se hace es fundir el azul del bloque con ese blanco.
+   El fundido no cabe en la franja sin comerse el sitio del texto, asi que la
+   caja del pie sube por encima de ella -eso es --pie-fundido, el relleno de
+   arriba que pone exportar_pdf_carta.py- y ahi es donde muere el azul; el
+   texto sigue centrado en la franja, ya sobre blanco.
+   Las paradas no van en linea recta -esa se nota, deja una raya donde el
+   degradado se planta- sino en curva de S, y mezcladas en oklab, que reparte
+   el camino como lo ve el ojo y no como lo suma el RGB. De que azul arranca
+   lo dice --pie-azul (el cierre remata en el navy hondo). */
+.pie-hoja.pie-oscuro{
+  background:linear-gradient(180deg,
+    var(--pie-azul,var(--navy)) 0%,
+    color-mix(in oklab,var(--pie-azul,var(--navy)) 93%,#FFF)  8%,
+    color-mix(in oklab,var(--pie-azul,var(--navy)) 76%,#FFF) 16%,
+    color-mix(in oklab,var(--pie-azul,var(--navy)) 50%,#FFF) 24%,
+    color-mix(in oklab,var(--pie-azul,var(--navy)) 24%,#FFF) 32%,
+    color-mix(in oklab,var(--pie-azul,var(--navy))  7%,#FFF) 38%,
+    #FFF 44%)}
+
+/* ---------------- Alternativa A: la portada, al estilo del cierre ---------
+   La portada normal ocupa la lamina entera: el texto a la izquierda de arriba
+   abajo y dos fotos apiladas a la derecha. Esta alternativa la vuelve a armar
+   con el esqueleto de la ultima lamina, que es el que gusto: panel claro
+   arriba a la izquierda, UNA foto grande a la derecha cortada en diagonal y
+   fundida por abajo, y una franja navy a lo ancho del pie. El parrafo de
+   entrada se baja a esa franja, en blanco sobre el azul, que es donde la
+   ultima lamina pone sus datos de contacto.
+   Todo cuelga de .alt-a, asi que la portada buena no se entera de nada. */
+.alt-a.l-portada{background:#fff}
+.alt-a .pt-izq{width:700px;height:520px}
+.alt-a .pt-izq .esquina-navy{display:none}
+.alt-a .pt-cuerpo{padding:56px 56px 34px var(--lado-medio)}
+.alt-a.l-portada h1{font-size:42px;width:560px;margin-top:26px}
+/* el guion de la plantilla original vuelve: separa el titular del parrafo,
+   con los margenes un poco mas cortos para que todo quepa en el panel */
+.alt-a .guion{margin:24px 0 18px 4px}
+/* las barritas en diagonal se quitan aqui: le robaban el sitio al parrafo */
+.alt-a .barras{display:none}
+/* Las fotos: siguen siendo las dos de la portada, una encima de otra, con el
+   corte en diagonal de la ultima lamina. Bajan hasta el canto de la hoja y van
+   POR DELANTE de la franja azul -antes la franja les cortaba la segunda-. El
+   fundido de la de abajo la funde con ese azul en vez de cortarla en seco. */
+/* El fondo de la columna de fotos acompana lo que tiene detras en cada
+   tramo: blanco y hielo arriba -como el panel de la izquierda- y navy a
+   partir de los 520 px, que es donde arranca la franja azul. Si no, el hueco
+   que deja el corte en diagonal se veia claro y la franja parecia cortarse a
+   media pagina en vez de cruzarla entera por detras de la foto. */
+.alt-a .pt-der{left:699px;top:0;width:581px;height:720px;
+  background:linear-gradient(180deg,#fff 0 27%,var(--hielo) 27% 72.2%,
+             var(--navy-hondo) 72.2%)}
+.alt-a .pt-f1,.alt-a .pt-f2{position:absolute;left:0;width:581px;
+  overflow:hidden;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
+.alt-a .pt-f1{top:-1px;height:355px}
+.alt-a .pt-f2{top:361px;height:359px}
+.alt-a .pt-f2::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;
+  background:linear-gradient(180deg,rgba(12,23,52,0) 0%,rgba(12,23,52,.55) 62%,
+             rgba(12,23,52,.92) 88%,#0C1734 100%)}
+/* Los rieles diagonales no se quitan: se mudan al canto izquierdo, que es
+   donde los llevan las demas laminas -y la ultima, en su franja azul-. Como
+   cuelgan de .pt-der, que empieza en 699, hay que traerlos con un left
+   negativo hasta los 18 px del borde. */
+.alt-a .rieles-portada{left:-681px;top:-10px;height:740px;width:56px}
+/* La franja navy del pie arranca justo donde acaban las fotos -no un pixel
+   antes- y va por DEBAJO de ellas, para que no les monte encima. */
+.alt-a.l-portada::after{content:"";position:absolute;left:0;top:520px;
+  width:1280px;height:200px;background:var(--navy-hondo);z-index:0}
+.alt-a .pt-der{z-index:2}
+/* la entrada se queda donde la tiene la portada original -en el cuerpo, bajo
+   el titular-, no en la franja azul */
+/* la misma caja que en la portada original -468 px-: a 544 el parrafo hacia
+   lineas mas largas y, al lado de un titular mas grande, la letra parecia mas
+   chica aunque midiera exactamente lo mismo */
+.alt-a .entrada{width:468px}
+/* la cuna, con las medidas exactas de la ultima lamina: 62 % de alto y el
+   corte al 26 %, que es la forma que se pidio copiar */
+.alt-a .pt-izq .cuna-ice{height:62%;
+  clip-path:polygon(0 26%,100% 0,100% 100%,0 100%)}
 
 /* -------------------------------------------- laminas de prueba (.prueba) ---
    Las alternativas de cubierta y portada que arma generar.py: clones de las
    laminas 1 y 2 para probar otro diseno sin tocar las buenas. Se ven en la
    pagina, con su rotulo encima para saber cual es cual, y se apagan en cuanto
-   la hoja va a papel -el PDF y el PowerPoint-. */
-.rotulo-prueba{width:var(--ancho-lamina);margin:40px auto 10px;
+   la hoja va a papel -PDF panoramico, PDF de carta y PowerPoint-. */
+.rotulo-prueba{width:1280px;margin:40px auto 10px;
   font-family:"Barlow",sans-serif;font-weight:600;font-size:13px;
   letter-spacing:.28em;text-transform:uppercase}
 /* el rotulo va en una etiqueta azul, para que no se confunda con la pagina */
@@ -278,6 +356,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 .l-cubierta{background:#fff}
 .l-cubierta .banda{background:linear-gradient(180deg,#fff 0%,#fff 52%,#F4F6FA 100%)}
+/* el logo, mas grande: es lo unico que tiene que leerse de lejos */
+.cb-marca img{width:520px}
 
 /* --- A: sin foto. Las barras de la marca a tamano grande, en grises --- */
 /* Mismo trio que los rieles de la esquina (5-9-4 px con su hueco), repetido
@@ -293,8 +373,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   background:#F1F3F9}
 .cb-trama i{position:absolute;top:-12%;height:124%;transform:skewX(-22deg)}
 
-/* El velo de la foto es el mismo azul de "Mision y vision", pero
-   bajando mas: asi el logo blanco se apoya en la parte oscura. */
+/* La foto NO va en blanco y negro: lleva el mismo velo azul de "Mision,
+   vision y objetivo", bajando mas para que el logo blanco se apoye en el. */
 .cb-foto .banda .velo{background:linear-gradient(180deg,
     rgba(12,23,52,.34) 0%,rgba(12,23,52,.06) 22%,
     rgba(18,33,73,.34) 56%,rgba(18,33,73,.76) 82%,rgba(18,33,73,.97) 100%)}
@@ -302,8 +382,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 /* --- el logo, que es el unico protagonista --- */
 .cb-marca{position:absolute;left:var(--lado);bottom:52px;z-index:4;pointer-events:none}
-/* mas grande que en el resto: es lo unico que tiene que leerse de lejos */
-.cb-marca img{display:block;width:520px}
+.cb-marca img{display:block}
 .cb-limpia .cb-marca,.cb-azul .cb-marca{bottom:auto;top:120px}
 
 /* --- panel de abajo: gris muy claro, no navy --- */
@@ -318,9 +397,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   letter-spacing:.3em;color:var(--navy)}
 .cb-sello{position:absolute;left:var(--lado);right:var(--lado);bottom:44px;
   display:flex;justify-content:space-between;align-items:flex-end;
-  /* un escalon mas abajo en la escala: el azul suave (#7C8BBA) se apagaba
-     contra el pie claro y la raya casi no se leia */
-  border-top:3px solid var(--azul);padding-top:20px}
+  border-top:3px solid #7C8BBA;padding-top:20px}
 .cb-sello span{font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--azul)}
 
 /* --- C: la misma trama, pero el pie en navy y todo en blanco --------- */
@@ -328,365 +405,22 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cb-azul .cb-fila .num{background:var(--azul)}
 .cb-azul .cb-fila b.rot{color:#fff}
 .cb-azul .cb-sello{border-top-color:rgba(195,204,226,.34)}
-/* en blanco, como el resto del pie: es un rotulo secundario, pero en el
-   azul oscuro el azul palido se apagaba demasiado */
-.cb-azul .cb-sello span{color:#fff}
-
-
-/* --- D: campo blanco con la foto de la sede ---------------------------
-   La que se imprime. Sigue hablando el idioma de la PORTADA -campo liso de
-   canto a canto y la foto entrando por la derecha, cortada por el mismo filo
-   en diagonal de -22 grados-, pero el campo es BLANCO y no navy: la hoja
-   pesaba demasiado azul. El azul se queda donde hace falta -los rieles, el
-   numero de los chips, la raya del sello y la propia foto, que ya es cristal
-   y cielo-, y el logotipo va en su version oscura (generar.py le pasa
-   logo.png y no logo_blanco.png). La foto va con data-foto -la pone foto() en
-   generar.py- y es la MISMA que usan las portadas C y D, asi que se cambia y
-   se encuadra una sola vez desde el editor y cambia en las tres.
-
-   Aqui la banda mide la hoja entera (generar.py le da 720 en vez de 470) y el
-   panel se le monta encima sin fondo: la foto llega hasta el canto de abajo y
-   los chips y el sello van sobre ella. Quien los sostiene es el velo, que en
-   esta variante lleva dos degradados -uno que funde el filo de la foto en el
-   blanco de la izquierda y otro que la aclara al pie, que es por donde cruza
-   de lado a lado la raya del sello-. */
-.cb-edificio{background:#fff}
-/* El mismo blanco de .l-cubierta, con el punto de gris corrido hacia abajo:
-   aqui la banda es la hoja entera y no los 470 px de las otras cubiertas. */
-.cb-edificio .banda{background:linear-gradient(180deg,#fff 0%,#fff 64%,#F4F6FA 100%)}
-/* La foto no llena la banda: ocupa la derecha y su filo izquierdo es la misma
-   diagonal de la cuna de la portada -mas ancho el campo arriba que abajo-. */
-.cb-edificio .banda>img{left:auto;right:0;width:648px;
-  clip-path:polygon(190px 0,100% 0,100% 100%,0 100%)}
-/* Los mismos cortes que tenia en navy, en blanco: el filo de la foto no queda
-   como un canto duro sino fundido, y el pie se aclara lo justo para que la
-   raya azul del sello se lea tambien por encima de la foto. */
-.cb-edificio .banda .velo{background:
-  linear-gradient(90deg,#fff 0%,#fff 44%,
-    rgba(255,255,255,.30) 58%,rgba(255,255,255,.03) 78%,rgba(255,255,255,0) 100%),
-  linear-gradient(180deg,rgba(255,255,255,0) 62%,rgba(255,255,255,.10) 80%,
-    rgba(255,255,255,.30) 100%)}
-/* el logo, a la misma altura que en 'limpia' y 'azul' */
-.cb-edificio .cb-marca{bottom:auto;top:150px}
-/* Los rieles de la banda se ajustan a la hoja. En las otras cubiertas la banda
-   mide 470 y podian desbordarla por arriba y por abajo -los recortaba su
-   overflow-; aqui la banda ES la hoja, asi que ese desborde se salia de la
-   lamina y saltaba en revisar.py. Con el sesgo el alto no cambia nada, asi que
-   ajustarlos no les quita ni un pixel de diagonal. */
-.cb-edificio .banda .rieles-banda{top:0;height:100%}
-/* El panel se queda sin fondo: es solo el sitio de los chips y del sello,
-   que ahora van sobre la foto. */
-.cb-edificio .panel{background:none}
-/* Los rotulos y el sello se quedan con la letra oscura de .l-cubierta -sobre
-   blanco no hay nada que corregir-; lo unico propio es el numero en azul, que
-   es el acento de color de la hoja. */
-.cb-edificio .cb-fila .num{background:var(--azul)}
-
-
-
-
-/* --- el sello de la cubierta ----------------------------------
-   El rotulo "BROCHURE CORPORATIVO" con el ANO debajo, centrado, sobre la
-   foto. Lo arma sello_brochure() en generar.py -por si algun dia vuelve a
-   hacer falta compartirlo con otra cubierta, como paso mientras existieron
-   'texto' y la primera 'partida'-.
-   El ano en condensada y grande -no un renglon mas de texto espaciado-:
-   el usuario lo pidio "que se vea bien", y a 11 px, en la misma letra que el
-   rotulo, se perdia como una linea de pie de pagina cualquiera. Mas grande
-   que al principio -13 px el rotulo, 36 el ano, antes 11 y 30-: el usuario
-   lo volvio a pedir mas adelante. */
-.cbp-sello{text-align:center;line-height:1}
-.cbp-sello span{display:block;font-size:13px;font-weight:600;letter-spacing:.3em}
-.cbp-sello b{display:block;margin-top:8px;
-  font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;
-  font-size:36px;letter-spacing:.08em}
-
-
-/* --- G: 'texto' -----------------------------------------------------
-   La cubierta BUENA. Nacio como una sola foto a banda -ver el historial si
-   hace falta el porque de aquel diseno-, pero el usuario la vio y la
-   encontro debil para presentar TODO un portafolio con una imagen sola, y
-   pidio un collage, "mas optimo empresarial".
-
-   Ahora son cinco fotos en una rejilla (604 px) y una ficha navy INCRUSTADA
-   en esa misma rejilla para el titular -no texto flotando sobre la foto,
-   una pieza mas del collage, tan facil de leer con cualquier foto detras
-   porque no hay foto detras-, mas el faldon blanco de siempre abajo
-   (116 px) con el logotipo y el sello. */
-/* fr y no %: con % el navegador reparte el 100% del ancho ENTRE las columnas
-   y encima le suma el gap, y la ultima se salia 10 px por la derecha -los
-   dos huecos de 5 px que nadie restaba-. Con fr el hueco se resta primero y
-   el resto se reparte en esta misma proporcion (38:31:31), sin sobrante. */
-/* --- cubierta PARTIDA (la que se imprime) ---------------------------
-   La hoja partida de arriba abajo: foto a la izquierda a todo el alto,
-   nombre y logotipo a la derecha. Calcada de la portada suelta que trajo el
-   usuario. Reconstruida el 2026-09-03: se habia retirado por error y no
-   quedaba copia, asi que estas reglas son nuevas aunque el diseno sea el de
-   siempre.
-   El corte va al 54%: el usuario pidio la foto mas ancha. Deja de ser el
-   43% que respetaba la proporcion vertical del original -540 x 720- y ahora
-   la foto se recorta por arriba y abajo, que es justo lo que se queria: el
-   edificio se ve mas grande. A cambio la columna derecha se queda en el 46%,
-   y por eso el nombre baja de 44 a 38 px: a 44 ya no cabia en una linea. */
-.cb-partida .cbp-foto{position:absolute;left:0;top:0;
-  width:calc(var(--ancho-lamina) * .54);height:var(--alto-diseno);
-  overflow:hidden;background:var(--navy)}
-.cb-partida .cbp-foto img{position:absolute;inset:0;width:100%;height:100%}
-.cb-partida .cbp-der{position:absolute;left:calc(var(--ancho-lamina) * .54);top:0;
-  width:calc(var(--ancho-lamina) * .46);height:var(--alto-diseno);background:var(--navy)}
-/* Arriba el nombre, centrado; abajo el logotipo sobre blanco. El corte al
-   52% deja el nombre en el aire que necesita y al logotipo una caja casi
-   cuadrada, que es como mejor se lee la marca cuadrada. */
-.cb-partida .cbp-titulo{position:absolute;left:0;top:0;width:100%;height:52%;
-  box-sizing:border-box;padding:0 40px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center}
-/* nowrap: el nombre va SIEMPRE en una linea, que es como se lee una razon
-   social. A 38 px cabia justo, y bastaba con que la fuente condensada no
-   cargara -y entrara el Arial Narrow de reserva, mas ancho- para que se
-   partiera en dos. A 34 px y con el panel menos acolchado entra con holgura
-   incluso con la letra de reserva. */
-.cb-partida .cbp-titulo h2{color:#fff;font-size:35px;line-height:1.15;
-  white-space:nowrap;text-transform:uppercase}
-/* La raya entre el nombre y el titular es la pieza de los RIELES tumbada:
-   las mismas dos barras que bajan en diagonal por el canto izquierdo de las
-   laminas de contenido -rieles() en generar.py-, con su mismo sesgo y sus
-   mismos dos azules, pero en horizontal y mas finas -alli son 9 y 5 px, una
-   barra vertical que se puede permitir ese grosor; tumbada como raya se veia
-   demasiado gruesa, el usuario lo pidio mas fina-.
-   El angulo sale de --sesgo-riel, la misma variable que usan las diagonales:
-   si alli se cambia, esta raya se inclina con ellas y no se quedan a dos
-   angulos distintos. Los colores si se repiten aqui -rieles() los lleva en
-   linea, en el HTML-; al tocarlos alli, tocarlos tambien aqui. */
-.cb-partida .cbp-raya{display:flex;align-items:center;gap:14px;margin:26px 0 24px}
-.cb-partida .cbp-raya::before,
-.cb-partida .cbp-raya::after{content:'';transform:skewX(var(--sesgo-riel,-9deg))}
-.cb-partida .cbp-raya::before{width:92px;height:4px;background:#4966AD}
-.cb-partida .cbp-raya::after{width:38px;height:3px;background:rgba(124,139,186,.5)}
-/* El titular va en la MISMA letra que los titulos de las laminas -Barlow
-   Condensed, la de "Nuestra empresa"- y no en la Barlow de texto con que
-   salio: lo pidio el usuario, y asi las dos lineas de la portada hablan el
-   mismo idioma tipografico. En 600 y no en el 700 de los h2: es la frase que
-   acompana al nombre, no un segundo titulo que compita con el. El 600 no es
-   capricho: de la Condensada solo van embebidos el 600 y el 700 (ver
-   fuentes.css), y pedir un 500 obligaria al navegador a fabricarlo. */
-.cb-partida .cbp-titulo p{color:#fff;font-size:24.5px;line-height:1.32;
-  font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;
-  text-transform:uppercase}
-/* Solo el logotipo: el sello se fue a la foto, asi que aqui no hay que
-   repartir dos piezas y la marca se queda sola en el centro del blanco. */
-.cb-partida .cbp-logo{position:absolute;left:0;bottom:0;width:100%;height:48%;
-  background:#fff;display:flex;align-items:center;justify-content:center}
-/* 170 px: el usuario lo pidio mas grande, otra vez. El panel blanco mide
-   48% de 720 -unos 345 px-, asi que a este cuerpo el logotipo sigue
-   teniendo aire por arriba y por abajo y no toca los cantos. */
-.cb-partida .cbp-logo img{height:170px;width:auto}
-/* Los rieles de .cbp-titulo y .cbp-logo -uno para cada caja, ver la nota de
-   lamina_cubierta_partida()- nacen pegados al canto IZQUIERDO de su caja,
-   que es donde cae esta pieza en el resto del brochure -la costura entre la
-   foto y el panel-. El usuario los quiso en el canto DERECHO de la cubierta
-   en su lugar: right y no left, con pointer-events ya heredado de la regla
-   comun -no hace falta repetirlo-.
-   La caja de 80 px solo lleva barras hasta su propio px 29 -el resto es
-   aire, el mismo que a la izquierda deja sitio para el sesgo-, asi que a
-   right:16 la barra mas cercana al canto quedaba a 33 px de el. El usuario
-   la pidio mas cerca, y luego "mucho mas" todavia. A -38 se paso: la barra
-   GRUESA -mas ancha, se nota mas- quedaba cortada por el overflow:hidden
-   de la lamina, 20 px de ella por fuera del canto. A -18, medido igual con
-   getBoundingClientRect, las dos barras quedan enteras y la mas cercana al
-   canto a unos 13 px de el. */
-.cb-partida .cbp-titulo .rieles-panel,
-.cb-partida .cbp-logo .rieles-panel{left:auto;right:-18px}
-/* El sello va SOBRE la foto, al pie y pegado al margen, como en las portadas
-   de informe anual que trajo el usuario. Alineado a la izquierda y no
-   centrado: la columna de la foto es angosta y centrado se leia como un pie
-   de imagen, no como el sello de la portada. */
-.cb-partida .cbp-foto .cbp-sello{position:absolute;z-index:3;
-  left:var(--lado-medio);right:var(--lado-medio);bottom:40px;
-  /* column-reverse y no reordenar el HTML: el ANO va arriba y el rotulo
-     debajo -lo pidio el usuario- pero en el marcado el rotulo sigue primero,
-     que es el orden en que se lee y el que usa cualquier otro sitio donde se
-     ponga este sello. */
-  display:flex;flex-direction:column-reverse;align-items:flex-start;gap:2px}
-/* El ano, al modo de las portadas de informe anual: dos cifras en blanco y
-   dos en el AZUL de la casa -el mismo var(--azul) del panel, los rieles y los
-   epigrafes-, que es el que ata la portada con el resto de las laminas; el
-   azul palido con el que salio primero se leia como un color de fuera.
-   62 px y no los 92 con que se probo: a ese cuerpo el ano competia con el
-   nombre de la empresa en vez de acompanarlo. El <i> son las dos primeras
-   -lo parte sello_brochure()-; el resto hereda el color de la <b>. */
-.cb-partida .cbp-foto .cbp-sello b{font-size:62.5px;line-height:.94;margin:0;
-  letter-spacing:.01em;color:var(--azul)}
-.cb-partida .cbp-foto .cbp-sello b i{font-style:normal;color:#fff}
-.cb-partida .cbp-foto .cbp-sello span{color:#fff;font-size:15.5px}
-/* El pie de esa foto es lo mas claro que tiene -acera y cesped-, asi que el
-   sello no se sostiene solo: este degradado cierra el ultimo tercio sin tocar
-   el edificio, que es lo que hay que ver. */
-.cb-partida .cbp-foto::after{content:'';position:absolute;z-index:2;
-  left:0;right:0;bottom:0;height:44%;pointer-events:none;
-  background:linear-gradient(180deg,rgba(9,17,42,0) 0%,rgba(9,17,42,.32) 45%,
-             rgba(9,17,42,.86) 100%)}
-
-
-
-/* ===========================================  1B. NUESTRA EMPRESA  =====
-   La lamina que presenta a la empresa antes de Mision y vision -las dos
-   abren la seccion "Quienes somos"-. Foto a toda la altura en un lado, panel
-   navy con el parrafo en el otro: el mismo reparto de "Nuestros valores"
-   (ver "2b. VALORES", mas abajo), calcado a proposito para no escribir dos
-   veces el mismo par de reglas -solo que aqui la foto va a la DERECHA y el
-   panel a la IZQUIERDA, al reves que en Valores, para que las dos laminas
-   seguidas no se lean identicas.
-   Nacio con la foto arriba a lo ancho de toda la hoja -el esqueleto de
-   "Mision y vision"-; el usuario la vio y pidio la foto en un lado, no
-   ocupando toda la pagina.
-   El bloque de texto -titulo y parrafo, un parrafo solo, corto- va CENTRADO
-   verticalmente en el panel y no clavado arriba: el usuario lo vio arriba y
-   se leia poco profesional, con medio panel vacio debajo. Es el gesto
-   estandar para un texto corto junto a una foto a sangre -no hacia falta
-   inventar mas foto ni mas texto, solo repartir mejor el que ya hay-. */
-/* El reparto era 55/45 a favor del panel, calcado de Valores. Aqui el texto es
-   UN parrafo corto -bastante menos que los dos de Valores-, asi que ese 55 le
-   sobraba: el panel se quedaba con medio alto vacio arriba y abajo del bloque
-   centrado mientras la foto, que es la que tiene algo que ensenar, iba
-   apretada. Pasa a 50/50: la foto gana 64 px en la panoramica y 53 en la carta.
-   El parrafo, mas angosto, pasa de 3 a 4 lineas en la panoramica y de 4 a 5 en
-   la carta -medido-; no se corta en ninguna de las dos y de paso el bloque de
-   texto llena mejor el panel, que era el otro medio problema. Valores se queda
-   en su 45/55: alli el texto SI llena el panel. */
-/* El reparto pasa de 50/50 a 43/57: el usuario pidio las fotos mas anchas y,
-   de paso, que el texto crezca hacia abajo en vez de a lo largo -en una
-   columna mas estrecha el mismo parrafo ocupa mas renglones-. Va en tanto por
-   ciento, asi que vale igual en la panoramica y en la hoja carta. */
-.qse-panel{position:absolute;left:0;top:0;
-  width:calc(var(--ancho-lamina) * .43);height:var(--alto-diseno);
-  background:var(--navy);overflow:hidden;box-sizing:border-box;
-  padding:0 var(--lado-medio);display:flex;flex-direction:column;justify-content:center}
-/* La columna derecha es un COLLAGE: tres franjas iguales, SIN costura entre
-   ellas -llevaba un hueco de 4 px con el fondo del panel detras, primero en
-   azul de marca y despues en navy, pero el usuario seguia viendo eso como
-   una raya separando las fotos y las querian pegadas, una junto a la otra
-   sin nada en medio-. gap:0 y ya no hace falta ni pensar en el color del
-   hueco, porque no hay hueco.
-   Grid y no tres cajas colocadas a mano para que las tres midan siempre lo
-   mismo aunque un dia se quite o se anada una foto: la lista manda
-   (FOTOS_EMPRESA en generar.py) y la maqueta se adapta. */
-.qse-foto{position:absolute;left:calc(var(--ancho-lamina) * .43);top:0;
-  width:calc(var(--ancho-lamina) * .57);height:var(--alto-diseno);
-  overflow:hidden;background:var(--navy);
-  display:grid;grid-auto-rows:1fr;gap:0}
-/* El riel del collage, en su extremo derecho -el usuario lo pidio, el mismo
-   gesto que ya tiene la cubierta: uno por caja, no uno solo para toda la
-   lamina-. Va en position:absolute, asi que el grid de arriba no lo cuenta
-   como una franja mas -las piezas absolutas no entran en el reparto del
-   grid- y no descuadra las tres fotos. */
-.qse-foto .rieles-banda{left:auto;right:16px}
-/* Cada franja va en su <figure> para poder ponerle encima el velo y, cuando
-   el usuario mande las fotos de las oficinas, su rotulo de ciudad. */
-.qse-foto figure{position:relative;overflow:hidden;margin:0;min-height:0;
-  background:var(--navy)}
-.qse-foto img{width:100%;height:100%;min-height:0}
-/* Un velo que entra por el canto izquierdo de cada franja -del lado del
-   texto, no por el medio-: ata la columna de fotos con el panel, en vez de
-   dejar tres rectangulos pegados. Llevaba ademas una linea azul al filo -el
-   usuario tampoco la habia pedido y la quito: "los bordes de cada foto
-   tienen unas rayas azules, yo no pedi eso nunca"-. */
-.qse-foto figure::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(9,17,42,.55) 0%,rgba(9,17,42,.12) 26%,
-             rgba(9,17,42,0) 52%)}
-/* El rotulo de cada franja: el chip con el nombre de la obra, abajo a la
-   izquierda, sobre el velo que ya oscurece ese canto. */
-.qse-foto figcaption{position:absolute;z-index:3;left:22px;bottom:18px}
-/* z-index:4 -por encima del riel diagonal, que atraviesa los 720 px del
-   panel entero-: sin esto la barra palida pasaba por encima del texto. El
-   riel sigue en absoluto -su regla de siempre- asi que el flex de arriba no
-   lo mueve de sitio, solo centra estas dos piezas. */
-.qse-cab{position:relative;z-index:4}
-.l-empresa h2{color:#fff;font-size:38px;margin-top:12px}
-/* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
-   pidio igual al de esa lista. */
-/* Justificado, y es el UNICO del brochure: el usuario lo pidio expresamente
-   aqui -prefiere el canto derecho recto a los renglones de distinto largo-.
-   Para que el justificado no abra los huecos que se quitaron en las demas
-   laminas va con hyphens:auto: con lang="es" en el <html>, el navegador parte
-   las palabras largas al final de linea y reparte el sobrante en varios
-   renglones en vez de estirar los espacios de uno solo. */
-.qs-texto{position:relative;z-index:4;margin-top:28px;
-  color:#fff;font-weight:300;font-size:14.2px;line-height:1.78;
-  text-align:justify;hyphens:auto}
-
+.cb-azul .cb-sello span{color:#C3CCE2}
 
 /* ==============================================  2. QUIENES SOMOS  ===== */
-.panel{position:absolute;left:0;width:var(--ancho-lamina);background:var(--navy);overflow:hidden}
-/* Las columnas se reparten solas segun cuantos pilares traiga PILARES en
-   contenido.py -lo mismo que hace .contacto en el cierre-. Con repeat(3,1fr)
-   fijo, al quitar el Objetivo la tercera columna se quedaba vacia y los dos
-   textos apretados en los dos primeros tercios, con un hueco a la derecha.
-   El nombre tampoco es .cols3 ya: la rejilla no sabe cuantas columnas tiene.
-   El hueco sube de 54 a 72 px: con dos columnas cada una gana 180 px de ancho
-   y a 54 la separacion se leia corta al lado de la mancha de texto. */
-.pilares{position:absolute;left:var(--lado);top:42px;width:calc(var(--ancho-lamina) - 2 * var(--lado));
-  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:72px}
+.panel{position:absolute;left:0;width:1280px;background:var(--navy);overflow:hidden}
+.cols3{position:absolute;left:var(--lado);top:62px;width:calc(1280px - 2 * var(--lado));
+  display:grid;grid-template-columns:repeat(3,1fr);gap:54px}
 .pilar-cab{display:flex;align-items:center;gap:15px;margin-bottom:18px}
 .num{background:var(--navy-medio);color:#fff;transform:skewX(-22deg);padding:4px 15px}
 .num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14px}
 .pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.3em}
-/* Justificada con hyphens:auto: con el texto actual de Mision y Vision el
-   navegador si parte palabras (reconoci-dos, eco-nomico) y el interpalabra
-   queda parejo, sin los huecos que daba el justificado sin partir palabras
-   con el texto viejo. Si se cambia el texto, revisar que siga parejo -si el
-   navegador deja de partir palabras en alguna linea, vuelve a abrir huecos. */
-/* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
-   pidio igual al de esa lista. */
-/* Sin justificar, por lo mismo que .ct p: la columna es media lamina y el
-   castellano trae palabras largas -"infraestructura", "constructivas"-, asi
-   que para cuadrar el canto derecho se abrian huecos entre palabras y la
-   Mision se leia a saltos. En este brochure ya no se justifica en ningun
-   sitio: todas las columnas son estrechas. */
-.pilar p{color:#fff;font-weight:300;font-size:14px;line-height:1.82}
-
-/* =====================================================  2b. VALORES  ===
-   Foto a toda la altura en el lado izquierdo -.va-foto-, panel navy a la
-   derecha -.va-panel- con la cabecera arriba y los cinco valores apilados
-   uno debajo del otro, no en columnas: a un lector le cuesta menos seguir
-   una lista larga leyendo hacia abajo que saltando de columna en columna.
-   Todo lo horizontal va en tanto por ciento de --ancho-lamina, como en las
-   cubiertas: asi vale igual en la panoramica y en la carta sin ningun ajuste
-   en carta.css. */
-.va-foto{position:absolute;left:0;top:0;
-  width:calc(var(--ancho-lamina) * .45);height:var(--alto-diseno);
-  overflow:hidden;background:var(--navy)}
-.va-foto img{width:100%;height:100%}
-.va-panel{position:absolute;left:calc(var(--ancho-lamina) * .45);top:0;
-  width:calc(var(--ancho-lamina) * .55);height:var(--alto-diseno);
-  background:var(--navy);overflow:hidden}
-/* z-index:4 -por encima del riel diagonal, que va en z-index:3 y aqui
-   atraviesa todo el alto del panel (720 px): sin esto la segunda barra,
-   la palida, pasaba por encima del epigrafe y del titulo. */
-.va-cab{position:absolute;left:var(--lado-medio);top:56px;z-index:4;
-  width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio))}
-.l-valores h2{color:#fff;font-size:38px;margin-top:12px}
-.l-valores .va-cab p{margin-top:14px;font-size:14.5px;line-height:1.6;font-weight:300;
-  color:#fff}
-.va-lista{position:absolute;left:var(--lado-medio);top:222px;z-index:4;
-  width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio));
-  display:flex;flex-direction:column}
-.va-lista .valor{display:flex;align-items:flex-start;gap:16px;
-  padding:14px 0;border-top:1px solid rgba(124,139,186,.28)}
-.va-lista .valor:first-child{border-top:none;padding-top:0}
-.va-lista .v-texto h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;
-  font-size:14.5px;letter-spacing:.2em}
-.va-lista .v-texto p{margin-top:6px;color:#fff;font-weight:300;
-  font-size:13.5px;line-height:1.6}
+.pilar p{color:#fff;font-weight:300;font-size:15px;line-height:1.82;text-align:justify;hyphens:auto}
 
 /* ==================================================  3. SERVICIOS  ===== */
-.cabecera{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado))}
+.cabecera{position:absolute;left:var(--lado);top:46px;width:calc(1280px - 2 * var(--lado))}
 .cabecera h2{font-size:52px;margin-top:12px;color:var(--navy)}
-/* z-index:4 -por encima del riel diagonal (z-index:3): la primera columna
-   arranca en --lado-medio, 16 px antes de donde acaba el riel, y sin esto
-   la barra palida cruzaba el "01" y el titulo del primer servicio. */
-.cols4{position:absolute;left:var(--lado-medio);top:16px;z-index:4;
-  width:calc(var(--ancho-lamina) - 2 * var(--lado-medio));
+.cols4{position:absolute;left:var(--lado-medio);top:38px;width:calc(1280px - 2 * var(--lado-medio));
   display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
 .srv .num{background:none;transform:none;padding:0;color:#fff;
   font-weight:600;font-size:12px;letter-spacing:.26em}
@@ -697,22 +431,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .srv li{position:relative;padding-left:22px;font-size:14px;font-weight:300;line-height:1.4;color:#fff}
 .srv li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:7px;background:var(--azul);
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
-/* El fondo es BLANCO, el de la hoja. Las fotos van cortadas en diagonal, asi
-   que en el canto izquierdo -arriba- y en el derecho -abajo- queda una cuna
-   que ninguna llega a tapar, y esa cuna es de este fondo.
-   Estuvo en navy un tiempo, con el argumento de que asi las cunas eran el
-   mismo azul del panel entrando en diagonal entre las fotos. El usuario lo
-   rechazo en las DOS laminas que usan esta tira, y por el mismo motivo: con
-   el panel azul arriba y la tira azul abajo, la hoja se leia azul de arriba
-   abajo y el azul dejaba de significar "aqui esta el texto". En blanco, el
-   panel vuelve a ser la caja del texto y la tira abre la hoja al pie.
-   La junta con el panel sigue montada 1 px -el panel baja hasta 1 px por
-   dentro de la tira, lo mismo que hace .pie-navy en el cierre-: con la junta
-   clavada en el limite exacto el navegador la parte en un pixel fraccionado al
-   hacer zoom y asomaba una raya clara de lado a lado. Ese solape se queda
-   aunque el fondo ya no lo necesite para disimular nada: lo que evita es que
-   el canto del panel navy quede dentado. */
-.tira{position:absolute;left:0;top:440px;width:var(--ancho-lamina);height:280px;overflow:hidden;
+.tira{position:absolute;left:0;top:440px;width:1280px;height:280px;overflow:hidden;
   display:grid;grid-template-columns:repeat(5,1fr);background:#fff}
 /* El corte en diagonal desplaza la foto un 15% de su ancho arriba y otro
    tanto abajo, asi que dos vecinas solo encajan sin cuna blanca en medio si
@@ -720,30 +439,13 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    quedaba una raya blanca entre foto y foto. */
 .tira figure{overflow:hidden;margin-inline:-7.5%;clip-path:polygon(15% 0,100% 0,85% 100%,0 100%)}
 .tira img{width:100%;height:100%;--zoom:1.16}
-/* Las dos fotos de las PUNTAS -primera y ultima- no tienen vecina a ese lado
-   con la que hacer costura, solo el canto de la hoja: con el mismo corte
-   diagonal de las de en medio quedaba una cuna blanca en el rincon, como si a
-   la tira le faltara un trozo (el mismo problema que ya se resolvio en
-   .tira-flota, mas abajo). Aqui se aplica igual: canto recto hacia afuera,
-   diagonal solo hacia la vecina de dentro. */
-.tira figure:first-child{margin-left:0;
-  clip-path:polygon(0 0,100% 0,85% 100%,0 100%)}
-.tira figure:last-child{margin-right:0;
-  clip-path:polygon(15% 0,100% 0,100% 100%,0 100%)}
 
 /* =================================================  4. PORTAFOLIO  ===== */
-.pf-cols{position:absolute;left:var(--lado-medio);top:228px;width:calc(var(--ancho-lamina) - 2 * var(--lado-medio));
+.pf-cols{position:absolute;left:var(--lado-medio);top:228px;width:calc(1280px - 2 * var(--lado-medio));
   display:grid;grid-template-columns:repeat(3,1fr);gap:48px}
 .pf-col header{display:flex;align-items:baseline;justify-content:space-between;
   border-bottom:1px solid rgba(18,33,73,.2);padding-bottom:9px;margin-bottom:16px}
-/* 17 px contra los 12 de los demas rotulos espaciados del brochure: estos
-   tres -CONSTRUCCION, SERVICIOS Y ALQUILER, AMBIENTE- encabezan cada columna
-   de la lamina y el usuario los pidio mas grandes dos veces. Con el espaciado
-   de .3em, "SERVICIOS Y ALQUILER" a este cuerpo ocupa casi toda su columna:
-   no da para mas sin quitarle sitio al numero que va a su derecha.
-   Es la unica excepcion al cuerpo de los rotulos; si se cambia el resto,
-   este va aparte. */
-.pf-col h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:17px;letter-spacing:.3em;color:var(--navy)}
+.pf-col h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:12px;letter-spacing:.3em;color:var(--navy)}
 .pf-col .cuenta{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:25px;color:var(--azul-suave);line-height:1}
 .pf-col ol{list-style:none;display:flex;flex-direction:column;gap:12px}
 .pf-col li{position:relative;padding-left:23px}
@@ -751,46 +453,25 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 .pf-col .nom{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;
   line-height:1.16;color:var(--navy)}
-/* El nombre del cliente y la pildora de estado van en la misma linea, y no se
-   veian del mismo tamano aunque la pildora fuera MAS chica: 10,5 px contra los
-   11 de aqui. Lo que pesaba no era el cuerpo sino todo lo demas -la pildora va
-   en VERSALITA, en peso 600 y espaciada, asi que llena la linea de arriba abajo
-   con la altura de caja alta, mientras que del cliente solo se ve la altura de
-   x-. El cuerpo sube a 12 y el peso a 500 para que los dos pesen igual en el
-   renglon; la pildora no se toca, que es la que marca el estado. */
 .pf-col .pie{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  font-size:12px;font-weight:500;color:var(--gris);margin-top:3px}
+  font-size:11px;color:var(--gris);margin-top:3px}
 
 /* ==========================================  5-13. PROYECTOS (web)  ==== */
-.rejilla{position:absolute;left:var(--lado-rejilla);top:34px;width:calc(var(--ancho-lamina) - 2 * var(--lado-rejilla));height:652px;
+.rejilla{position:absolute;left:var(--lado-rejilla);top:34px;width:calc(1280px - 2 * var(--lado-rejilla));height:652px;
   display:grid;grid-template-columns:1fr 1fr;gap:56px}
 .tarjeta{display:flex;flex-direction:column;height:100%;min-height:0}
 .tarjeta .hero{position:relative;height:192px;flex:none;overflow:hidden;background:var(--hielo);
   clip-path:polygon(0 0,100% 0,calc(100% - 34px) 100%,0 100%)}
 .tarjeta .hero img{width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.3,1)}
 .tarjeta .hero .marca{position:absolute;left:-14px;top:0;display:flex;pointer-events:none}
-/* El 18 de abajo es MAS que el 16 de arriba a proposito: por arriba estas
-   insignias tienen la foto, que ya es un borde duro, y por abajo el titular, que
-   necesita despegarse para leerse como lo que es -el nombre del proyecto- y no
-   como el pie del ano y el estado. */
-.insignias{display:flex;align-items:center;gap:16px;margin:16px 0 18px;flex:none}
+.insignias{display:flex;align-items:center;gap:16px;margin:16px 0 12px;flex:none}
 .insignias .anio{font-size:12px;font-weight:600;letter-spacing:.26em;color:var(--azul-suave)}
-/* el cuerpo va aparte porque el del destacado es otro -mas abajo-: si se
-   pusiera aqui, esa regla tendria que deshacerlo */
-.tarjeta h3,.l-destacado h3{color:var(--navy);flex:none}
-.tarjeta h3{font-size:30px}
+.tarjeta h3,.l-destacado h3{font-size:30px;color:var(--navy);flex:none}
 .tarjeta .sub,.l-destacado .sub{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
   color:var(--azul);margin-top:9px;padding-bottom:9px;position:relative;line-height:1.22;flex:none}
 .tarjeta .sub::after,.l-destacado .sub::after{content:"";position:absolute;left:0;bottom:0;
   width:78px;height:2px;background:rgba(73,102,173,.4)}
-/* La descripcion de cada proyecto va en NEGRO y no en el gris de texto del
-   resto del brochure: lo pidio el usuario. Es el unico parrafo del documento
-   que se aparta de --texto, y a proposito -es el dato duro de la obra: que se
-   construyo, de que medida y donde-. */
-/* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
-   con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los
-   mismos huecos. Ver la nota de .ct p. */
-.desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:#000;
+.desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:var(--texto);text-align:justify;hyphens:auto;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .minis figure{height:142px;overflow:hidden;background:var(--hielo);
@@ -802,10 +483,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .caja-cliente b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;margin-top:1px}
 
 /* proyecto impar: lamina completa */
-.l-destacado .hero{position:absolute;left:0;top:0;width:var(--ancho-lamina);height:270px;overflow:hidden}
+.l-destacado .hero{position:absolute;left:0;top:0;width:1280px;height:270px;overflow:hidden}
 .l-destacado .hero img{width:100%;height:100%}
 .l-destacado .hero .marca{position:absolute;left:42px;bottom:0;display:flex;pointer-events:none}
-.l-destacado .cuerpo{position:absolute;left:var(--lado-rejilla);top:302px;width:calc(var(--ancho-lamina) - 2 * var(--lado-rejilla));height:390px;
+.l-destacado .cuerpo{position:absolute;left:var(--lado-rejilla);top:302px;width:calc(1280px - 2 * var(--lado-rejilla));height:390px;
   display:grid;grid-template-columns:470px 1fr;gap:54px}
 .l-destacado .izq{display:flex;flex-direction:column}
 .l-destacado h3{font-size:38px}
@@ -823,7 +504,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
 
 /* ==================================================  14. CLIENTES  ===== */
-.cl-cols{position:absolute;left:var(--lado);top:44px;width:calc(var(--ancho-lamina) - 2 * var(--lado));
+.cl-cols{position:absolute;left:var(--lado);top:44px;width:calc(1280px - 2 * var(--lado));
   display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .gerencias{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
 .gerencias li{position:relative;padding-left:24px;font-size:15.5px;font-weight:400;color:#fff}
@@ -841,27 +522,20 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* =====================================================  FLOTA PROPIA  == */
 .fl-cab{position:absolute;left:var(--lado);top:44px;width:540px}
 .l-flota h2{color:#fff;font-size:42px;margin-top:12px}
-/* EN BANDERA, no justificado -lo pidio el usuario-. Es el mismo caso que la
-   entrada de la portada: la columna mide 540 px y el texto va a 14,5, asi que
-   caben pocas palabras por linea; al justificar, el navegador tiene que
-   repartir el sobrante entre muy pocos huecos y se abren rios entre palabras.
-   Con el borde derecho suelto el interpalabra queda parejo en las tres lineas.
-   Se va tambien hyphens:auto: estaba para ayudar al justificado, y en bandera
-   solo serviria para partir palabras sin necesidad. */
 .l-flota .fl-cab p{margin-top:16px;font-size:14.5px;line-height:1.78;font-weight:300;
-  color:#fff}
+  color:#C6CDDE;text-align:justify;hyphens:auto}
 .fl-total{position:absolute;right:var(--lado);top:44px;width:396px}
 .fl-total>b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:74px;line-height:.9;color:#fff;letter-spacing:-.01em}
+  font-weight:700;font-size:88px;line-height:.9;color:#fff;letter-spacing:-.01em}
 .fl-total>span{display:block;margin-top:5px;font-size:12.5px;font-weight:600;
-  letter-spacing:.3em;text-transform:uppercase;color:#fff}
+  letter-spacing:.3em;text-transform:uppercase;color:var(--azul-suave)}
 .fl-sub{display:flex;gap:26px;margin-top:16px;padding-top:14px;
   border-top:1px solid rgba(124,139,186,.32)}
-.fl-sub span{font-size:12.5px;font-weight:500;color:#fff}
+.fl-sub span{font-size:12.5px;font-weight:500;color:#C6CDDE}
 
 /* los dos bloques: primero la pesada, debajo la liviana.
    Sin rotulos: los separa el espacio entre grupos. */
-.fl-bloques{position:absolute;left:var(--lado);top:216px;width:calc(var(--ancho-lamina) - 2 * var(--lado));
+.fl-bloques{position:absolute;left:var(--lado);top:216px;width:calc(1280px - 2 * var(--lado));
   display:flex;flex-direction:column;gap:26px}
 .fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
   gap:12px 20px}
@@ -869,7 +543,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .fl-bloque b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
   font-weight:700;font-size:31px;line-height:1;color:#fff}
 .fl-bloque span{display:block;margin-top:4px;font-size:12.5px;font-weight:400;
-  line-height:1.35;color:#fff}
+  line-height:1.35;color:#DCE2EE}
 
 /* Se quitaron los rotulos de bloque: lo que separa la flota pesada de la
    liviana es el filo de arriba, azul y grueso en la primera, fino y palido en
@@ -878,97 +552,49 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    el segundo iba mas chico y mas apagado y la lista parecia descuadrada. Lo
    unico que los sigue separando es el filo de arriba, mas fino en el segundo. */
 .fl-bloque:last-child li{border-top-width:2px;border-top-color:rgba(124,139,186,.55)}
-/* Solo sitio, alto y numero de columnas: el fondo blanco, el corte en
-   diagonal y el canto recto de las puntas ya vienen de .tira, que es la
-   misma pieza (el canto recto de las puntas se generalizo ahi mismo cuando
-   el usuario pidio la misma forma para la tira de Servicios). */
 .tira-flota{top:545px;height:175px;grid-template-columns:repeat(4,1fr)}
-.tira-flota figure:last-child{margin-right:0;
-  clip-path:polygon(15% 0,100% 0,100% 100%,0 100%)}
 
 /* ====================================================  15. CIERRE  ===== */
-/* 700 -> 620: el usuario pidio mas ancho de foto y menos de panel, para que
-   se viera mas la foto. cr-der se ensancha lo mismo que esta se achica (ver
-   su nota, mas abajo). */
-.cr-izq{position:absolute;left:0;top:0;width:620px;height:467px;background:#fff}
+.cr-izq{position:absolute;left:0;top:0;width:700px;height:467px;background:#fff}
 .cr-izq .cuna-ice{position:absolute;left:0;bottom:0;width:100%;height:62%;background:var(--hielo);
   clip-path:polygon(0 26%,100% 0,100% 100%,0 100%)}
 .cr-izq .pt-cuerpo{padding:56px 56px 34px var(--lado-medio)}
-/* El titular de las dos laminas hermanas: el h2 del cierre y el h1 de la
-   portada. Misma pieza, misma regla.
-   54 px y no 44, y 22 de aire y no 38: es el mismo cuerpo y el mismo ritmo
-   con que "Mision y vision" resuelve su titular (.banda-txt h2), que es lo
-   que pidio el usuario. El color no se copia -alli va en blanco sobre la
-   foto y aqui en navy sobre el panel claro-, solo el tamano y el aire.
-   El usuario pidio un punto mas chico -53- de la mano del panel mas
-   angosto (700 -> 620, para que la foto ganara sitio); medido, a 53 "nuestra
-   industria petrolera" ya no entraba en su renglon (519 px contra 466
-   disponibles) y el titular se partia en TRES lineas en vez de las dos del
-   <br>. A 47 la linea mas larga pide 460, entra con 6 px de sobra. */
-.l-cierre h2,.l-portada h1{font-size:47px;margin-top:22px;color:var(--navy)}
+.l-cierre h2{font-size:44px;margin-top:38px;color:var(--navy)}
 /* sin overflow:hidden, si no los rieles diagonales se cortan a media altura
    al inclinarse hacia la izquierda (la figura ya recorta la foto por su cuenta) */
 /* El corte en diagonal de la foto deja ver el fondo de la lamina: contra el
    panel color hielo de la izquierda eso se leia como una linea blanca. Se
    pinta detras el mismo blanco arriba / hielo abajo, con el corte a la misma
    altura a la que arranca la cuna de la izquierda (177 de 467 = 37,9%). */
-.cr-der{position:absolute;left:619px;top:0;width:661px;height:467px;
+.cr-der{position:absolute;left:699px;top:0;width:581px;height:467px;
   background:linear-gradient(180deg,#fff 0 37.9%,var(--hielo) 37.9%)}
-/* Arranca 1 px por encima del borde de la lamina: el recorte diagonal se
-   suaviza contra lo que tiene detras y, si cae en un pixel partido, ese
-   suavizado mezclaba con el blanco de .cr-der y dejaba un hilo claro cruzando
-   la foto. Con el solape no queda fondo que asomar. */
+/* Arranca 1 px por encima del borde de la lamina por lo mismo que el pie
+   monta sobre la foto: el recorte diagonal se suaviza contra lo que tiene
+   detras, y en el PDF de carta -donde la lamina entra encogida y el borde de
+   arriba cae en un pixel partido- ese suavizado mezclaba con el blanco de
+   .cr-der y dejaba un hilo claro cruzando la foto. Con el solape no queda
+   fondo que asomar; el pixel de mas lo recorta la propia lamina. */
 .cr-der figure{position:absolute;inset:-1px 0 0 0;overflow:hidden;clip-path:polygon(11% 0,100% 0,100% 100%,2% 100%)}
 .cr-der img{width:100%;height:100%}
 /* la foto se funde con el pie azul en vez de cortarse en seco */
 .cr-der figure::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;
   background:linear-gradient(180deg,rgba(12,23,52,0) 0%,rgba(12,23,52,.55) 62%,
              rgba(12,23,52,.92) 88%,#0C1734 100%)}
-/* Pegadas al borde de la foto: antes arrancaban 56 px a su izquierda y entre
-   las barras y la imagen quedaba un hueco claro que el usuario pidio cerrar.
-   Con -34 el juego entero cae dentro de esos 34 px que preceden al corte. */
-:is(.l-cierre,.l-portada) .rieles-portada{left:-34px;top:-10px;height:477px;width:34px}
+.l-cierre .rieles-portada{left:-56px;top:-10px;height:477px;width:56px}
 /* El pie arranca 1 px mas arriba y monta sobre el borde inferior de la foto y
    del panel claro. Cuando la union caia justo en el limite (467) y el navegador
    la dibujaba en un pixel fraccionado -zoom o pantalla escalada- asomaba el
    blanco de fondo de la lamina como una raya de 1 px de ancho de lado a lado.
    Con el solape no queda hueco que rellenar. El alto compensa: 466 + 254 = 720. */
-.pie-navy{position:absolute;left:0;top:466px;width:var(--ancho-lamina);height:254px;background:var(--navy-hondo);overflow:hidden}
-/* Las columnas se repartian solas segun cuantos bloques trajera CONTACTO en
-   contenido.py -asi era con repeat(4,1fr) fijo, que dejaba un hueco al quitar
-   una-, pero a partes iguales el tercio de telefono+correo (340 px) se
-   quedaba corto: el telefono solo, medido, pide 248 y con el correo al lado
-   mas el hueco entre los dos son 416. Se fijan los tres anchos en vez de
-   repartir iguales -el mismo recurso que ya usa carta.css para su hoja
-   angosta-: sede operativa suelta ancho, que su renglon es corto de sobra.
-   380 + 210 + 430 = 1020 = 1088 (el ancho util) menos los dos huecos de 34. */
-.contacto{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado));display:grid;
+.pie-navy{position:absolute;left:0;top:466px;width:1280px;height:254px;background:var(--navy-hondo);overflow:hidden}
+/* las columnas se reparten solas segun cuantos bloques traiga CONTACTO en
+   contenido.py; con repeat(4,1fr) fijo, al quitar uno quedaba un hueco. */
+.contacto{position:absolute;left:var(--lado);top:46px;width:calc(1280px - 2 * var(--lado));display:grid;
   grid-auto-flow:column;grid-auto-columns:1fr;gap:34px}
-.l-cierre .contacto{grid-template-columns:380px 210px 430px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
   font-size:11px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
 .ct h4 svg{width:15px;height:15px;flex:none;stroke:var(--azul-suave);fill:none;stroke-width:1.9}
-/* En blanco, no en el azul palido de antes: lo pidio el usuario. Son los
-   datos con los que te localizan -la direccion, la sede, los telefonos- y en
-   #C6CDDE se apagaban contra el navy al lado de sus propios rotulos, que ya
-   iban en blanco. */
-/* Alineado a la IZQUIERDA, no justificado. Justificar solo se sostiene en
-   columnas largas: en estas caben unos 40 caracteres, y para cuadrar el canto
-   derecho el navegador abria huecos enormes entre palabras -"Calle   Paris
-   entre   New   York   y   Caroni"-. El canto irregular se nota mucho menos
-   que esos rios, y son datos de contacto, no un parrafo de lectura. */
-.ct p{font-size:14px;font-weight:300;line-height:1.8;color:#fff}
-/* Telefono y correo, juntos en un bloque -.ct-directo, lo arma lamina_cierre()
-   con CONTACTO_DIRECTO- que de cara a la rejilla de arriba es una columna mas,
-   igual que las dos sedes. Aqui, en la panoramica, sale uno al lado del otro
-   -flex en fila-; carta.css lo pone en columna para apilarlos, que es donde de
-   verdad hace falta el ahorro de ancho (ver la nota de esa regla).
-   Cada uno mide lo que pide su texto -flex:0 1 auto, no una mitad fija-: a
-   partes iguales el telefono, con sus 248 px medidos, no cabia en la mitad de
-   un tercio (170) y se partia en dos lineas. */
-.ct-directo{display:flex;gap:22px}
-.ct-directo .ct{flex:0 1 auto}
-.ct-directo .ct p{white-space:nowrap}
+.ct p{font-size:14px;font-weight:300;line-height:1.8;color:#C6CDDE}
 .sello{position:absolute;left:var(--lado);right:var(--lado);bottom:34px;padding-top:18px;
   border-top:1px solid rgba(124,139,186,.28);
   display:flex;align-items:baseline;justify-content:flex-end;
@@ -989,77 +615,128 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 </style>
 <link rel="stylesheet" href="encuadre.css">
+<style id="vista-carta">
+/* ==================================================================
+   VISTA CARTA - el folio de verdad, 11 x 8,5 in (1056 x 816 px)
+   franja 2.10 cm  .  diseno 16.92 cm  .  franja 2.10 cm
+   Las medidas vienen de exportar_pdf_carta.py; no tocar aqui.
+   ================================================================== */
+html,body{background:#525C72}
+body{padding:30px 0 44px}
+.lamina{zoom:0.825000;background-color:#fff;
+  margin:0 auto 30px;box-shadow:0 14px 40px rgba(0,0,0,.45);
+  opacity:1 !important;transform:none !important;transition:none !important}
+
+/* el alto de cada lamina, tal cual lo define exportar_pdf_carta.py */
+.lamina{height:775px;padding:118px 0 96.091px;box-sizing:content-box}.encabezado-hoja{display:block;top:14px;height:104px}.encabezado-hoja .enc-cuna{width:560px}.encabezado-hoja img{left:72px;width:340px}.pie-hoja{display:flex;left:0;right:0;padding:44px 72px 0;height:140.091px}.l-cubierta .banda{top:145px !important;height:470px !important}.l-cubierta .panel{top:615px !important;height:250px !important}.l-cubierta .cb-marca,.l-cubierta .cb-fila{left:72px}.l-cubierta .cb-sello{left:72px;right:72px}.l-portada .pt-izq,.l-portada .pt-der{top:145px;height:720px}.l-portada h1{width:700px}.l-portada .linea,.l-portada .entrada{width:600px}.l-nosotros{display:flex;flex-direction:column;justify-content:center}.l-nosotros .banda{position:relative;flex:none}.l-nosotros .panel{position:relative;flex:1 0 auto;top:auto !important;height:auto !important;padding:56px 0;display:flex;flex-direction:column;justify-content:center}.l-nosotros .cols3{position:static;width:1136px;margin:0 auto}.l-servicios{display:flex;flex-direction:column}.l-servicios .cabecera{position:relative;top:auto;padding:0 0 34px;left:72px;width:1136px}.l-servicios .panel{position:relative;flex:1 0 auto;top:auto !important;height:auto !important;padding:56px 0 82px;display:flex;flex-direction:column;justify-content:center}.l-servicios .tira{position:relative;flex:none;top:auto;height:280px}.l-servicios .cols4{position:static;width:1136px;margin:0 auto}.l-portafolio{display:flex;flex-direction:column}.l-portafolio .banda{position:relative;flex:none}.l-portafolio .pf-cols{position:static;flex:1 0 auto;width:1136px;margin:56px auto 0}.l-proyectos .rejilla{top:118px;bottom:96.091px;height:auto;align-content:start;left:36px;width:1208px}.l-proyectos .tarjeta{height:auto}.l-proyectos .minis{padding-top:24px}.l-proyectos .minis figure{height:112px}.l-destacado .hero{top:118px;height:90px}.l-destacado .cuerpo{top:216px;height:677px;left:36px;width:1208px;grid-template-columns:600px 1fr}.lamina.l-destacado .desc{line-height:1.52}.l-destacado h3{font-size:32px}.l-destacado .der{height:100%}.l-destacado .minis{height:100%;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}.l-flota .panel{top:145px !important;height:545px !important}.l-flota .tira-flota{top:690px;height:175px}.l-flota .fl-cab{left:72px}.l-flota .fl-total{right:72px}.l-flota .fl-bloques{left:72px;width:1136px}.l-clientes{display:flex;flex-direction:column;justify-content:center}.l-clientes .banda{position:relative;flex:none}.l-clientes .panel{position:relative;flex:1 0 auto;top:auto !important;height:auto !important;padding:56px 0;display:flex;flex-direction:column;justify-content:center}.l-clientes .cl-cols{position:static;width:1136px;margin:0 auto}.l-cierre .cr-izq,.l-cierre .cr-der{top:145px;height:467px}.l-cierre .pie-navy{top:611px;height:auto;bottom:96.091px}.l-cierre .contacto{left:72px;width:1136px}.l-cierre .pie-hoja{--pie-azul:var(--navy-hondo)}.l-cierre .sello{left:72px;right:72px}.banda>img{height:calc(100% + 1px)}.insignias{margin-bottom:18px}.banda-txt{left:72px}.banda-fecha{right:72px}.l-portada .pt-cuerpo,.l-cierre .pt-cuerpo{padding-left:72px}
+/* el texto corrido, a 9 pt */
+.desc,.l-destacado .desc,.entrada,.pilar p,.l-flota .fl-cab p,.ct p{font-size:14.55px;line-height:1.78}.srv li,.gerencias li,.fl-bloque span,.fl-sub span{font-size:14.55px;line-height:1.5}.tarjeta .sub,.l-destacado .sub{font-size:16.48px}.estado b,.estado{font-size:14.55px}.pf-col .pie,.pf-col .estado,.pf-col .estado b{font-size:12.93px}.caja-cliente .rot{font-size:12.93px}
+
+/* En la panoramica, los textos que van encima de una foto llevan
+   pointer-events:none para que el editor pueda agarrar la imagen de
+   debajo y reencuadrarla. Aqui no hay editor -esta vista es para leer
+   e imprimir-, asi que se les devuelve el raton y vuelven a poder
+   seleccionarse y copiarse como cualquier otro texto. */
+.banda-txt,.banda-fecha,.cb-marca,.tarjeta .hero .marca,
+.l-destacado .hero .marca,.pie-hoja{pointer-events:auto}
+
+/* la barra de esta vista */
+#vc-barra{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:flex;
+  align-items:center;gap:16px;padding:10px 18px;background:rgba(12,23,52,.96);
+  color:#E7EBF4;font:500 12px/1.4 "Barlow",system-ui,sans-serif;
+  box-shadow:0 -2px 16px rgba(0,0,0,.4)}
+#vc-barra b{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+#vc-barra .vc-dato{color:#98A3C0}
+#vc-barra .vc-der{margin-left:auto;display:flex;align-items:center;gap:12px}
+#vc-barra a,#vc-barra button{font:600 11px/1 "Barlow",sans-serif;letter-spacing:.14em;
+  text-transform:uppercase;border:0;padding:9px 16px;
+  cursor:pointer;text-decoration:none;display:inline-block}
+#vc-barra a{background:#4966AD;color:#fff}
+#vc-barra button{background:#fff;color:#122149}
+#vc-barra a:hover{background:#5B79C2}
+#vc-barra button:not(:disabled):hover{background:#DCE3F2}
+#vc-barra button:disabled{background:#39456B;color:#8A93AD;cursor:default}
+#vc-estado{min-width:120px;color:#8FE3B0}
+#vc-estado.mal{color:#FF9B9B}
+
+/* Al imprimir desde aqui sale el mismo folio: estilos.css manda @page
+   13,333 x 7,5 in para la panoramica y hay que reponer la carta. Las
+   franjas blancas ya van dentro de la lamina, asi que margen 0. */
+@page{size:11.0000in 8.5000in;margin:0}
+@media print{
+  html,body{background:#fff}
+  body{padding:0}
+  #vc-barra{display:none !important}
+  .lamina{margin:0;box-shadow:none;break-after:page;page-break-after:always}
+  .lamina:last-of-type{break-after:auto;page-break-after:auto}
+}
+</style>
 </head>
 <body>
-<section class="lamina l-cubierta cb-partida">
-  <div class="cbp-foto"><img src="img/sede_edificio.jpg" data-foto="sede_edificio" alt=""><div class="cbp-sello"><span>BROCHURE CORPORATIVO</span><b><i>20</i>26</b></div></div>
-  <div class="cbp-der">
-    <div class="cbp-titulo">
-      <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-      <h2>Constructora Vidalsa 27, C.A.</h2>
-      <span class="cbp-raya"></span>
-      <p>Construyendo la infraestructura<br>que mueve el país</p>
-    </div>
-    <div class="cbp-logo">
-      <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-      <img src="img/logo_cuadrado.png" alt="Constructora Vidalsa 27, C.A.">
-    </div>
-  </div>
-</section>
-<section class="lamina l-empresa">
-  <div class="qse-panel">
-    <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="qse-cab"><div class="epigrafe claro">QUIÉNES SOMOS</div><h2>Nuestra empresa</h2></div>
-    <p class="qs-texto"><b>CONSTRUCTORA VIDALSA 27 C.A.</b> es una empresa venezolana fundada en el año 2007, desde entonces sumamos años de trayectoria en la construcción de infraestructura civil y petrolera, con enfoque en la Faja Petrolífera del Orinoco.</p>
-    <div class="rieles-derecha"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-  </div>
-  <div class="qse-foto">
-    <figure><img src="img/empresa_sede.jpg" data-foto="empresa_sede" alt=""><figcaption><span class="chip"><b>OLEODUCTO 30″ VELADERO · TRAMO I</b></span></figcaption></figure><figure><img src="img/empresa_soldadura.jpg" data-foto="empresa_soldadura" alt=""><figcaption><span class="chip"><b>OLEODUCTO 30″ × 14 KM — PLANTA FF–KM 0</b></span></figcaption></figure><figure><img src="img/empresa_tendido.jpg" data-foto="empresa_tendido" alt=""><figcaption><span class="chip"><b>OLEODUCTO 30″ × 14 KM — PLANTA FF–KM 0</b></span></figcaption></figure>
-  </div>
-</section>
-<section class="lamina l-nosotros">
+<section class="lamina l-cubierta cb-limpia">
   <div class="banda" style="height:470px">
-    <img src="img/flota_equipo.jpg" data-foto="flota_equipo" alt="">
-    <span class="velo"></span>
+    <div class="cb-trama"><i style="left:564px;width:5px;background:#C3CAD9"></i><i style="left:582px;width:9px;background:#2A3C78"></i><i style="left:604px;width:4px;background:#8FA0CB"></i><i style="left:622px;width:18px;background:linear-gradient(180deg,#2A3C78 0 67%,#4966AD 67% 100%)"></i><i style="left:414px;width:5px;background:#C3CAD9"></i><i style="left:432px;width:9px;background:#2A3C78"></i><i style="left:454px;width:4px;background:#8FA0CB"></i><i style="left:472px;width:18px;background:linear-gradient(180deg,#4966AD 0 70%,#C3CAD9 70% 100%)"></i><i style="left:264px;width:5px;background:#C3CAD9"></i><i style="left:282px;width:9px;background:#2A3C78"></i><i style="left:304px;width:4px;background:#8FA0CB"></i><i style="left:322px;width:18px;background:linear-gradient(180deg,#122149 0 44%,#96A3C8 44% 100%)"></i><i style="left:114px;width:5px;background:#C3CAD9"></i><i style="left:132px;width:9px;background:#2A3C78"></i><i style="left:154px;width:4px;background:#8FA0CB"></i><i style="left:172px;width:18px;background:linear-gradient(180deg,#2A3C78 0 30%,#7C8BBA 30% 100%)"></i><i style="left:-36px;width:5px;background:#C3CAD9"></i><i style="left:-18px;width:9px;background:#2A3C78"></i><i style="left:4px;width:4px;background:#8FA0CB"></i><i style="left:22px;width:18px;background:linear-gradient(180deg,#4966AD 0 42%,#C3CAD9 42% 100%)"></i></div>
     <div class="rieles-banda"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="banda-txt"><div class="epigrafe claro">QUIÉNES SOMOS</div><h2>Misión y visión</h2></div>
-    <div class="banda-lugar"><span class="chip"><b>PATIO DE MÁQUINAS · MATURÍN</b></span></div>
+    <div class="cb-marca">
+      <img src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
+    </div>
   </div>
   <div class="panel" style="top:470px;height:250px">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="pilares"><article class="pilar"><div class="pilar-cab"><span class="num"><b>01</b></span><h3>MISIÓN</h3></div><p>Desarrollar proyectos de infraestructura civil y petrolera, mediante soluciones constructivas, innovadoras y sostenibles.</p></article><article class="pilar"><div class="pilar-cab"><span class="num"><b>02</b></span><h3>VISIÓN</h3></div><p>Ser el referente líder en la ejecución de proyectos de infraestructura, reconocidos por transformar desafíos complejos en proyectos tangibles, seguros, de alta calidad y con compromiso socioambiental, que impulsen el desarrollo económico y social del país.</p></article></div>
+    <div class="cb-fila"><span class="par"><span class="num"><b>01</b></span><b class="rot">DISEÑO</b></span><span class="par"><span class="num"><b>02</b></span><b class="rot">INGENIERÍA</b></span><span class="par"><span class="num"><b>03</b></span><b class="rot">OBRAS</b></span></div>
+    <div class="cb-sello"><span>BROCHURE CORPORATIVO</span></div>
   </div>
-</section>
-<section class="lamina l-valores">
-  <div class="va-foto"><img src="img/valores_equipo.jpg" data-foto="valores_equipo" alt=""></div>
-  <div class="va-panel">
-    <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="va-cab">
-      <div class="epigrafe claro">QUIÉNES SOMOS</div>
-      <h2>Nuestros valores</h2>
-      <p>En Constructora Vidalsa27, C.A. construimos con propósito. Estos son los principios que guían nuestra conducta y nuestro compromiso social:</p>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><i class="pie-filete"></i><b class="pie-num">01</b></div></section>
+<section class="lamina l-portada">
+  <div class="pt-izq">
+    <span class="cuna-ice"></span><span class="esquina-navy"></span>
+    <div class="pt-cuerpo">
+      <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
+      <div class="linea"></div>
+      <div class="tagline"><span>DISEÑO</span><i>·</i><span>INGENIERÍA</span><i>·</i><span>OBRAS</span></div>
+      <h1>Construyendo la infraestructura<br>que mueve el país</h1>
+      <div class="guion"></div>
+      <p class="entrada">Desde 2017, sumamos 9 años de experiencia aportando soluciones integrales a la industria civil y petrolera del oriente del país. Nuestro compromiso se mide en resultados: obras entregadas con excelencia, operando siempre con flota propia y personal altamente calificado.</p>
+      <div class="barras"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
-    <div class="va-lista"><article class="valor"><span class="num"><b>01</b></span><div class="v-texto"><h3>SEGURIDAD</h3><p>Cuidamos a nuestra gente y a nuestros clientes. La protección en cada frente de trabajo no es negociable.</p></div></article><article class="valor"><span class="num"><b>02</b></span><div class="v-texto"><h3>INTEGRIDAD</h3><p>Ética y honestidad de principio a fin. Cultivamos relaciones sólidas basadas en la confianza.</p></div></article><article class="valor"><span class="num"><b>03</b></span><div class="v-texto"><h3>EFICIENCIA</h3><p>Respetamos tu tiempo y tu inversión. Optimizamos recursos para cumplir compromisos sin margen de demora.</p></div></article><article class="valor"><span class="num"><b>04</b></span><div class="v-texto"><h3>INNOVACIÓN</h3><p>Evolución constante. Buscamos estar siempre un paso adelante en metodologías y visión de negocio.</p></div></article><article class="valor"><span class="num"><b>05</b></span><div class="v-texto"><h3>COMPROMISO AMBIENTAL</h3><p>Construimos el futuro sin comprometer el presente, diseñando procesos respetuosos con el entorno, salvaguardando el ambiente para las generaciones futuras.</p></div></article></div>
   </div>
-</section>
+  <div class="pt-der">
+    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
+    <figure class="pt-f1"><img src="img/portada_valvulas.jpg" data-foto="portada_valvulas" alt=""></figure>
+    <figure class="pt-f2"><img src="img/portada_bombeo.jpg" data-foto="portada_bombeo" alt=""></figure>
+  </div>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><i class="pie-filete"></i><b class="pie-num">02</b></div></section>
+<section class="lamina l-nosotros">
+  <div class="banda" style="height:400px">
+    <img src="img/flota_equipo.jpg" data-foto="flota_equipo" alt="">
+    <span class="velo"></span>
+    <div class="rieles-banda"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
+    <div class="banda-txt"><div class="epigrafe claro">QUIÉNES SOMOS</div><h2>Misión, visión y objetivo</h2></div>
+    
+  </div>
+  <div class="panel" style="top:400px;height:320px">
+    <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
+    <div class="cols3"><article class="pilar"><div class="pilar-cab"><span class="num"><b>01</b></span><h3>MISIÓN</h3></div><p>Ser partícipes en el desarrollo del país a través de la elaboración de proyectos y la ejecución de obras civiles, mediante la implementación de los últimos avances e innovación en técnicas de ingeniería y procesos de construcción.</p></article><article class="pilar"><div class="pilar-cab"><span class="num"><b>02</b></span><h3>VISIÓN</h3></div><p>Consolidarnos como referente nacional en la construcción de infraestructura civil y petrolera, manteniendo excelencia operativa y compromiso socioambiental.</p></article><article class="pilar"><div class="pilar-cab"><span class="num"><b>03</b></span><h3>OBJETIVO</h3></div><p>Ser referentes en calidad, innovación y satisfacción del cliente durante la próxima década, impulsando la transformación del área de construcción civil y petrolera.</p></article></div>
+  </div>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja pie-oscuro"><i class="pie-escala"></i><em class="pie-seccion">QUIÉNES SOMOS</em><i class="pie-filete"></i><b class="pie-num">03</b></div></section>
 <section class="lamina l-servicios">
   <div class="cabecera"><div class="epigrafe ">QUÉ HACEMOS</div><h2>Nuestros servicios</h2></div>
-  <div class="panel" style="top:160px;height:281px">
+  <div class="panel" style="top:160px;height:280px">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="cols4"><article class="srv"><div class="num">01</div><h3>Construcción de ductos petroleros</h3><div class="regla"></div><ul><li>Soldadura de 3/4″ a 42″ calificada</li><li>Tubería enterrada y superficial</li><li>Revestimiento y protección de tuberías</li><li>Ingeniería, topografía y excavación</li><li>Prueba hidrostática y flushing</li></ul></article><article class="srv"><div class="num">02</div><h3>Servicios de alquiler de equipos</h3><div class="regla"></div><ul><li>Maquinaria pesada y liviana</li><li>Izamiento e instalación de equipos</li><li>Chuto/batea y lowboy con escoltas</li><li>Vacuum y brazo hidráulico</li><li>Cortafuegos y estaciones de válvulas</li></ul></article><article class="srv"><div class="num">03</div><h3>Ambiente y saneamiento</h3><div class="regla"></div><ul><li>Saneamiento de áreas por afectaciones con derrame de crudo</li><li>Trasegado con vacuum</li><li>Tratamiento y disposición de suelo</li><li>Saneamiento de lagunas a través del dragado de sólidos</li></ul></article><article class="srv"><div class="num">04</div><h3>Suministro y procura</h3><div class="regla"></div><ul><li>Válvulas bridadas de compuerta y globo</li><li>Bridas, codos, te y reducciones</li><li>Weldolets, niples y tapones</li><li>Empacaduras y espárragos</li><li>Mangas y revestimientos</li></ul></article></div>
+    <div class="cols4"><article class="srv"><div class="num">01</div><h3>Construcción de ductos petroleros</h3><div class="regla"></div><ul><li>Soldadura de 3/4″ a 42″ calificada</li><li>Tubería enterrada y superficial</li><li>Revestimiento y protección de tuberías</li><li>Ingeniería, topografía y excavación</li><li>Prueba hidrostática y flushing</li></ul></article><article class="srv"><div class="num">02</div><h3>Servicios de alquiler de equipos</h3><div class="regla"></div><ul><li>Maquinaria pesada y liviana</li><li>Izamiento e instalación de equipos</li><li>Chuto/batea y lowboy con escoltas</li><li>Vacuum y brazo hidráulico</li><li>Cortafuegos y estaciones de válvulas</li></ul></article><article class="srv"><div class="num">03</div><h3>Ambiente y saneamiento</h3><div class="regla"></div><ul><li>Saneamiento de áreas por afectaciones con derrame de crudo</li><li>Trasegado con vacuum</li><li>Tratamiento y disposición de suelo</li><li>Saneamiento de lagunas a través del dragado de sólidos</li></ul></article><article class="srv"><div class="num">04</div><h3>Suministro y procura</h3><div class="regla"></div><ul><li>Válvulas bridadas de compuerta y globo</li><li>Bridas, codos, tes y reducciones</li><li>Weldolets, niples y tapones</li><li>Empacaduras y espárragos</li><li>Mangas y revestimientos</li></ul></article></div>
   </div>
   <div class="tira"><figure><img src="img/servicio_1_zanja.jpg" data-foto="servicio_1_zanja" alt=""></figure><figure><img src="img/servicio_2_tendido.jpg" data-foto="servicio_2_tendido" alt=""></figure><figure><img src="img/servicio_3_soldadura.jpg" data-foto="servicio_3_soldadura" alt=""></figure><figure><img src="img/servicio_4_valvula.jpg" data-foto="servicio_4_valvula" alt=""></figure><figure><img src="img/servicio_5_maquinaria.jpg" data-foto="servicio_5_maquinaria" alt=""></figure></div>
-</section>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">QUÉ HACEMOS</em><i class="pie-filete"></i><b class="pie-num">04</b></div></section>
 <section class="lamina l-portafolio">
   <div class="banda" style="height:190px">
     <img src="img/portafolio_oleoducto.jpg" data-foto="portafolio_oleoducto" alt="">
     <span class="velo"></span>
     <div class="rieles-banda"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="banda-txt"><div class="epigrafe claro">PORTAFOLIO</div><h2>Nuestros proyectos</h2></div>
-    <div class="banda-fecha"><span>ACTUALIZADO AL</span><b>4 de septiembre de 2026</b></div>
+    <div class="banda-fecha"><span>ACTUALIZADO AL</span><b>1 de septiembre de 2026</b></div>
   </div>
   <div class="pf-cols"><div class="pf-col"><header><h3>CONSTRUCCIÓN</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Oleoducto 30″ × 17 km — Planta PDD – COPEM</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Completación mecánica Oleoducto de 42″ — PTO–TAEJ</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Oleoducto 30″ × 14 km — Planta FF–Km 0</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Diluenducto 20″ × 11,20 km — Palmichal–PTO</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Macolla 15 — vialidad y plataforma</span><span class="pie">PETROMONAGAS <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Tubería 12″ agua salada × 29,6 km — COPEM – El Salto</span><span class="pie">Proyectos Mayores FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Oleoducto 30″ Veladero · Tramo I (5,9 km)</span><span class="pie">Coordinación Operacional Faja (COF) <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div><div class="pf-col"><header><h3>AMBIENTE</h3><span class="cuenta">05</span></header><ol><li><span class="nom">COMOR — Saneamiento de suelo contaminado</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Dragado SIAE COMOR — lagunas A, B, C y D</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Estación de Flujo O-16</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Laguna de Curataquiche</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Movilización y trasegado de crudo — COMOR</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div><div class="pf-col"><header><h3>SERVICIOS Y ALQUILER</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Mantenimiento de equipos de bombeo — FPO</span><span class="pie">Gestión de Materiales DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Alquiler de maquinaria — SINOVENSA Morichal</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Estaciones de válvulas — FPO HC</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Equipos transversales</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Chuto con batea</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Cortafuegos en corredores de tuberías</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Alquiler de equipos — XP Extrapesado Morichal</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div></div>
-</section>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">05</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/oleo30x17_1.jpg" data-foto="oleo30x17_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2025</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -1076,7 +753,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Completación mecánica de la tubería de 42″ desde el Patio de Tanques Oficina (PTO) hasta el Terminal de Almacenamiento y Embarque Jose (TAEJ), así como la construcción de 07 tanquillas de concreto en válvulas de retención de 42″.</p>
       <div class="minis"><figure><img src="img/oleo42_2.jpg" data-foto="oleo42_2" alt=""></figure><figure><img src="img/oleo42_3.jpg" data-foto="oleo42_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Proyectos Mayores FPO</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">06</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/oleo30x14_1.jpg" data-foto="oleo30x14_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -1093,7 +770,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Construcción de 29,60 km de tubería de 12″ de inyección de agua salada desde COPEM PETROMONAGAS hasta los pozos inyectores El Salto. Así como la instalación y puesta en marcha del sistema de protección catódica de tuberías enterradas.</p>
       <div class="minis"><figure><img src="img/tub12_2.jpg" data-foto="tub12_2" alt=""></figure><figure><img src="img/tub12_3.jpg" data-foto="tub12_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Proyectos Mayores FPO</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">07</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/veladero_1.jpg" data-foto="veladero_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -1110,7 +787,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Reemplazo de 10,5 km del Diluenducto de 20″ Palmichal – PTO, con perforación direccional bajo suelo en la Troncal 9 de la autopista Gran Mariscal de Ayacucho, con el propósito de restablecer la integridad del sistema de transporte e incrementar la presión de bombeo hasta 840 psi, permitiendo el manejo de nafta con un caudal promedio de 180 MBD de diluente.</p>
       <div class="minis"><figure><img src="img/diluen20_2.jpg" data-foto="diluen20_2" alt=""></figure><figure><img src="img/diluen20_3.jpg" data-foto="diluen20_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Proyectos Mayores FPO</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">08</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/macolla15_1.jpg" data-foto="macolla15_1" alt=""><div class="marca"><span class="chip"><b>CONSTRUCCIÓN</b></span></div></div>
       <div class="insignias"><span class="anio">2024 – 2025</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -1127,7 +804,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Limpieza y mantenimiento de estaciones de válvulas en corredores de tuberías, cortafuegos perimetrales, señalización de áreas y pintura de puentes y estructuras metálicas.</p>
       <div class="minis"><figure><img src="img/valvulas_2.jpg" data-foto="valvulas_2" alt=""></figure><figure><img src="img/valvulas_3.jpg" data-foto="valvulas_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Logística Operacional DAL</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">09</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/comorsuelo_1.jpg" data-foto="comorsuelo_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
       <div class="insignias"><span class="anio">2024 – 2026</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -1144,7 +821,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Saneamiento y posterior mantenimiento de las cuatro lagunas A, B, C y D del SIAE del Centro Operacional Morichal (COMOR), en la División Carabobo, a través del dragado de sólidos.</p>
       <div class="minis"><figure><img src="img/dragado_2.jpg" data-foto="dragado_2" alt=""></figure><figure><img src="img/dragado_3.jpg" data-foto="dragado_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Logística Operacional DAL</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">10</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/trasegado_1.jpg" data-foto="trasegado_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -1161,7 +838,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Operación de maquinaria pesada para realizar los trabajos de saneamiento de áreas afectadas por derrames de hidrocarburos: remoción, estabilización, homogeneización, apilamiento y tratamiento in situ del material impactado, contención y recolección de fluidos petrolizados, nivelación de terreno y carga de sólidos.</p>
       <div class="minis"><figure><img src="img/ef016_2.jpg" data-foto="ef016_2" alt=""></figure><figure><img src="img/ef016_3.jpg" data-foto="ef016_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Logística Operacional DAL</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">11</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/transv_1.jpg" data-foto="transv_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2024 – 2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -1178,7 +855,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Movilización de todos los materiales y equipos (transformadores, generadores, plantas), misceláneos y lubricantes, desde las instalaciones PDVSA a nivel nacional hasta las áreas operacionales de las divisiones Carabobo, Ayacucho, Junín y Boyacá, adscritas a la Dirección Adjunta de Logística perteneciente a la Dirección Ejecutiva de Producción FPO HC.</p>
       <div class="minis"><figure><img src="img/chuto_2.jpg" data-foto="chuto_2" alt=""></figure><figure><img src="img/chuto_3.jpg" data-foto="chuto_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Logística Operacional DAL</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">12</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/bombeo_1.jpg" data-foto="bombeo_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2025</span><span class="estado lista"><b>CULMINADO</b></span></div>
@@ -1195,7 +872,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Servicios de maquinaria pesada para realizar actividades operacionales que contribuyan con la activación de pozos en la División Carabobo.</p>
       <div class="minis"><figure><img src="img/sinovensa_2.jpg" data-foto="sinovensa_2" alt=""></figure><figure><img src="img/sinovensa_3.jpg" data-foto="sinovensa_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>PETROLERA SINOVENSA</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">13</b></div></section>
 <section class="lamina l-proyectos"><div class="rejilla"><article class="tarjeta">
       <div class="hero"><img src="img/cortafuego_1.jpg" data-foto="cortafuego_1" alt=""><div class="marca"><span class="chip"><b>SERVICIOS Y ALQUILER</b></span></div></div>
       <div class="insignias"><span class="anio">2025 – 2026</span><span class="estado marcha"><b>EN EJECUCIÓN</b></span></div>
@@ -1212,7 +889,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <p class="desc">Servicios para acondicionamiento y adecuación de vías de acceso y locaciones, los cuales son indispensables para el óptimo funcionamiento y operación de las unidades de producción de la División Carabobo.</p>
       <div class="minis"><figure><img src="img/xpmorichal_2.jpg" data-foto="xpmorichal_2" alt=""></figure><figure><img src="img/xpmorichal_3.jpg" data-foto="xpmorichal_3" alt=""></figure></div>
       <div class="caja-cliente"><span class="rot">CLIENTE</span><b>Logística Operacional DAL</b></div>
-    </article></div></section>
+    </article></div><div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">14</b></div></section>
 <section class="lamina l-destacado">
   <div class="hero"><img src="img/curataqui_1.jpg" data-foto="curataqui_1" alt=""><div class="marca"><span class="chip"><b>AMBIENTE</b></span></div></div>
   <div class="cuerpo">
@@ -1227,9 +904,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div class="minis"><figure><img src="img/curataqui_2.jpg" data-foto="curataqui_2" alt=""></figure><figure><img src="img/curataqui_3.jpg" data-foto="curataqui_3" alt=""></figure><figure><img src="img/curataqui_4.jpg" data-foto="curataqui_4" alt=""></figure><figure><img src="img/curataqui_5.jpg" data-foto="curataqui_5" alt=""></figure></div>
     </div>
   </div>
-</section>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">PORTAFOLIO</em><i class="pie-filete"></i><b class="pie-num">15</b></div></section>
 <section class="lamina l-flota">
-  <div class="panel" style="top:0;height:546px">
+  <div class="panel" style="top:0;height:545px">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="fl-cab">
       <div class="epigrafe claro">FLOTA PROPIA</div>
@@ -1244,7 +921,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     <div class="fl-bloques"><section class="fl-bloque"><ul><li><b>30</b><span>Excavadoras</span></li><li><b>25</b><span>Vacuums</span></li><li><b>24</b><span>Tractores de oruga</span></li><li><b>16</b><span>Sidebooms</span></li><li><b>11</b><span>Camiones elevadores 12 t</span></li><li><b>11</b><span>Camiones elevadores 8 t</span></li><li><b>138</b><span>Chutos</span></li><li><b>73</b><span>Bateas</span></li><li><b>62</b><span>Volteos</span></li><li><b>36</b><span>Payloaders</span></li><li><b>33</b><span>Lowboys</span></li><li><b>32</b><span>Retroexcavadoras</span></li><li><b>11</b><span>Motoniveladoras</span></li><li><b>11</b><span>Mototraíllas</span></li><li><b>10</b><span>Camiones grúa</span></li><li><b>10</b><span>Chutos con brazo 16 t</span></li><li><b>9</b><span>Tractores agrícolas</span></li><li><b>37</b><span>Otra maquinaria pesada</span></li></ul></section><section class="fl-bloque"><ul><li><b>169</b><span>Camionetas</span></li><li><b>42</b><span>Camiones de soldadura</span></li><li><b>8</b><span>Cuadrilleras</span></li><li><b>6</b><span>Autobuses</span></li><li><b>5</b><span>Camiones de servicio</span></li><li><b>32</b><span>Otros equipos de apoyo</span></li></ul></section></div>
   </div>
   <div class="tira tira-flota"><figure><img src="img/flota_1.jpg" data-foto="flota_1" alt=""></figure><figure><img src="img/flota_2.jpg" data-foto="flota_2" alt=""></figure><figure><img src="img/flota_3.jpg" data-foto="flota_3" alt=""></figure><figure><img src="img/flota_4.jpg" data-foto="flota_4" alt=""></figure></div>
-</section>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja"><i class="pie-escala"></i><em class="pie-seccion">FLOTA PROPIA</em><i class="pie-filete"></i><b class="pie-num">16</b></div></section>
 <section class="lamina l-clientes">
   <div class="banda" style="height:300px">
     <img src="img/clientes_equipo.jpg" data-foto="clientes_equipo" alt="">
@@ -1260,27 +937,72 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
       <div><div class="cartera"><article><img src="img/logo_pdvsa.png" alt="PDVSA"><span>PETRÓLEOS DE VENEZUELA, S.A.</span></article><article><img src="img/logo_petromonagas.png" alt="PETROMONAGAS"><span>EMPRESA MIXTA</span></article><article><img src="img/logo_sinovensa.png" alt="SINOVENSA"><span>EMPRESA MIXTA</span></article></div></div>
     </div>
   </div>
-</section>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja pie-oscuro"><i class="pie-escala"></i><em class="pie-seccion">CLIENTES</em><i class="pie-filete"></i><b class="pie-num">17</b></div></section>
 <section class="lamina l-cierre">
   <div class="cr-izq">
     <span class="cuna-ice"></span>
     <div class="pt-cuerpo">
       <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
       <div class="linea"></div>
+      <div class="tagline"><span>DISEÑO</span><i>·</i><span>INGENIERÍA</span><i>·</i><span>OBRAS</span><i>·</i><span>ENERGÍA</span></div>
       <h2>La fuerza que construye<br>nuestra industria petrolera</h2>
       <div class="barras"><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
   <div class="cr-der">
-    <div class="rieles-portada"><i style="left:0px;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
+    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
     <figure><img src="img/flota_equipo_cierre.jpg" data-foto="flota_equipo_cierre" alt=""></figure>
   </div>
   <div class="pie-navy">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="contacto"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE CORPORATIVA</h4><p>Calle París entre New York y Caroní, Edif.&nbsp;#177, Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda — Caracas.</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE OPERATIVA</h4><p>Lechería, estado Anzoátegui.</p></div><div class="ct-directo"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>TELÉFONO</h4><p>+58 212 994.1106 / 1253 / 0987 / 0730</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/></svg>CORREO</h4><p>Info@cvidalsa27.com</p></div></div></div>
+    <div class="contacto"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE CORPORATIVA</h4><p>Calle París entre New York y Caroní,<br>Edf. Pedreañera #177, Urb. Las Mercedes,<br>Municipio Baruta, Edo. Miranda — Caracas.</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE OPERATIVA</h4><p>Lechería, estado Anzoátegui.</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.6h2"/></svg>TELÉFONOS</h4><p>+58 212 994.1106 / 1253 / 0987 / 0730</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/></svg>CONTACTO</h4><p>Info@cvidalsa27.com</p></div></div>
+    <div class="sello"><span>2017 — 2026  ·  9 AÑOS DE EXCELENCIA OPERATIVA</span></div>
   </div>
-</section>
-<script src="encaje.js"></script>
-<script src="editor.js" defer></script>
+<div class="encabezado-hoja"><span class="enc-cuna"></span><img src="img/logo.png" alt=""></div><div class="pie-hoja pie-oscuro"><i class="pie-escala"></i><i class="pie-filete"></i><b class="pie-num">18</b></div></section>
+
+
+
+<div id="vc-barra">
+  <b>Tama&ntilde;o carta</b>
+  <span class="vc-dato">18 hojas &middot; 11 &times; 8,5 in &middot; as&iacute; se imprime</span>
+  <span class="vc-der">
+    <span id="vc-estado"></span>
+    <a href="index.html">&#8592; Volver a la panor&aacute;mica</a>
+    <button type="button" id="vc-pdf">Descargar PDF de carta</button>
+  </span>
+</div>
+<script>
+(function () {
+  var boton = document.getElementById('vc-pdf');
+  var estado = document.getElementById('vc-estado');
+  var reloj = null;
+  function aviso(txt, mal) {
+    estado.textContent = txt;
+    estado.className = mal ? 'mal' : '';
+    clearTimeout(reloj);
+    reloj = setTimeout(function () { estado.textContent = ''; }, 2600);
+  }
+  boton.addEventListener('click', function () {
+    boton.disabled = true;
+    var texto = boton.textContent;
+    boton.textContent = 'Generando...';
+    aviso('Armando el PDF de carta...');
+    fetch('/api/pdf-carta', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) { aviso(res.error || 'No se pudo generar', true); return; }
+        var a = document.createElement('a');
+        a.href = '/' + res.archivo + '?v=' + Date.now();
+        a.download = res.archivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        aviso('PDF listo (' + res.megas + ' MB)');
+      })
+      .catch(function () { aviso('Abre la pagina con: python servidor.py', true); })
+      .then(function () { boton.disabled = false; boton.textContent = texto; });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,406 @@
+/* ============================================================
+   Hoja carta apaisada (solo la usa carta.html).
+
+   La panoramica dibuja cada lamina en 1280 x 720 px, que a 96 puntos
+   por pulgada son 13,333 x 7,5 pulg. Aqui la HOJA mide 1056 x 816 px,
+   que a esos MISMOS 96 ppp son 11 x 8,5 pulg: la carta. O sea que no
+   se encoge nada: un texto de 12,5 px mide en el papel los mismos
+   milimetros en las dos versiones, y las separaciones tambien.
+
+   El diseno de dentro se queda EXACTAMENTE como esta -720 px de alto,
+   las mismas alturas, las mismas separaciones-, metido en .hoja-diseno.
+   La hoja carta es 96 px mas alta que la panoramica, y esa pulgada de
+   mas se va entera en las dos franjas blancas de los cantos:
+
+       encabezado   66 px   los rieles, la raya y el logo
+       diseno      720 px   la lamina de siempre, sin tocar
+       pie          30 px   los rieles, la raya y el numero de hoja
+
+   Lo unico que cambia de verdad es el ancho: 224 px menos. Por eso lo
+   que hay aqui, ademas de las tres franjas, son ajustes horizontales:
+   las particiones que cortan la hoja de arriba abajo y las columnas de
+   texto medidas en pixeles, que en una hoja mas angosta ya no caben
+   donde cabian.
+
+   Lo que NO se toca en ningun sitio: los tamanos de letra, los
+   interlineados y las separaciones. Ese es justamente el objetivo.
+   ============================================================ */
+
+:root{
+  /* la hoja; el diseno se queda con --alto-diseno, que sigue en 720 */
+  --ancho-lamina:1056px;   /* 11 pulg  */
+  --alto-lamina:816px;     /* 8,5 pulg */
+  /* Las dos franjas se reparten la pulgada que la hoja carta tiene de mas.
+     Si una crece, la otra encoge: la maqueta NO se toca, porque bajar de
+     720 px obligaria a recomponer las 19 laminas. O sea que TODO el aire que
+     gane el pie sale del encabezado; no hay de donde sacarlo si no.
+
+     Estaban en 72/24 y el pie iba justo: sus rieles, centrados en 24 px, se
+     quedaban a 5 px del filo del papel y se leian pegados al canto.
+
+     Ahora van a 62/34, y el aire sale PAREJO por los dos cantos: 9,5 px arriba
+     entre el filo del papel y el logo, y 9,5 abajo hasta los rieles (11,5 hasta
+     el numero, que va 2 px mas alto por su ajuste optico).
+
+     Quien manda aqui es el LOGO, que es lo unico alto del encabezado, y por eso
+     baja a 240 px de ancho -43 de alto- (ver .enc-hoja img). Con el logo a 300
+     no habia reparto que arreglara los dos cantos a la vez: el pie solo ganaba
+     aire quitandoselo al encabezado, y el problema se mudaba de canto. Al
+     estrecharlo, los 96 px de las dos franjas alcanzan para los dos.
+     Si se vuelve a agrandar el logo hay que rehacer este reparto. */
+  --enc:62px;              /* franja del encabezado */
+  --pie:34px;              /* franja del pie        */
+
+  /* Los margenes de la panoramica -96/80/44 px- apretados un punto mas.
+     La proporcion de hoja (x 0,825) daba 79/66/36, pero en carta lo que
+     escasea es justo el ancho: bajan a x 0,69 y esos 13 px por lado se
+     los queda la mancha de texto, que es la que va justa. En papel el
+     margen pasa de 21 a 17,5 mm, que sigue siendo margen de sobra. */
+  --lado:66px;
+  --lado-medio:55px;
+  --lado-rejilla:30px;
+}
+
+/* -------------------------------------------------------- el papel --- */
+@media print{
+  @page{ size: 11in 8.5in; margin: 0; }
+}
+
+/* En pantalla la lamina ya ES la hoja -1056 x 816 px, sin zoom-, asi que lo
+   que se ve es exactamente lo que sale por la impresora.
+   Las laminas nacen tapadas -opacity:0- y editor.js las va destapando segun
+   bajas. Aqui salen destapadas de una vez, a proposito: esta pagina es la
+   prueba de imprenta, y se mira de un vistazo o se captura entera, sin que
+   haya que haber pasado por delante de cada hoja. De paso, si editor.js no
+   llegara a cargar, la pagina se sigue viendo. */
+@media screen{
+  .lamina{opacity:1;transform:none;transition:none}
+  /* Si se activan alternativas en generar.py, esas laminas no se imprimen y
+     por eso no llevan ni encabezado ni pie ni numero: son la lamina a secas.
+     Sin esto se quedarian en una hoja de 816 px con una tira blanca al pie. */
+  .lamina.prueba{height:var(--alto-diseno)}
+}
+
+/* Los rieles diagonales, mas pegados al canto. En la panoramica arrancan en
+   left:16px y el margen del diseno esta en 96, asi que sobra sitio; aqui el
+   margen baja a 66 -30 px menos- pero los rieles se quedaron clavados en 16, y
+   al no acompanar al margen su punta acababa a 5 px del titular de Flota, que
+   empieza justo en el margen. Se lee como si lo tocara.
+   No es un apano de esa lamina: es que estas barras son lo unico del diseno que
+   no se movio con el margen.
+
+   El -10 sale de MEDIR sobre los pixeles, no de calcular: en la panoramica la
+   punta del riel muere 24 px antes de la primera letra del titular; aqui, con
+   los rieles en 16, moria 6 px DESPUES -encima de la letra-. Corridos a -10 la
+   punta queda a ~20 px de la letra, que es esos 24 en proporcion de hoja
+   (x 0,825). Que asomen por el canto izquierdo no es un fallo: estas barras ya
+   se salen por abajo en las dos hojas, las recorta el overflow del panel. */
+.rieles-banda,.rieles-panel{left:-10px}
+
+/* ------------------------------------------------- las tres franjas --- */
+/* El diseno entero vive aqui dentro. Al ir en absoluto es la caja contra
+   la que se colocan todas las piezas de la lamina, asi que dentro de el
+   los top y los height de estilos.css siguen valiendo tal cual, como si
+   la hoja fuera la panoramica. El overflow recorta lo que asoma -rieles,
+   fotos- para que no invada las franjas de arriba y de abajo. */
+.hoja-diseno{position:absolute;left:0;top:var(--enc);
+  width:var(--ancho-lamina);height:var(--alto-diseno);overflow:hidden}
+
+/* Las dos franjas son la MISMA fila: los tres rieles diagonales de la portada
+   en pequeno, una raya que cruza la hoja y algo al final -arriba el logo,
+   abajo el numero-. La raya es la que los ata: sale del riel y muere en la
+   pieza del otro extremo. Asi la hoja queda cerrada por los dos cantos con el
+   mismo gesto, y el ojo entra por el logo y sale por el numero. */
+.enc-hoja,.pie-hoja{position:absolute;left:var(--lado);right:var(--lado);
+  display:flex;align-items:center;gap:14px;z-index:5}
+.enc-hoja{top:0;height:var(--enc)}
+.pie-hoja{bottom:0;height:var(--pie)}
+
+/* Los rieles no van en absoluto como los de la banda: aqui son una pieza mas
+   de la fila, asi que se les devuelve el sitio en el flujo y se les da el
+   tamano; los tres <i> de dentro siguen en absoluto. El ancho es el que ocupan
+   las tres barras: 40 + 4 px. Los del encabezado son los mismos al doble de
+   tamano: se agrandan con zoom y no con otro tamano porque las barras llevan
+   sus anchos y sus huecos escritos en el marcado -los pone rieles_trio()-, y
+   asi crecen las tres a la vez sin tocarlos. */
+/* 36 px = donde acaba la ultima barra del trio APRETADO que pone generar.py
+   para esta hoja (32 + 4). Es la suma, no un numero elegido: si se cambian
+   aquellas separaciones, este ancho cambia con ellas o la caja deja aire de
+   sobra por la derecha y la raya arranca separada de las barras. */
+.hoja-rieles{position:relative;flex:none;width:36px;height:15px}
+.enc-hoja .hoja-rieles{zoom:2}
+/* La raya crece hasta topar con la pieza que cierra la fila, asi que llega
+   justo hasta donde empieza el logo -o el numero, abajo-. La de arriba va un
+   punto mas gruesa que la de abajo: el encabezado abre la hoja y el pie solo
+   la cierra. */
+.hoja-raya{flex:1;height:1.5px;background:rgba(18,33,73,.22)}
+.enc-hoja .hoja-raya{height:2.5px}
+
+/* el logo mide 1184 x 211, asi que estos 240 px de ancho son 43 de alto:
+   dentro de la franja de 62 quedan 9,5 px de aire arriba y abajo. Se estrecho
+   desde 300 para que el encabezado Y el pie tuvieran aire a la vez, que con el
+   logo grande era imposible (ver --enc/--pie). */
+/* display:block no es cosmetico: al imprimir, Chrome deja fuera el logo si
+   entra como imagen en linea dentro del flex. Con esto sale en el PDF. */
+.enc-hoja img{width:240px;flex:none;display:block}
+/* Tres laminas -cubierta, portada y cierre- no quieren el encabezado completo,
+   y por el mismo motivo: las tres ensenan ya el logo a tamano grande y arrancan
+   con sus propios rieles diagonales en la esquina, asi que repetir las dos
+   cosas arriba las abarata. En ellas la franja se queda SOLO con la raya -de
+   ahi el :not-, que cruza la hoja de lado a lado y mantiene el gesto de las
+   otras quince. */
+:is(.l-portada,.l-cierre) .enc-hoja>*:not(.hoja-raya){display:none}
+/* La CUBIERTA no lleva ni encabezado ni pie -no es una pagina de la
+   secuencia, por eso tampoco se numera-, pero ya no los deja en blanco de
+   margen: el usuario los quiso fuera del todo, "que todo cubra todo".
+   construir() ya no la envuelve en hoja_carta() -no hay .enc-hoja ni
+   .pie-hoja que ocultar-, y aqui se le da un --alto-diseno propio, igual al
+   --alto-lamina entero (816, no los 720 del resto): todo lo que dentro de
+   la cubierta mide var(--alto-diseno) -.cbp-foto, .cbp-der, y con ellos sus
+   hijos en porcentaje- crece con el, y la cubierta llega a sangre por
+   arriba y por abajo igual que ya llegaba por los lados. */
+.l-cubierta{--alto-diseno:var(--alto-lamina)}
+
+/* El numero va centrado en su franja, asi que queda a la misma distancia del
+   canto del papel que del borde de la maqueta. Para subirlo hay que ensanchar
+   la franja -y estrechar el encabezado-, no moverlo dentro: pegado arriba
+   tocaria el azul de las laminas que llegan hasta abajo, y pegado abajo se
+   sale al filo de la hoja.
+   Los 2 px de subida si son un ajuste OPTICO: la caja del numero reserva abajo
+   el hueco de las letras con cola -la g, la p-, que aqui no hay, asi que
+   centrada de caja el "08" se ve caido respecto a la raya. */
+.pie-hoja b{font-family:"Barlow Condensed","Arial Narrow",sans-serif;
+  font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--navy);
+  flex:none;line-height:1;position:relative;bottom:2px}
+
+/* La seccion que va corriendo por el pie de cada hoja: que hoja suelta se
+   identifique sin tener que buscar el titulo grande. En caps y espaciada,
+   como los epigrafes de las laminas, pero achicada a la franja de 34 px del
+   pie -a 13.5px, su tamano de siempre, se comia media franja-. */
+.hoja-etiqueta{font-size:9.5px;font-weight:600;letter-spacing:.18em;
+  color:var(--navy-medio);flex:none;white-space:nowrap;text-transform:uppercase}
+
+/* ============================================ ajustes por lamina =====
+   Todo lo de aqui abajo nace de lo mismo: la hoja es 224 px mas angosta.
+   Son de dos clases y van juntas, lamina por lamina:
+
+   - de ancho: las particiones que cortan la hoja de arriba abajo
+     -portada y cierre- se recolocan para que la junta caiga en el mismo
+     sitio relativo, y las columnas de texto medidas en pixeles se
+     ajustan al ancho nuevo, o el titular se parte donde no debe.
+   - de alto: donde un parrafo o una lista gana lineas por ir mas
+     angosto, ese alto se lo presta la foto de al lado. Son dos,
+     portafolio y servicios, mas la foto grande de las de proyecto, que
+     baja un poco por otro motivo -se veia cuadrada-. En las quince
+     restantes el diseno cabe con las mismas medidas de la panoramica.
+
+   .cb-trama, la trama de barras de la cubierta, NO se toca: sus barras
+   las genera generar.py contra ese ancho exacto (ANCHO_TRAMA = 640). Al
+   estrecharla, las barras sobraban por la derecha y Chrome encogia el
+   PDF entero un 8 % "para que cupiera".
+   -------------------------------------------------------------------- */
+
+/* .qs-texto bajo de 16 a 14 px -el usuario pidio igualarlo a .srv li-, y a
+   13.8 aqui -el mismo ajuste que ya lleva .srv li en esta hoja, ver mas
+   abajo-: con la letra mas chica el justificado con hyphens:auto vuelve a
+   quedar parejo en esta columna mas angosta -471 px-, que es lo que el
+   usuario pidio ahora; ya no hace falta la bandera que se puso cuando el
+   parrafo iba a 16. */
+.qs-texto{font-size:13.8px}
+
+.pt-cuerpo{padding-right:36px}   /* el izquierdo ya sale de --lado-medio */
+.pt-cuerpo .logo{width:300px}
+.linea{width:443px}
+.entrada{width:441px}
+
+/* cubierta: el logo es lo unico que quedaba sin escalar con la hoja. A sus
+   520 px se salia de su sitio -la hoja es 224 px mas angosta, pero la trama
+   de barras se queda igual de ancha porque va anclada a la derecha- y la
+   ultima letra montaba encima de las barras. Baja a la misma proporcion de
+   hoja que el resto (x 0,825), como ya hacia el logo de la portada. */
+.cb-marca img{width:429px}
+
+/* el destacado: la columna del texto y la de las cuatro fotos */
+.l-destacado .cuerpo{grid-template-columns:388px 1fr}
+
+/* flota: la cabecera y el contador son dos columnas fijas, una a cada lado, y
+   sumadas se salian de la hoja angosta. La cabecera se queda con los 545 px
+   que necesita su parrafo para ir en TRES lineas -las mismas que en la
+   panoramica; con menos ancho se le iba una cuarta linea encima de la rejilla
+   de cifras- y el contador cede hasta 300, que es lo que ocupa el "841" con
+   su pie. Quedan 79 px de aire entre las dos columnas.
+   Al caber el parrafo en tres lineas, nada mas de esta lamina se mueve: la
+   rejilla, el panel y la tira de fotos siguen con las medidas de siempre. */
+.l-flota .fl-cab{width:545px}
+.l-flota .fl-total{width:300px}
+/* El contador. La panoramica bajo de 88 a 74 px -el usuario lo pidio mas
+   chico ahi tambien-, asi que aqui se corre la misma escalera: de 72 -88 x
+   0,825- a 60, y ahora de 60 a 50 -74 x 0,825, la misma proporcion entre las
+   dos hojas-. */
+.l-flota .fl-total>b{font-size:50px}
+
+/* proyectos: la tarjeta es mas angosta -470 px en vez de 568-, asi que la foto
+   grande, con el mismo alto de siempre, se veia casi cuadrada. Baja 20 px para
+   volver a leerse apaisada, y esos 20 px se los queda el texto de debajo. */
+.l-proyectos .tarjeta .hero{height:172px}
+
+/* portafolio: los nombres de proyecto pasan a dos lineas y la lista de
+   Construccion, que es la larga, se salia por abajo. La banda de la foto
+   suelta 20 px y se los queda la lista, y las tres columnas arrancan 14 px
+   mas arriba: con la lista mas alta, el aire que sobraba estaba todo
+   arriba y la ultima vineta quedaba pegada al pie. */
+.l-portafolio .banda{height:170px !important}   /* el alto va en el style= de la lamina */
+.l-portafolio .pf-cols{top:194px}
+
+/* cierre: la misma particion que la portada */
+/* El titular de la portada: 44 -> 39 px. No es gusto, es el mismo caso que los
+   nombres del portafolio: el bloque claro pasa de 700 a 578 px y el ancho util
+   del cuerpo de 564 a 462, asi que a 44 px "Construyendo la infraestructura" ya
+   no cabe en su linea y el titular se parte en TRES renglones en vez de los dos
+   que marca el <br> del texto. A 39 vuelve a caber. */
+.l-portada h1{font-size:39px}
+/* El del cierre -"La fuerza que construye<br>nuestra industria petrolera"- no
+   necesitaba esto cuando el cuerpo base era 44 px: su linea mas larga era mas
+   corta y cabia sin ayuda. Al subir la base a 54 (ver ".l-cierre h2,.l-portada
+   h1" en estilos.css) dejo de caber tambien aqui -medido: "nuestra industria
+   petrolera" pide 529 px contra los 446 disponibles en esta hoja- y el titular
+   se partia en CUATRO renglones en vez de los dos del <br>. A 45 px la linea
+   mas larga pedia 440 y entraba con 6 px de sobra; a 44 -el usuario lo pidio
+   un punto mas chico- pide unos 430, y esos 10 px que sobran son los que se
+   le han dado a la foto. */
+.l-cierre h2{font-size:44px}
+
+/* La foto se lleva 26 px mas de ancho -lo pidio el usuario- a costa del
+   bloque claro, que es el unico sitio de donde sacarlos: la hoja mide 1056 y
+   las dos piezas la reparten entera. Hasta aqui llega el reparto sin partir
+   el titular en mas renglones; para darle mas a la foto habria que bajar otra
+   vez el cuerpo del titular. */
+:is(.l-cierre,.l-portada) .cr-izq{width:552px}
+:is(.l-cierre,.l-portada) .cr-der{left:551px;width:505px}
+/* Las cuatro columnas de contacto iban a partes iguales, y en la hoja angosta
+   eso deja 205 px a cada una: el telefono -que necesita 216- se partia en dos
+   y la direccion se deshacia en seis lineas.
+
+   Aqui pasan a ser TRES columnas: las dos sedes, y en la tercera el correo con
+   el telefono debajo. Los dos son datos de contacto directo y ocupan poco, asi
+   que apilados no estorban y el ancho que sueltan se lo lleva la direccion
+   corporativa, que es con diferencia el texto mas largo del pie.
+
+   Cada columna mide LO QUE NECESITA SU TEXTO, medido, no repartido a ojo:
+        direccion         717 px de una linea, y entra en DOS desde 372 -> 380
+        sede operativa    175                                           -> 180
+        telefono          216 de una sola vez                           -> 220
+   Con un pixel menos el telefono se parte en dos (probado con 215).
+
+   Y el hueco que sobra lo reparte space-between, que es lo que deja la
+   SEPARACION IGUAL entre los tres. Antes la direccion se llevaba 456 px en 1fr
+   y su texto solo ocupaba 370: esos ~86 px de sobra se sumaban a su hueco, asi
+   que del primero al segundo bloque habia el doble de aire que del segundo al
+   tercero. Ajustando cada columna a su texto, lo que sobra (924 - 780 = 144) se
+   parte en dos huecos iguales de 72 y los tres bloques respiran lo mismo.
+   Por eso el gap va a CERO: el hueco no lo pone gap, lo pone space-between; con
+   los dos, se sumarian. Telefono y correo viajan en UN solo bloque -.ct-directo,
+   ver CONTACTO_DIRECTO en contenido.py- que aqui abajo se apila en columna, asi
+   que a la rejilla de arriba le siguen llegando tres columnas y no hace falta
+   tocar este reparto.
+   Los saltos de la direccion los decide este ancho y no el texto: va sin <br>. */
+.l-cierre .contacto{grid-template-columns:380px 180px 220px;
+  justify-content:space-between;gap:0}
+/* Reparte las dos lineas de la direccion a lo largo en vez de llenar la primera
+   y dejar caer lo que sobre. Sin esto cortaba en "Urb. Las / Mercedes", que
+   parte el nombre de la urbanizacion; equilibradas, el corte se va a la coma de
+   "#177,", que es donde lo haria uno a mano.
+   En los otros dos bloques no hace nada: sus renglones ya vienen dados.
+   El tamano, 0,5 px menos que en la panoramica: lo pidio el usuario para esta
+   hoja, en el rotulo y en el dato de las cuatro columnas -sedes, telefono y
+   correo-. Solo aqui: la panoramica se queda con los 11 / 14 px de siempre. */
+.l-cierre .contacto .ct h4{font-size:10.5px}
+.l-cierre .contacto .ct p{text-wrap:balance;font-size:13.5px}
+/* Telefono y correo, apilados: en la hoja angosta la tercera columna mide 220
+   px, y ahi lado a lado -como en la panoramica- cada uno se queda con poco
+   mas de 100 y el telefono se parte en dos lineas. En columna, cada uno se
+   queda los 220 enteros: es exactamente el ancho que ya tenia el bloque
+   "Contacto" de antes de separarlos, asi que sigue cabiendo igual de bien. */
+.ct-directo{flex-direction:column;gap:14px}
+
+/* servicios: en columnas mas angostas varias vinetas pasan a dos lineas y el
+   panel azul se comia la ultima de dos columnas, asi que aqui es mas alto que
+   en la panoramica y la tira de fotos de abajo le presta ese alto.
+
+   Y ADEMAS sube. En esta hoja el diseno lleva encima la franja blanca del
+   encabezado, asi que su blanco y el de la cabecera se juntan y se leian como
+   un solo campo vacio enorme -112 px desde el filo del papel hasta la primera
+   letra, y 226 hasta el azul-. La cabecera sube a 22 y el panel arranca 24 px
+   antes; el panel se queda con esos 24 en vez de moverse entero, asi que las
+   columnas ganan alto.
+
+   CUANTO alto: el justo para que la ultima vineta respire lo MISMO que en la
+   panoramica -alli el texto muere en 418 y el panel en 441: 23 px-. Con 350 el
+   panel bajaba hasta 486 y dejaba 45 px de azul vacio bajo la ultima vineta,
+   el doble, y esos px se los estaba quitando a las fotos. Con 328 el hueco
+   vuelve a ser de 23 y la tira recupera los 22.
+   136 + 328 = 464, un pixel MAS abajo de donde empieza la tira (463): el panel
+   se le monta encima a proposito, para que la junta no caiga en el limite
+   exacto y asome el blanco de la lamina al partirla el zoom en un pixel
+   fraccionado (ver .tira en estilos.css). Si se cambia uno hay que rehacer la
+   suma -y dejarle ese pixel de solape- o se abre un hueco entre el panel y las
+   fotos. */
+.l-servicios .cabecera{top:22px}
+.l-servicios .panel{top:136px !important;height:328px !important}   /* el top y el alto van en el style= de la lamina */
+.l-servicios .tira{top:463px;height:257px}
+/* La raya bajo cada titulo, un punto mas gruesa que en la panoramica (2 px).
+   Aqui las columnas son mas angostas, asi que la raya es mas corta, y a esa
+   longitud los 2 px se quedaban en un hilo que casi no se veia contra el navy.
+   Con 3 recupera el peso que tiene en la hoja ancha. Solo el grosor: el
+   degradado -azul el primer tercio, palido el resto- se hereda sin tocarlo. */
+.l-servicios .srv .regla{height:3px}
+/* LAS TRES EXCEPCIONES DE CUERPO de esta hoja: 0,2 px menos que en la
+   panoramica. Son los tres textos corridos que van sobre fondo azul -las
+   vinetas de servicios, los parrafos de mision/vision y la entrada de la
+   portada-, y aqui sus columnas son mas angostas, asi que una linea de mas se
+   nota mucho mas que alli. 0,2 px no cambia como se ve la letra -es un 1,3 %-,
+   pero da el margen justo para que un renglon largo no se parta.
+
+   OJO: son las UNICAS excepciones a la regla de esta hoja -los cuerpos no se
+   tocan, ver la cabecera del archivo-, y por eso revisar_carta.py las canta
+   como aviso al comparar los dos PDF. Es un aviso esperado, no un fallo: si
+   algun dia se quiere volver a la regla, se borran estas tres lineas. */
+.l-servicios .srv li{font-size:13.8px}
+.l-nosotros .pilar p{font-size:13.8px}
+.l-portada .entrada{font-size:14.8px}
+/* Los nombres de proyecto del portafolio: 17 -> 15,5 px. Aqui NO es cuestion de
+   gusto sino de renglones. El cuerpo era el mismo en las dos hojas, pero la
+   columna pasa de 341 a 283 px, y a 17 px solo 10 de los 19 nombres cabian en
+   una linea -contra 18 de 19 en la panoramica-: los otros nueve se partian en
+   dos y por eso el bloque se leia mucho mas pesado, como si la letra fuera
+   mayor. A 15,5 vuelven 17 de los 19 a una sola linea.
+   15,5 y no menos porque ahi esta el tope: medido a 15, 14,5 y 14 salen los
+   MISMOS 17: los dos que quedan son nombres largos que no caben ni encogiendo,
+   asi que seguir bajando solo hace la letra mas chica a cambio de nada. */
+.l-portafolio .pf-col .nom{font-size:15.6px}
+
+/* Los ROTULOS de las tres columnas -CONSTRUCCION, AMBIENTE, SERVICIOS Y
+   ALQUILER- y su contador. El usuario los pidio mas grandes tres veces y no
+   veia el cambio: lo estaba subiendo en estilos.css, y esta regla de aqui,
+   que solo vale para la hoja carta, los devolvia a 12,1 px. Ahora suben aqui
+   tambien -16 px, contra los 17 de la panoramica-.
+   El espaciado baja de .3em a .18em SOLO en esta hoja, y no es capricho: la
+   columna pasa de 341 a 283 px y "SERVICIOS Y ALQUILER" a 16 px con el
+   espaciado grande no cabia en una linea. Con .18em entra y el rotulo sigue
+   leyendose espaciado.
+   Los otros tres tamanos (nombre, cliente y pildora) se quedan como estaban:
+   subirlos parte los nombres de proyecto en dos renglones, que es justo lo
+   que evita el ajuste de .nom, arriba. */
+.l-portafolio .pf-col h3{font-size:16px;letter-spacing:.18em}
+.l-portafolio .pf-col .cuenta{font-size:27px}
+.l-portafolio .pf-col .pie{font-size:12.1px}
+.l-portafolio .pf-col .estado{font-size:10.6px}
+
+/* --- portada, solo en hoja carta ------------------------------------
+   Medio punto menos en el nombre y en el titular. Lo pidio el usuario para
+   ESTA hoja y no para la panoramica: aqui la lamina se dibuja mas chica -1056
+   px de ancho contra 1280- y el mismo cuerpo se veia mas apretado contra el
+   canto del panel. Solo el cuerpo cambia; el nowrap del nombre sigue mandando
+   desde estilos.css. */
+.cb-partida .cbp-titulo h2{font-size:33.5px}
+.cb-partida .cbp-titulo p{font-size:23.5px}

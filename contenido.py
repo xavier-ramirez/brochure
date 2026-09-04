@@ -3,32 +3,80 @@
 
 EMPRESA = dict(
     tagline_portada=['Diseño', 'Ingeniería', 'Obras'],
-    tagline_cierre=['Diseño', 'Ingeniería', 'Obras', 'Energía'],
     titular_portada='Construyendo la infraestructura<br>que mueve el país',
-    entrada_portada=('Desde 2017, sumamos 9 años de experiencia aportando soluciones integrales a la '
-                     'industria civil y petrolera del oriente del país. Nuestro compromiso se mide en '
-                     'resultados: obras entregadas con excelencia, operando siempre con flota propia y '
-                     'personal altamente calificado.'),
+    entrada_portada=('<b>CONSTRUCTORA VIDALSA 27 C.A.</b> es una empresa venezolana fundada en el año 2007, '
+                     'desde entonces sumamos años de trayectoria en la construcción de infraestructura civil '
+                     'y petrolera, con enfoque en la Faja Petrolífera del Orinoco.'),
     titular_cierre='La fuerza que construye<br>nuestra industria petrolera',
-    sello='2017 — 2026  ·  9 años de excelencia operativa',
+    sello='2007 — 2026  ·  19 años de trayectoria',
     elaborado='Elaborado por Fernando Sánchez  ·  Ingeniero Industrial',
 )
 
 CONTACTO = [
-    ('Sede corporativa', 'Calle París entre New York y Caroní,<br>Edf. Pedreañera #177, Urb. Las Mercedes,<br>Municipio Baruta, Edo. Miranda — Caracas.'),
+    # SIN <br>: los saltos los decide el ANCHO de la columna, que no es el mismo
+    # en las dos hojas. Con los saltos escritos a mano, la hoja que no fuera la
+    # de referencia partia la direccion donde no tocaba y encima volvia a
+    # partir cada trozo por su cuenta. El texto no cambia ni una coma.
+    #
+    # Los &nbsp; de "Urb. Las Mercedes" y "Edif. #177" son espacios que NO dejan
+    # partir: sueltos, el renglon cortaba en "Urb. / Las Mercedes" y podia dejar
+    # el numero del edificio en la linea siguiente, huerfano de su "Edif.".
+    # Atados, el corte se va solo a una coma, que es donde lo haria uno a mano.
+    # Siguen siendo espacios normales al leerlos.
+    # El edificio se nombraba "Edf. Pedreañera #177"; el usuario quito el nombre
+    # propio y queda el numeral con el numero.
+    ('Sede corporativa', 'Calle París entre New York y Caroní, Edif.&nbsp;#177, '
+                         'Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda — Caracas.'),
     ('Sede operativa',   'Lechería, estado Anzoátegui.'),
-    ('Contacto',         'fsanchez@cvidalsa27.com'),
 ]
 
-PILARES = [
-    ('01', 'Misión',   'Ser partícipes en el desarrollo del país a través de la elaboración de proyectos y la '
-                       'ejecución de obras civiles, mediante la implementación de los últimos avances e '
-                       'innovación en técnicas de ingeniería y procesos de construcción.'),
-    ('02', 'Visión',   'Consolidarnos como referente nacional en la construcción de infraestructura civil y '
-                       'petrolera, manteniendo excelencia operativa y compromiso socioambiental.'),
-    ('03', 'Objetivo', 'Ser referentes en calidad, innovación y satisfacción del cliente durante la próxima '
-                       'década, impulsando la transformación del área de construcción civil y petrolera.'),
+# Telefono y correo van APARTE de CONTACTO, no mezclados en la misma lista:
+# son los dos datos de contacto DIRECTO, y cada uno lleva su propio rotulo -no
+# un parrafo partido a mano con <br>-. lamina_cierre() los junta en un solo
+# bloque, .ct-directo, que la CSS reparte distinto segun la hoja: en la
+# panoramica, uno al lado del otro, como una columna mas; en la carta, uno
+# debajo del otro, porque ahi no cabe una cuarta columna (ver .ct-directo en
+# estilos.css y carta.css).
+CONTACTO_DIRECTO = [
+    ('Teléfono', '+58 212 994.1106 / 1253 / 0987 / 0730'),
+    ('Correo',   'Info@cvidalsa27.com'),
 ]
+
+# Dos, no tres: el usuario quito el Objetivo -decia lo mismo que la Vision con
+# otras palabras-. La lamina no lleva el numero escrito en ningun sitio: la
+# rejilla .pilares reparte las columnas segun cuantas haya, asi que anadir o
+# quitar un pilar aqui es todo lo que hay que tocar.
+PILARES = [
+    ('01', 'Misión',   'Desarrollar proyectos de infraestructura civil y petrolera, mediante soluciones '
+                       'constructivas, innovadoras y sostenibles.'),
+    ('02', 'Visión',   'Ser el referente líder en la ejecución de proyectos de infraestructura, reconocidos '
+                       'por transformar desafíos complejos en proyectos tangibles, seguros, de alta calidad y '
+                       'con compromiso socioambiental, que impulsen el desarrollo económico y social del país.'),
+]
+
+VALORES = dict(
+    # 'Quienes somos', no 'Nuestra cultura': decia casi lo mismo que el
+    # titulo grande de al lado, 'Nuestros valores'. Es el mismo rotulo que
+    # ya llevan las otras tres laminas de esta seccion -Nuestra empresa,
+    # Mision y vision-, asi que de paso queda igual de familia con ellas.
+    epigrafe='Quiénes somos',
+    titulo='Nuestros valores',
+    texto=('En Constructora Vidalsa27, C.A. construimos con propósito. Estos son los principios que guían '
+           'nuestra conducta y nuestro compromiso social:'),
+    items=[
+        ('01', 'Seguridad', 'Cuidamos a nuestra gente y a nuestros clientes. La protección en cada frente de '
+                            'trabajo no es negociable.'),
+        ('02', 'Integridad', 'Ética y honestidad de principio a fin. Cultivamos relaciones sólidas basadas en '
+                             'la confianza.'),
+        ('03', 'Eficiencia', 'Respetamos tu tiempo y tu inversión. Optimizamos recursos para cumplir '
+                             'compromisos sin margen de demora.'),
+        ('04', 'Innovación', 'Evolución constante. Buscamos estar siempre un paso adelante en metodologías y '
+                             'visión de negocio.'),
+        ('05', 'Compromiso Ambiental', 'Construimos el futuro sin comprometer el presente, diseñando procesos '
+                                       'respetuosos con el entorno, salvaguardando el ambiente para las '
+                                       'generaciones futuras.'),
+    ],
+)
 
 SERVICIOS = [
     ('01', 'Construcción de ductos petroleros', [
@@ -50,7 +98,7 @@ SERVICIOS = [
         'Saneamiento de lagunas a través del dragado de sólidos']),
     ('04', 'Suministro y procura', [
         'Válvulas bridadas de compuerta y globo',
-        'Bridas, codos, tes y reducciones',
+        'Bridas, codos, te y reducciones',
         'Weldolets, niples y tapones',
         'Empacaduras y espárragos',
         'Mangas y revestimientos']),
@@ -58,12 +106,12 @@ SERVICIOS = [
 
 GERENCIAS = [
     'Gerencia de Proyectos Mayores de Producción FPO',
-    'Dirección Adjunta de Logística FPO (DAL)',
     'Gerencia de Distribución y Transporte Faja',
     'Gerencia de Logística Operacional DAL FPO',
     'Gerencia de Gestión de Materiales DAL-FPO',
-    'Gerencia de Tratamiento y Calidad de Fluidos (TCF)',
+    'Gerencia de Tratamiento y Calidad de Fluidos TCF',
     'Gerencia de Perforación',
+    'Coordinación Operacional Faja COF',
 ]
 
 PORTAFOLIO = dict(
@@ -175,7 +223,7 @@ PROYECTOS = [
    texto='Remoción, recolección y recuperación de crudo sobrenadante, así como la carga, transporte, tratamiento y '
          'disposición final del suelo contaminado en instalaciones de PDVSA autorizadas por el MINEC, generado en '
          'las actividades de saneamiento realizadas en el Centro Operativo de Morichal (COMOR), División Carabobo.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='dragado', area='ambiente', anio='2025 – 2026', estado='Culminado',
    lista='Dragado SIAE COMOR — lagunas A, B, C y D',
@@ -183,7 +231,7 @@ PROYECTOS = [
    sub='Lagunas A, B, C y D del SIAE',
    texto='Saneamiento y posterior mantenimiento de las cuatro lagunas A, B, C y D del SIAE del Centro Operacional '
          'Morichal (COMOR), en la División Carabobo, a través del dragado de sólidos.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='trasegado', area='ambiente', anio='2025 – 2026', estado='En ejecución',
    lista='Movilización y trasegado de crudo — COMOR',
@@ -191,7 +239,7 @@ PROYECTOS = [
    sub='Centro Operativo Morichal',
    texto='Movilización y trasegado de crudo en el Sistema de Inyección y Efluentes (SIAE) ubicado en las '
          'instalaciones del Centro Operativo COMOR, con equipos de vacío tipo vacuum de mínimo 160 BLS.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='ef016', area='ambiente', anio='2025', estado='Culminado',
    lista='Saneamiento Estación de Flujo O-16',
@@ -201,7 +249,7 @@ PROYECTOS = [
          'de hidrocarburos: remoción, estabilización, homogeneización, apilamiento y tratamiento in situ del '
          'material impactado, contención y recolección de fluidos petrolizados, nivelación de terreno y carga de '
          'sólidos.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='transv', area='servicios', anio='2024 – 2026', estado='En ejecución',
    lista='Equipos transversales',
@@ -211,7 +259,7 @@ PROYECTOS = [
          'logísticos y misceláneos, contemplados en las operaciones de rehabilitación y reacondicionamiento de '
          'pozos, subestaciones eléctricas, estaciones de flujo y descarga, asociados a las labores operacionales de '
          'las divisiones pertenecientes a la Dirección Ejecutiva de Producción FPO.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='chuto', area='servicios', anio='2024 – 2027', estado='En ejecución',
    lista='Chuto con batea',
@@ -221,7 +269,7 @@ PROYECTOS = [
          'lubricantes, desde las instalaciones PDVSA a nivel nacional hasta las áreas operacionales de las '
          'divisiones Carabobo, Ayacucho, Junín y Boyacá, adscritas a la Dirección Adjunta de Logística perteneciente '
          'a la Dirección Ejecutiva de Producción FPO HC.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='bombeo', area='servicios', anio='2025', estado='Culminado',
    lista='Mantenimiento de equipos de bombeo — FPO',
@@ -246,7 +294,7 @@ PROYECTOS = [
    texto='Construcción y mantenimiento de cortafuegos en corredores de tubería y líneas eléctricas de oleoductos y '
          'diluenductos de la Faja. Incluyendo corrección de filtraciones por soldadura y encapsulamiento de grampas '
          'apernadas.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='xpmorichal', area='servicios', anio='2025 – 2027', estado='En ejecución',
    lista='Alquiler de equipos — XP Extrapesado Morichal',
@@ -255,7 +303,7 @@ PROYECTOS = [
    texto='Servicios para acondicionamiento y adecuación de vías de acceso y locaciones, los cuales son '
          'indispensables para el óptimo funcionamiento y operación de las unidades de producción de la División '
          'Carabobo.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 
  dict(id='curataqui', area='ambiente', anio='2024', estado='Culminado',
    lista='Saneamiento Laguna de Curataquiche',
@@ -265,5 +313,5 @@ PROYECTOS = [
          'desarrollando actividades de remoción de capa de hidrocarburos con barreras oleofílicas y material '
          'particulado; estabilización mecánica, carga y transporte del material contaminado; reforestación del área, '
          'toma y análisis de muestras en la laguna, ejecutadas en las diferentes fases del proceso de saneamiento.',
-   cliente='Dirección Adjunta de Logística FPO'),
+   cliente='Logística Operacional DAL'),
 ]

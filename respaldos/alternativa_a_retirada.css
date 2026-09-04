@@ -1,0 +1,83 @@
+/* ============================================================
+   ALTERNATIVA A - cubierta y portada, RETIRADA
+   ============================================================
+   El CSS de la propuesta que se descarto. No esta enlazado en ningun
+   sitio: se guarda aqui para no perderlo.
+
+   Para volver a verla:
+     1. en generar.py, ALTERNATIVAS = ('a',)   (ahora esta vacio)
+     2. pegar estas reglas al final de estilos.css, y la ultima -la del
+        --alto-papel- en carta.css
+     3. python generar.py
+
+   La cubierta era la buena con el pie en navy; la portada partia la
+   columna en tres franjas: papel blanco para el logo, gris azulado para
+   el titular y navy medio para el parrafo.
+   ============================================================ */
+
+/* --- ALTERNATIVA A: la portada en azul --------------------------------
+   La buena parte la columna en dos por la diagonal: blanco arriba -logo y
+   titular- y navy abajo. Al lado de las demas laminas, que son azul de
+   canto a canto, esa mitad blanca la dejaba fuera del conjunto.
+
+   Aqui la columna se parte en tres franjas en vez de dos, de mas clara a mas
+   oscura: el papel blanco del logo, el gris azulado de la ultima lamina para
+   el titular, y la cuna de abajo en el navy medio, con la esquina rematada en
+   el azul vivo. Es la misma escala de azules de las barras del pie, ahora en
+   los fondos, y el unico texto en blanco es el parrafo, que es el que cae
+   sobre el oscuro.
+
+   La geometria no se toca -misma diagonal, mismas medidas-: solo los
+   colores y la letra, que pasa a blanco como en el resto del brochure.
+   Es una lamina de prueba: se ve en la pagina y no sale en el PDF. */
+.alt-a.l-portada .pt-izq{background:var(--hielo)}
+.alt-a .pt-izq .cuna-ice{background:var(--navy-medio)}
+.alt-a .pt-izq .esquina-navy{background:var(--azul)}
+/* El papel del logo. Aqui no es una esquina como en la cubierta sino una
+   FRANJA de canto a canto de la columna, que baja hasta la raya: todo lo que
+   queda por encima de ella -el logo, la raya y su guion azul- va sobre
+   blanco, y el azul empieza justo debajo, con el epigrafe. Es el mismo corte
+   horizontal que separa la banda del panel en el resto del brochure.
+
+   El alto es el hueco de arriba (64) mas el logo (65) mas el aire hasta
+   pasar la raya (34). El logo no mide lo mismo en las dos versiones, asi que
+   este alto se corrige en carta.css al lado del ancho del logo, que es de
+   donde sale.
+
+   El z-index es porque la franja va en absoluto y, sin el, se pintaria
+   ENCIMA del logo en vez de debajo: las piezas de la columna van en el flujo
+   y las posicionadas se dibujan despues. */
+.alt-a.l-portada{--alto-papel:163px}
+.alt-a.l-portada .pt-cuerpo::before{content:"";position:absolute;
+  left:0;right:0;top:0;height:var(--alto-papel);background:#fff;z-index:0}
+.alt-a.l-portada .pt-cuerpo>*{position:relative;z-index:1}
+/* Ni el titular, ni la raya, ni el epigrafe, ni el guion se pisan aqui: todos
+   caen sobre claro -el papel del logo primero y el gris azulado despues-, o
+   sea que les sirve el color oscuro que ya traen de la portada buena. El
+   unico que va sobre el azul es el parrafo, y ese ya nace en blanco. */
+
+
+/* --- ALTERNATIVA A: la cubierta -------------------------------------
+   La hoja se queda como la buena -papel blanco, la trama de barras con su
+   fondo claro y el logo encima- y lo unico que cambia es el pie: baja al
+   navy del brochure, con los numeros en el azul vivo y la letra en blanco.
+   Son las reglas que comparte con cb-azul, unas lineas mas arriba; aqui no
+   hace falta ninguna propia.
+   Solo se ve en pantalla: estas laminas no se imprimen. */
+
+
+.cb-azul .panel,.alt-a.l-cubierta .panel  (la mitad .alt-a de esta regla)
+
+.cb-azul .cb-fila .num,.alt-a .cb-fila .num  (la mitad .alt-a de esta regla)
+
+.cb-azul .cb-fila b.rot,.alt-a .cb-fila b.rot  (la mitad .alt-a de esta regla)
+
+.cb-azul .cb-sello,.alt-a .cb-sello  (la mitad .alt-a de esta regla)
+
+.cb-azul .cb-sello span,.alt-a .cb-sello span  (la mitad .alt-a de esta regla)
+
+/* en carta.css, junto al ancho del logo: */
+/* el logo mide 12 px menos de alto que en la panoramica, asi que la franja
+   blanca de la alternativa baja lo mismo para seguir muriendo en la raya */
+.alt-a.l-portada{--alto-papel:151px}
+

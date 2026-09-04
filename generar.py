@@ -8,27 +8,69 @@ Cada lamina es una pagina del PDF.
     python exportar_pdf.py    -> Brochure_Vidalsa27.pdf
 """
 import datetime
-import io, json, os
-from contenido import (EMPRESA, CONTACTO, PILARES, SERVICIOS, GERENCIAS, CARTERA,
-                       AREAS, PROYECTOS, FLOTA, PORTAFOLIO)
+import io, json, os, random, re
+from contenido import (EMPRESA, CONTACTO, CONTACTO_DIRECTO, PILARES, VALORES, SERVICIOS,
+                       GERENCIAS, CARTERA, AREAS, PROYECTOS, FLOTA, PORTAFOLIO)
 
 MESES = ('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
          'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre')
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
-# Comparativa de degradados debajo de la portada. Ponlo en False cuando decidas
-# cual te gusta. NO sale en el PDF ni cuenta como lamina: es solo para mirar.
-PRUEBA_PORTADA = False
-PRUEBAS = [
-    ('pr-b', 'B — desvanecido recto en el borde izquierdo de la foto'),
-    ('pr-c', 'C — desvanecido siguiendo la diagonal del corte'),
-    ('pr-d', 'D — velo claro encima, el corte se mantiene'),
-]
+# La cubierta que se imprime es la PARTIDA (lamina_cubierta_partida, mas
+# abajo): foto del edificio a la izquierda, nombre y logotipo a la derecha.
+# lamina_cubierta() con sus cuatro variantes ('edificio'|'limpia'|'azul'|
+# 'foto') se queda escrita por si se quiere volver a ella sin rehacerla;
+# CUBIERTA solo elige CUAL de esas cuatro sale si algun dia se vuelve a
+# llamar desde construir().
+CUBIERTA = 'edificio'             # 'edificio' | 'limpia' | 'azul' | 'foto'
+CUBIERTA_FOTO = 'valvulas_1'      # solo para 'foto': el hero de Estaciones de valvulas
 
-# Copias de la portada cambiando la foto de arriba, para comparar. Tampoco
-# salen en el PDF. Deja la lista vacia cuando ya hayas elegido.
-PORTADA_CANDIDATAS = []
+#: La foto de la sede en la CUBIERTA que se imprime, y solo ahi.
+#:
+#: Antes esta misma constante la usaba ademas 'Nuestra empresa'. Como el
+#: encuadre y el archivo van por data-foto -o sea por NOMBRE de foto-,
+#: compartir el nombre las dejaba amarradas: acercar la de la cubierta
+#: acercaba la otra, y cambiar la imagen en una la cambiaba en las dos. El
+#: usuario lo pidio suelto, asi que ahora cada lamina tiene su copia con su
+#: propio nombre (FOTO_EMPRESA): mismo archivo de partida, pero cada una se
+#: mueve y se cambia por su cuenta. Si alguna vez se quiere volver a
+#: moverlas juntas, basta con que dos constantes de estas apunten al mismo
+#: nombre.
+FOTO_SEDE = 'sede_edificio'
+
+#: El COLLAGE de 'Nuestra empresa' (lamina 2): la columna de la derecha ya no
+#: es una foto sola sino tres apiladas, como la muestra que trajo el usuario.
+#: Las tres son copias con nombre propio -la sede, y dos de obra que ya estan
+#: en el brochure- para que encuadrarlas o cambiarlas aqui no descuadre ni la
+#: cubierta ni las fichas de Servicios de donde salen. El orden es el de la
+#: lamina, de arriba abajo: quien somos, que hacemos, donde.
+#: Cada franja es (foto, rotulo). El rotulo sale en el MISMO chip gris que el
+#: "Patio de maquinas · Maturin" de Mision y vision -una sola pieza para los
+#: dos sitios- y dice de que obra es la foto. Con el rotulo vacio la franja
+#: sale limpia, sin figcaption, asi que se puede quitar uno sin tocar nada mas.
+FOTOS_EMPRESA = (('empresa_sede',      'Oleoducto 30″ Veladero · Tramo I'),
+                 ('empresa_soldadura', 'Oleoducto 30″ × 14 km — Planta FF–Km 0'),
+                 ('empresa_tendido',   'Oleoducto 30″ × 14 km — Planta FF–Km 0'))
+
+#: La foto de la PORTADA. Solo sale ahi -no la usa ninguna otra lamina-, y esa
+#: es la razon de elegirla y no cualquier otra: el encuadre va por nombre de
+#: foto y se comparte alla donde la foto aparezca, asi que si aqui se pusiera
+#: la de un proyecto -todas las <id>_1 son la grande de su ficha- moverla para
+#: que cuadre en la portada la descuadraria en su tarjeta. Esta no le debe el
+#: encuadre a nadie mas.
+FOTO_PORTADA = 'portada_valvulas'
+
+# El usuario la quito: repetia lo mismo que ya dicen la cubierta -el titular-
+# y "Nuestra empresa" -el parrafo y el sello-, una lamina entera de mas entre
+# las dos. lamina_portada() se queda escrita por si se quiere volver a ella.
+PORTADA_BUENA = False
+
+# Ya no hay cubiertas de prueba ni maquinaria para compararlas -se fueron
+# ROTULO_CUBIERTA, CONSTRUCTOR_CUBIERTA y alternativas_cubierta()-: se probo
+# 'plena' y un collage de cuatro fotos, y el usuario se quedo con la partida,
+# que es la que arma lamina_cubierta_partida(). El collage esta guardado en
+# respaldos/cubierta_collage_retirada.py y .css por si se quiere volver.
 
 
 def fecha_portafolio():
@@ -58,6 +100,18 @@ def espaciada(txt):
     return txt.upper().replace('<BR>', '<br>')
 
 
+NUMEROS = ['cero', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete',
+           'ocho', 'nueve', 'diez', 'once', 'doce']
+
+
+def cuantas_gerencias():
+    """El epigrafe de Clientes canta cuantas unidades de la FPO hay (gerencias
+    y coordinaciones). Se cuenta la lista en vez de escribir el numero a mano:
+    asi no se queda desfasado al anadir o quitar una en contenido.py."""
+    n = len(GERENCIAS)
+    return NUMEROS[n] if n < len(NUMEROS) else str(n)
+
+
 def foto(nombre, alt='', ext='jpg'):
     """<img> editable: data-foto lo enlaza con el editor y con encuadre.css"""
     return '<img src="img/%s.%s" data-foto="%s" alt="%s">' % (nombre, ext, nombre, alt)
@@ -65,6 +119,33 @@ def foto(nombre, alt='', ext='jpg'):
 
 def epigrafe(txt, clase=''):
     return '<div class="epigrafe %s">%s</div>' % (clase, espaciada(txt))
+
+
+#: El ano del brochure. Escrito y no sacado de la fecha del sistema a
+#: proposito: el brochure es la edicion de este ano y no debe cambiarse de
+#: nombre solo porque el reloj pase a enero mientras se sigue enviando el
+#: mismo PDF. Se toca aqui, en un sitio, y sale en las dos cubiertas.
+ANIO_BROCHURE = '2026'
+
+
+def sello_brochure(clase):
+    """El pie de la cubierta: el rotulo y el ANO, juntos.
+
+    Aparte y no escrito a mano en lamina_cubierta_partida(): lo compartieron
+    las dos cubiertas que hubo antes de esta -'texto' y la primera
+    'partida', ninguna sigue en pie-, y se queda asi -la clase la pone quien
+    llama, el cuerpo y el ano salen de aqui- por si algun dia vuelve a hacer
+    falta compartirlo.
+
+    El ano sale partido en dos mitades -en <i> las dos primeras cifras, el
+    resto fuera- para poder darle un color a cada una, como en las portadas de
+    informe anual que trajo el usuario. Va en <i> y no en otro <span> con
+    clase porque el <span> de aqui ya es el rotulo: son dos tramos de la misma
+    palabra, no dos piezas distintas. Quien no ponga la regla de color no nota
+    nada: las dos mitades salen iguales."""
+    return ('<div class="%s"><span>%s</span><b><i>%s</i>%s</b></div>'
+            % (clase, espaciada('Brochure corporativo'),
+               ANIO_BROCHURE[:2], ANIO_BROCHURE[2:]))
 
 
 def chip(txt):
@@ -81,6 +162,76 @@ def rieles(clase):
             '<i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>' % clase)
 
 
+#: Anchos y colores de las tres barras del trio. No cambian nunca: lo unico que
+#: se mueve entre un sitio y otro es cuanto se separan (ver rieles_trio).
+RIELES_TRIO = ((5, '#C3CAD9'), (9, '#2A3C78'), (4, '#8FA0CB'))
+
+#: Donde arranca cada barra. El juego SUELTO es el de la portada y el cierre,
+#: donde la pieza mide 752 px de alto y los huecos de 13 px se leen bien. El
+#: APRETADO es el del encabezado y el pie de la hoja carta: alli la pieza mide
+#: 15 px, y a esa escala los mismos 13 px de hueco separaban tanto las barras
+#: que dejaban de leerse como una pieza y parecian tres rayas sueltas. A 9 px
+#: vuelven a ir juntas. Al cambiarlos hay que ajustar el ancho de la caja en
+#: carta.css (.hoja-rieles), que es la suma: 32 + 4 = 36.
+RIELES_SUELTOS  = (0, 18, 40)   # ancho total 44
+RIELES_APRETADOS = (0, 14, 32)  # ancho total 36
+
+
+def rieles_trio(clase, izq=RIELES_SUELTOS):
+    """El otro juego de rieles: tres barras, gris - azul - azul palido. Es el
+    de la portada y el del cierre, y en pequeno el del pie de la hoja carta.
+    Estaba escrito a mano en las dos laminas; asi hay un solo sitio que tocar."""
+    return '<div class="%s">%s</div>' % (clase, ''.join(
+        '<i style="left:%dpx;width:%dpx;background:%s"></i>' % (l, ancho, color)
+        for l, (ancho, color) in zip(izq, RIELES_TRIO)))
+
+
+# El rotulo de seccion corriente que lleva el pie de cada hoja carta -no la
+# panoramica, que no tiene pie-. None en las tres que ya se presentan solas
+# -cubierta, portada y cierre lleva el logo grande y sus propios rieles en la
+# esquina- para no repetir lo que el ojo ya lee ahi.
+ETIQUETA_SECCION = {
+    'l-cubierta': None, 'l-portada': None, 'l-cierre': None,
+    'l-empresa': 'Nuestra empresa', 'l-nosotros': 'Misión y visión',
+    'l-valores': 'Nuestros valores', 'l-servicios': 'Nuestros servicios',
+    'l-portafolio': 'Portafolio', 'l-proyectos': 'Proyectos',
+    'l-destacado': 'Proyecto destacado', 'l-flota': 'Flota propia',
+    'l-clientes': 'Clientes',
+}
+
+
+def hoja_carta(lamina, numero, total):
+    """Prepara la lamina para la hoja carta. Solo la usa carta.html: la
+    panoramica va a sangre por los cuatro lados y no tiene donde poner nada.
+
+    La hoja carta es mas alta que la panoramica, y esa pulgada de mas se
+    reparte en dos franjas blancas, el encabezado y el pie. El diseno se queda
+    igual que siempre, envuelto en .hoja-diseno, que es quien lo baja hasta
+    debajo del encabezado y le sirve de caja: dentro de el todas las medidas
+    de la panoramica siguen valiendo tal cual. Quien coloca las tres piezas y
+    las mide es carta.css."""
+    abre = lamina.index('>') + 1
+    cierra = lamina.rfind('</section>')
+    rieles = rieles_trio('hoja-rieles', RIELES_APRETADOS)
+    raya = '<span class="hoja-raya"></span>'
+    clave = re.search(r'\bl-[a-z]+\b', lamina[:abre])
+    etiqueta = ETIQUETA_SECCION.get(clave.group(0)) if clave else None
+    pie_etiqueta = '<span class="hoja-etiqueta">%s</span>' % espaciada(etiqueta) if etiqueta else ''
+    return ''.join((
+        lamina[:abre],
+        '<div class="enc-hoja">%s%s<img src="img/logo.png"'
+        ' alt="Constructora Vidalsa 27, C.A."></div>' % (rieles, raya),
+        '<div class="hoja-diseno">', lamina[abre:cierra], '</div>',
+        # La CUBIERTA va sin folio -numero None-: una portada no se numera,
+        # y ademas no cuenta para el total, asi que la primera pagina numerada
+        # es la 01 de 18 y no la 02 de 19. El encabezado y las rayas si se
+        # quedan, para que la hoja no cambie de altura ni de reparto.
+        '<div class="pie-hoja">%s%s%s%s</div>'
+        % (rieles, pie_etiqueta, raya,
+           '' if numero is None else '<b>%02d / %02d</b>' % (numero, total)),
+        lamina[cierra:]))
+
+
 def banda(nombre, epi, titulo, alto, pie=''):
     return '''<div class="banda" style="height:%dpx">
     %s
@@ -93,28 +244,103 @@ def banda(nombre, epi, titulo, alto, pie=''):
 
 
 # --------------------------------------------------------------- laminas ---
+# Las tres maneras de resolver la COLUMNA DERECHA de la portada. La izquierda
+# -logo, titular, parrafo- es identica en las tres: lo que se compara es como
+# salen las fotos, asi que todo lo demas tiene que quedarse quieto.
+#
+#   None  las dos fotos apiladas con el corte en diagonal (la que va al PDF)
+#   'a'   mosaico: dos fotos arriba y una grande debajo
+#   'b'   una sola foto a toda la columna
+#
+# Las de 'a' y 'b' son fotos que YA estan en el brochure -no hay ninguna nueva-:
 def lamina_portada():
-    tag = '<i>·</i>'.join('<span>%s</span>' % espaciada(t) for t in EMPRESA['tagline_portada'])
-    return '''<section class="lamina l-portada">
-  <div class="pt-izq">
-    <span class="cuna-ice"></span><span class="esquina-navy"></span>
+    """La portada, con el MISMO reparto que la lamina de cierre.
+
+    La pidio asi el usuario -"de cero, tal cual la ultima diapositiva"-, y no
+    hay maqueta nueva: son las tres piezas del cierre, con su CSS entero.
+
+        .cr-izq    el bloque claro de la izquierda, con su cuna en diagonal,
+                   el logotipo, la raya y el titular
+        .cr-der    la foto de la derecha, cortada en diagonal por su filo
+        .pie-navy  el pie oscuro de lado a lado
+
+    Lo unico que cambia es lo que llevan DENTRO: aqui el titular y la entrada,
+    alla el titular de despedida y los datos de contacto. Asi el brochure abre
+    y cierra con el mismo gesto, que es lo que se buscaba.
+
+    NO lleva el epigrafe "Diseno / Ingenieria / Obras" debajo del logotipo: lo
+    quito el usuario. Los mismos tres nombres siguen saliendo en la CUBIERTA,
+    numerados 01-02-03, que es donde los queria.
+
+    """
+    fotos = '<figure>%s</figure>' % foto(FOTO_PORTADA)
+    clase = 'lamina l-portada'
+    return '''<section class="%s">
+  <div class="cr-izq">
+    <span class="cuna-ice"></span>
     <div class="pt-cuerpo">
       <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
       <div class="linea"></div>
-      <div class="tagline">%s</div>
       <h1>%s</h1>
-      <div class="guion"></div>
-      <p class="entrada">%s</p>
       <div class="barras"><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
-  <div class="pt-der">
-    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
-    <figure class="pt-f1">%s</figure>
-    <figure class="pt-f2">%s</figure>
+  <div class="cr-der">
+    %s
+    %s
   </div>
-</section>''' % (tag, EMPRESA['titular_portada'], EMPRESA['entrada_portada'],
-                 foto('portada_valvulas'), foto('portada_bombeo'))
+  <div class="pie-navy">
+    %s
+    <p class="entrada">%s</p>
+    <div class="sello"><span>%s</span></div>
+  </div>
+</section>''' % (clase, EMPRESA['titular_portada'],
+                 rieles_trio('rieles-portada'), fotos,
+                 rieles('rieles-panel'), EMPRESA['entrada_portada'],
+                 espaciada(EMPRESA['sello']))
+
+
+def lamina_empresa():
+    """Quienes somos: la presentacion de la empresa.
+
+    Nacio con la foto arriba a lo ancho de toda la hoja -el esqueleto de
+    "Mision y vision"-, y el usuario la vio y pidio la foto en UN LADO, no
+    ocupando toda la pagina. Se rehizo con el reparto de "Nuestros valores":
+    panel navy a un lado, foto a toda la altura al otro. Panel a la
+    IZQUIERDA y foto a la DERECHA -en Valores es al reves-, para que las dos
+    laminas seguidas -esta y la de Valores, dos laminas mas adelante- no se
+    lean identicas.
+
+    El texto es el mismo EMPRESA['entrada_portada'] que ya lleva la portada -
+    una sola fuente para las dos, no una copia pegada aqui-.
+
+    La columna de la derecha es un COLLAGE de tres fotos apiladas -FOTOS_EMPRESA-,
+    calcado de la muestra que trajo el usuario: franjas iguales separadas por
+    un hilo blanco. Cada una lleva su propio nombre, asi que se encuadran y se
+    cambian por separado (doble clic en el editor) sin tocar ni la cubierta ni
+    las laminas de Servicios de donde salen las dos de obra.
+
+    Hay dos juegos de rieles y los dos van en el PANEL: el de siempre pegado
+    al canto izquierdo, y otro -rieles-derecha- al otro extremo, al lado del
+    parrafo. El segundo estuvo un rato sobre el collage, en el canto derecho
+    de la lamina, y el usuario lo pidio aqui: asi las dos diagonales enmarcan
+    el texto en vez de cruzar por encima de las fotos.
+    """
+    return '''<section class="lamina l-empresa">
+  <div class="qse-panel">
+    %s
+    <div class="qse-cab">%s<h2>Nuestra empresa</h2></div>
+    <p class="qs-texto">%s</p>
+    %s
+  </div>
+  <div class="qse-foto">
+    %s
+  </div>
+</section>''' % (rieles('rieles-panel'), epigrafe('Quiénes somos', 'claro'),
+                 EMPRESA['entrada_portada'], rieles('rieles-derecha'),
+                 ''.join('<figure>%s%s</figure>'
+                         % (foto(n), '<figcaption>%s</figcaption>' % chip(r) if r else '')
+                         for n, r in FOTOS_EMPRESA))
 
 
 def lamina_nosotros():
@@ -124,12 +350,44 @@ def lamina_nosotros():
         for n, t, p in PILARES)
     return '''<section class="lamina l-nosotros">
   %s
-  <div class="panel" style="top:400px;height:320px">
+  <div class="panel" style="top:470px;height:250px">
     %s
-    <div class="cols3">%s</div>
+    <div class="pilares">%s</div>
   </div>
-</section>''' % (banda('flota_equipo', 'Quiénes somos', 'Misión, visión y objetivo', 400),
+</section>''' % (banda('flota_equipo', 'Quiénes somos', 'Misión y visión', 470,
+                        # Un chip -la misma pieza sesgada que rotula las demas
+                        # laminas- para decir DONDE esta hecha la foto: sin el,
+                        # el equipo y la flota podian ser de cualquier sitio.
+                        '<div class="banda-lugar">%s</div>'
+                        % chip('Patio de máquinas · Maturín')),
                  rieles('rieles-panel'), cols)
+
+
+#: La foto de la lamina de Valores, a todo el vertical en el lado izquierdo.
+#: Va por su propio data-foto -no comparte encuadre con ninguna otra lamina-,
+#: asi que se puede cambiar y recuadrar desde el editor sin afectar a nadie.
+FOTO_VALORES = 'valores_equipo'
+
+
+def lamina_valores():
+    filas = ''.join(
+        '<article class="valor"><span class="num"><b>%s</b></span>'
+        '<div class="v-texto"><h3>%s</h3><p>%s</p></div></article>' % (n, espaciada(t), p)
+        for n, t, p in VALORES['items'])
+    return '''<section class="lamina l-valores">
+  <div class="va-foto">%s</div>
+  <div class="va-panel">
+    %s
+    <div class="va-cab">
+      %s
+      <h2>%s</h2>
+      <p>%s</p>
+    </div>
+    <div class="va-lista">%s</div>
+  </div>
+</section>''' % (foto(FOTO_VALORES), rieles('rieles-panel'),
+                 epigrafe(VALORES['epigrafe'], 'claro'),
+                 VALORES['titulo'], VALORES['texto'], filas)
 
 
 def lamina_servicios():
@@ -142,7 +400,7 @@ def lamina_servicios():
                     for s in ('1_zanja', '2_tendido', '3_soldadura', '4_valvula', '5_maquinaria'))
     return '''<section class="lamina l-servicios">
   <div class="cabecera">%s<h2>Nuestros servicios</h2></div>
-  <div class="panel" style="top:160px;height:280px">
+  <div class="panel" style="top:160px;height:281px">
     %s
     <div class="cols4">%s</div>
   </div>
@@ -153,7 +411,11 @@ def lamina_servicios():
 def lamina_portafolio():
     cols = ''
     for clave, nombre in AREAS:
-        items = [p for p in PROYECTOS if p['area'] == clave]
+        # Primero lo culminado y al final lo que sigue en obra: al cliente
+        # se le ensena antes lo entregado. sorted es estable, asi que
+        # dentro de cada grupo se respeta el orden de contenido.py.
+        items = sorted((p for p in PROYECTOS if p['area'] == clave),
+                       key=lambda p: 0 if p['estado'].startswith('Culmin') else 1)
         li = ''.join(
             '<li><span class="nom">%s</span>'
             '<span class="pie">%s %s</span></li>' % (p['lista'], p['cliente'], pildora(p['estado']))
@@ -215,17 +477,33 @@ def lamina_proyecto_solo(p):
                  p['texto'], espaciada('Cliente'), p['cliente'], minis)
 
 
+COLUMNAS_FLOTA = 6      # las mismas que pone estilos.css en .fl-bloque ul
+
+
+def filas_cambiadas(tipos):
+    """Intercambia la primera fila del bloque con la segunda.
+
+    La lista viene ordenada de mas a menos equipos, pero en la lamina se quiere
+    ver primero la segunda tanda. Si el bloque no llega a dos filas se deja tal
+    cual. Lo que sobre de la segunda fila en adelante no se mueve.
+    """
+    c = COLUMNAS_FLOTA
+    if len(tipos) <= c:
+        return tipos
+    return tipos[c:c * 2] + tipos[:c] + tipos[c * 2:]
+
+
 def lamina_flota():
     d = datos_flota()
     bloques = ''
     for b in d['bloques']:
         celdas = ''.join(
             '<li><b>%s</b><span>%s</span></li>' % (miles(t['cantidad']), t['nombre'])
-            for t in b['tipos'])
+            for t in filas_cambiadas(b['tipos']))
         bloques += '<section class="fl-bloque"><ul>%s</ul></section>' % celdas
     fotos = ''.join('<figure>%s</figure>' % foto('flota_%d' % i) for i in (1, 2, 3, 4))
     return '''<section class="lamina l-flota">
-  <div class="panel" style="top:0;height:545px">
+  <div class="panel" style="top:0;height:546px">
     %s
     <div class="fl-cab">
       %s
@@ -262,71 +540,234 @@ def lamina_clientes():
   </div>
 </section>''' % (banda('clientes_equipo', 'Clientes', 'Nuestros clientes', 300),
                  rieles('rieles-panel'),
-                 epigrafe('Contratos directos con siete<br>gerencias de la FPO', 'suave'),
+                 epigrafe('Contratos directos con %s<br>gerencias y coordinaciones de la FPO'
+                          % cuantas_gerencias(), 'suave'),
                  ger, cart)
 
 
 ICONOS = {
  'Sede corporativa': '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
  'Sede operativa':   '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
- 'Teléfonos':        '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.6h2"/>',
- 'Contacto':         '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/>',
+ 'Teléfono':         '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 '
+                     '19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 '
+                     '2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 '
+                     '1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',
+ 'Correo':           '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/>',
 }
 
 
+def _cierre_pie():
+    """El pie de contacto -.pie-navy-, con las mismas TRES columnas de
+    siempre: las dos sedes de CONTACTO, mas telefono+correo (CONTACTO_DIRECTO)
+    juntos en un bloque .ct-directo que la CSS reparte distinto segun la hoja
+    -uno al lado del otro en la panoramica, apilados en carta-.
+
+    Aparte y no escrito a mano en lamina_cierre(): lo llevo tambien la
+    alternativa de prueba con foto completa mientras existio -ya no-, y se
+    queda asi por si algun dia vuelve a hacer falta compartirlo."""
+    def bloque(t, v):
+        return '<div class="ct"><h4><svg viewBox="0 0 24 24">%s</svg>%s</h4><p>%s</p></div>' % (
+            ICONOS[t], espaciada(t), v)
+    cols = ''.join(bloque(t, v) for t, v in CONTACTO)
+    cols += '<div class="ct-directo">%s</div>' % ''.join(bloque(t, v) for t, v in CONTACTO_DIRECTO)
+    # Sin el sello de trayectoria ("2007 - 2026 · 19 anos"): lo quito el
+    # usuario de la ultima pagina. EMPRESA['sello'] se queda en contenido.py
+    # porque lo sigue usando lamina_portada(), que hoy no se dibuja.
+    return '''<div class="pie-navy">
+    %s
+    <div class="contacto">%s</div>
+  </div>''' % (rieles('rieles-panel'), cols)
+
+
 def lamina_cierre():
-    tag = '<i>·</i>'.join('<span>%s</span>' % espaciada(t) for t in EMPRESA['tagline_cierre'])
-    cols = ''.join('<div class="ct"><h4><svg viewBox="0 0 24 24">%s</svg>%s</h4><p>%s</p></div>'
-                   % (ICONOS[t], espaciada(t), v) for t, v in CONTACTO)
+    """El cierre: logo y titular a la izquierda, foto cortada en diagonal a
+    la derecha (.cr-izq/.cr-der, ver su nota en estilos.css), y el pie de
+    contacto de siempre abajo -_cierre_pie()-.
+
+    Sin tagline -"Diseno · Ingenieria · Obras · Energia"- bajo el logo: el
+    usuario lo pidio fuera varias veces seguidas. Con ella se fueron tambien
+    _cierre_tag() y EMPRESA['tagline_cierre'] en contenido.py, que ya no
+    tenian mas llamadas -no confundir con tagline_portada, que si sigue en
+    pie en lamina_cubierta(), la cubierta vieja que se guarda desactivada-.
+    """
     return '''<section class="lamina l-cierre">
   <div class="cr-izq">
     <span class="cuna-ice"></span>
     <div class="pt-cuerpo">
       <img class="logo" src="img/logo.png" alt="Constructora Vidalsa 27, C.A.">
       <div class="linea"></div>
-      <div class="tagline">%s</div>
       <h2>%s</h2>
       <div class="barras"><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
   <div class="cr-der">
-    <div class="rieles-portada"><i style="left:0;width:5px;background:#C3CAD9"></i><i style="left:18px;width:9px;background:#2A3C78"></i><i style="left:40px;width:4px;background:#8FA0CB"></i></div>
+    %s
     <figure>%s</figure>
   </div>
-  <div class="pie-navy">
+  %s
+</section>''' % (EMPRESA['titular_cierre'],
+                 rieles_trio('rieles-portada'), foto('flota_equipo_cierre'),
+                 _cierre_pie())
+
+
+def lamina_cubierta(variante):
+    """Cubierta: la hoja de antes de la portada.
+
+    Reusa el esqueleto de "Mision y vision" —banda arriba con los
+    rieles diagonales, panel abajo y los chips en diagonal— porque es la
+    lamina cuyo ritmo pidio el usuario. Lo que cambia es que el protagonista
+    es el logo, no un titular.
+
+    'limpia'   banda con las barras de la marca; pie claro, letra navy
+    'foto'     banda con la foto y su velo azul; logo blanco encima
+    'azul'     la misma banda de 'limpia' pero el pie en navy y letra blanca
+    'edificio' la hoja entera en blanco, con la foto de la sede entrando por
+               la derecha cortada en diagonal. Habla el idioma de la PORTADA
+               -campo liso, filo en diagonal, foto asomando por un lado- en vez
+               del de la trama. Nacio en navy de canto a canto; se paso a
+               blanco porque pesaba demasiado azul.
+
+    En 'edificio' la banda mide la hoja entera y el panel se le monta encima
+    sin fondo: asi la foto llega hasta el canto de abajo y los chips y el sello
+    van sobre ella, sostenidos por el velo. En las otras tres la banda sigue
+    midiendo 470 y el panel es un bloque aparte, como siempre.
+    """
+    alto_banda = 720 if variante == 'edificio' else 470
+    if variante == 'edificio':
+        # foto() y no un <img> suelto: asi lleva data-foto y el editor la deja
+        # cambiar y encuadrar, que es lo que se pidio. Comparte FOTO_SEDE con
+        # la cubierta que se imprime; esta variante no se dibuja hoy, pero si
+        # se vuelve a ella conviene darle su propio nombre, como se hizo con
+        # 'Nuestra empresa' (FOTOS_EMPRESA, ver arriba).
+        fondo = '%s<span class="velo"></span>' % foto(FOTO_SEDE)
+        # el campo es blanco, asi que aqui va el logotipo oscuro
+        logo = 'logo.png'
+    elif variante == 'foto':
+        fondo = ('<img src="img/%s.jpg" alt="">'
+                 '<span class="velo"></span>' % CUBIERTA_FOTO)
+        logo = 'logo_blanco.png'
+    else:
+        # las barras no son una imagen: es la trama del CSS
+        # el trio de los rieles repetido a lo ancho: tres lineas por grupo
+        # Cinco lineas por grupo. La cuarta es la ancha y va partida en dos
+        # colores: ni el corte ni el par de azules se repiten de grupo en
+        # grupo —si el corte cayera siempre igual se leeria como una sola
+        # linea horizontal cruzando el bloque—. Semilla fija: el azar tiene
+        # que salir siempre el mismo o el PDF cambiaria en cada exportacion.
+        azar = random.Random(27)
+        PARES = (('#2A3C78', '#7C8BBA'), ('#122149', '#96A3C8'),
+                 ('#4966AD', '#C3CAD9'), ('#2A3C78', '#4966AD'))
+        GRUPO = ((0, 7, '#C3CAD9'), (18, 12, '#2A3C78'), (42, 5, '#8FA0CB'),
+                 (60, 24, None))          # None = la ancha, se pinta aparte
+        # De derecha a izquierda: el grupo mas a la derecha acaba justo en el
+        # borde del contenedor (ANCHO_TRAMA) y ninguno lo pasa. Si se pasaran,
+        # al imprimir Chrome encoge TODAS las laminas para que quepan.
+        ANCHO_TRAMA = 640                 # el mismo que .cb-trama en estilos.css
+        # Lo que ocupa un grupo, de donde empieza la primera barra a donde
+        # acaba la ultima. Se calcula y no se escribe a mano: al engordar las
+        # barras hay que correr el grupo hacia la izquierda lo mismo que crece,
+        # o el de la derecha se sale del contenedor y aparece el encogido.
+        GRUESO = max(dx + ancho for dx, ancho, _color in GRUPO)
+        trozos = []
+        for x in range(ANCHO_TRAMA - GRUESO, -160, -150):
+            for dx, ancho, color in GRUPO:
+                if color is None:
+                    corte = azar.randint(26, 74)
+                    arriba, abajo = azar.choice(PARES)
+                    color = ('linear-gradient(180deg,%s 0 %d%%,%s %d%% 100%%)'
+                             % (arriba, corte, abajo, corte))
+                trozos.append('<i style="left:%dpx;width:%dpx;background:%s"></i>'
+                              % (x + dx, ancho, color))
+        barras = ''.join(trozos)
+        fondo = '<div class="cb-trama">%s</div>' % barras
+        logo = 'logo.png'
+    chips = ''.join(
+        '<span class="par"><span class="num"><b>%02d</b></span>'
+        '<b class="rot">%s</b></span>' % (i, espaciada(t))
+        for i, t in enumerate(EMPRESA['tagline_portada'], 1))
+    return '''<section class="lamina l-cubierta %s">
+  <div class="banda" style="height:%dpx">
     %s
-    <div class="contacto">%s</div>
-    <div class="sello"><span>%s</span><span>%s</span></div>
+    %s
+    <div class="cb-marca">
+      <img src="img/%s" alt="Constructora Vidalsa 27, C.A.">
+    </div>
   </div>
-</section>''' % (tag, EMPRESA['titular_cierre'], foto('flota_equipo_cierre'),
-                 rieles('rieles-panel'), cols,
-                 espaciada(EMPRESA['elaborado']), espaciada(EMPRESA['sello']))
+  <div class="panel" style="top:470px;height:250px">
+    %s
+    <div class="cb-fila">%s</div>
+    <div class="cb-sello"><span>%s</span></div>
+  </div>
+</section>''' % ('cb-' + variante,
+                 alto_banda, fondo, rieles('rieles-banda'),
+                 logo,
+                 rieles('rieles-panel'), chips,
+                 espaciada('Brochure corporativo'))
+
+
+def lamina_cubierta_partida():
+    """La cubierta que se imprime: la hoja partida en dos de arriba abajo.
+
+    Foto del edificio de la sede a la IZQUIERDA, a todo el alto, y a la
+    derecha el nombre sobre campo navy con el logotipo cuadrado debajo, en
+    blanco. Es la maqueta calcada de la portada suelta que trajo el usuario.
+
+    Se retiro por error el 2026-09-03 -en su lugar entro un collage de cuatro
+    fotos- y el usuario pidio recuperarla: esta reconstruida, no rescatada,
+    porque no habia quedado copia ni en git ni en respaldos/.
+
+    La foto es FOTO_SEDE y va por su nombre, asi que el encuadre que el
+    usuario ya le dio -la entrada del 177- se le aplica solo.
+
+    El sello -"BROCHURE CORPORATIVO" y el ano- va SOBRE la foto y no en el
+    panel blanco: lo pidio el usuario al modo de las portadas de informe anual
+    que trajo de muestra. El panel blanco se queda entonces solo con el
+    logotipo, que gana aire, y la foto gana un pie que la ancla.
+
+    Los rieles diagonales -rieles(), la misma pieza que llevan todas las
+    laminas de contenido- faltaban aqui: el usuario los pidio. Primero uno
+    solo, a caballo entre el navy y el blanco; el usuario lo vio y pidio que
+    se guiara por "Mision y vision" -que no lleva uno que cruce la foto y el
+    panel de corrido, sino UNO PARA CADA UNO, el suyo dentro de la banda y el
+    suyo dentro del panel (ver banda() y lamina_nosotros())-. Aqui es el
+    mismo criterio: uno dentro de .cbp-titulo (el navy) y otro dentro de
+    .cbp-logo (el blanco), cada uno a la altura de su propia caja y no de la
+    columna entera.
+
+    Los dos nacieron en la costura, pegados al canto izquierdo de su caja
+    -como en el resto del brochure-, pero el usuario los quiso en el EXTREMO
+    DERECHO de la cubierta en vez de ahi: el override esta en estilos.css
+    (".cb-partida .cbp-titulo .rieles-panel, .cb-partida .cbp-logo
+    .rieles-panel"), no aqui, porque la pieza en si -rieles()- se queda
+    igual que en todas las demas laminas; solo cambia donde cae.
+    """
+    return '''<section class="lamina l-cubierta cb-partida">
+  <div class="cbp-foto">%s%s</div>
+  <div class="cbp-der">
+    <div class="cbp-titulo">
+      %s
+      <h2>Constructora Vidalsa 27, C.A.</h2>
+      <span class="cbp-raya"></span>
+      <p>%s</p>
+    </div>
+    <div class="cbp-logo">
+      %s
+      <img src="img/logo_cuadrado.png" alt="Constructora Vidalsa 27, C.A.">
+    </div>
+  </div>
+</section>''' % (foto(FOTO_SEDE), sello_brochure('cbp-sello'),
+                 rieles('rieles-panel'), EMPRESA['titular_portada'],
+                 rieles('rieles-panel'))
+
 
 
 # ------------------------------------------------------------------ armado ---
 def construir():
-    portada = lamina_portada()
-    laminas = [portada]
-    if PORTADA_CANDIDATAS:
-        arriba = foto('portada_valvulas')
-        laminas.append('<div class="rotulo-prueba">Arriba, la portada como está hoy. '
-                       'Debajo, la misma portada con otra foto en el hueco de arriba. '
-                       'Estas copias no salen en el PDF.</div>')
-        for archivo, rotulo in PORTADA_CANDIDATAS:
-            # sin data-foto: son solo para mirar, no se editan ni se guardan
-            copia = portada.replace(arriba, '<img src="img/%s.jpg" alt="">' % archivo)
-            copia = copia.replace('class="lamina l-portada"',
-                                  'class="lamina l-portada prueba pr-cand"')
-            laminas.append('<div class="rotulo-prueba">%s</div>' % rotulo)
-            laminas.append(copia)
-    if PRUEBA_PORTADA:
-        laminas.append('<div class="rotulo-prueba">A — como esta ahora (arriba) · '
-                       'debajo, las opciones con degradado</div>')
-        for clase, rotulo in PRUEBAS:
-            laminas.append('<div class="rotulo-prueba">%s</div>' % rotulo)
-            laminas.append(portada.replace('class="lamina l-portada"',
-                                           'class="lamina l-portada prueba %s"' % clase))
-    laminas += [lamina_nosotros(), lamina_servicios(), lamina_portafolio()]
+    cubierta = lamina_cubierta_partida()
+    laminas = [cubierta]
+    if PORTADA_BUENA:
+        laminas.append(lamina_portada())
+    laminas += [lamina_empresa(), lamina_nosotros(), lamina_valores(), lamina_servicios(), lamina_portafolio()]
     pares = len(PROYECTOS) // 2 * 2
     for i in range(0, pares, 2):
         laminas.append(lamina_proyectos(PROYECTOS[i], PROYECTOS[i + 1]))
@@ -337,24 +778,62 @@ def construir():
     laminas.append(lamina_cierre())
 
     css = io.open(os.path.join(BASE, 'estilos.css'), encoding='utf-8').read()
-    html = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
-            '<title>Brochure — Constructora Vidalsa 27</title>\n'
-            '<link rel="stylesheet" href="fuentes.css">\n'
-            '<style>\n%s</style>\n'
-            '<link rel="stylesheet" href="encuadre.css">\n'
-            '</head>\n<body>\n%s\n'
-            '<script src="editor.js" defer></script>\n'
-            '</body>\n</html>\n' % (css, '\n'.join(laminas)))
-    io.open(os.path.join(BASE, 'index.html'), 'w', encoding='utf-8').write(html)
-    reales = sum(1 for l in laminas if 'class="lamina' in l and 'prueba' not in l)
-    print('index.html listo -> %d laminas (1280 x 720 px cada una)' % reales)
-    if PRUEBA_PORTADA:
-        print('   + %d clones de portada para comparar degradados '
-              '(no salen en el PDF; se quitan con PRUEBA_PORTADA = False)' % len(PRUEBAS))
-    if PORTADA_CANDIDATAS:
-        print('   + %d copias de la portada con otra foto arriba '
-              '(no salen en el PDF; se quitan vaciando PORTADA_CANDIDATAS)'
-              % len(PORTADA_CANDIDATAS))
+
+    def pagina(titulo, cuerpo, extra_css, scripts):
+        return ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
+                '<title>%s</title>\n'
+                '<link rel="stylesheet" href="fuentes.css">\n'
+                '<style>\n%s</style>\n'
+                '<link rel="stylesheet" href="encuadre.css">\n'
+                '%s</head>\n<body>\n%s\n'
+                '%s</body>\n</html>\n'
+                % (titulo, css, extra_css, cuerpo, scripts))
+
+    io.open(os.path.join(BASE, 'index.html'), 'w', encoding='utf-8').write(
+        pagina('Brochure — Constructora Vidalsa 27', '\n'.join(laminas), '',
+               '<script src="encaje.js"></script>\n'
+               '<script src="editor.js" defer></script>\n'))
+
+    # Las mismas laminas, con la misma letra y las mismas separaciones, pero
+    # dibujadas en una hoja carta apaisada: 1056 x 816 px = 11 x 8,5 pulg a los
+    # mismos 96 ppp, o sea SIN encoger. La hoja es 224 px mas angosta y 96 px
+    # mas alta: esa pulgada de mas es el encabezado y el pie que anade
+    # hoja_carta(), y de colocarlo todo se encarga carta.css.
+    # Ojo: `laminas` trae tambien los rotulos de las alternativas, que no son
+    # laminas, y las alternativas no se imprimen: ni unos ni otras se numeran.
+    # Lleva editor.js, igual que la panoramica: aqui tambien se encuadran las
+    # fotos -lo pidio el usuario- y el mismo script sabe en que hoja esta, asi
+    # que su boton "Descargar PDF" saca el de carta y no el panoramico.
+    # La cubierta no entra en la cuenta: no se numera a si misma.
+    def se_imprime(l):
+        return 'class="lamina ' in l and 'lamina prueba' not in l
+    total = sum(1 for l in laminas if se_imprime(l) and l is not cubierta)
+    hojas, numero = [], 0
+    for l in laminas:
+        if not se_imprime(l):
+            hojas.append(l)
+        elif l is cubierta:
+            # La cubierta va TAL CUAL, sin hoja_carta(): no lleva encabezado
+            # ni pie -no se numera, no es una seccion- asi que no tiene
+            # sentido reservarle las dos franjas blancas de las que salen esas
+            # piezas. Sin ellas la cubierta cubre la hoja carta entera -816 px
+            # y no los 720 del diseno- gracias al --alto-diseno propio que le
+            # da .l-cubierta en carta.css.
+            hojas.append(l)
+        else:
+            numero += 1
+            hojas.append(hoja_carta(l, numero, total))
+    io.open(os.path.join(BASE, 'carta.html'), 'w', encoding='utf-8').write(
+        pagina('Brochure carta — Constructora Vidalsa 27', '\n'.join(hojas),
+               '<link rel="stylesheet" href="carta.css">\n',
+               '<script src="encaje.js"></script>\n'
+               '<script src="editor.js" defer></script>\n'))
+
+    # `numero` cuenta las laminas NUMERADAS, que ya no son todas: la cubierta
+    # va sin folio. Se dice aparte para que el aviso no se lea como si se
+    # hubiera perdido una lamina por el camino.
+    print('index.html (13,333 x 7,5 pulg) y carta.html (11 x 8,5 pulg) listos '
+          '-> cubierta + %d laminas numeradas' % numero)
 
 
 if __name__ == '__main__':

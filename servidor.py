@@ -12,13 +12,23 @@ Todo se guarda solo: las fotos en img/ y el encuadre en encuadre.css,
 asi que "python exportar_pdf.py" saca el PDF igual a lo que ves.
 """
 import datetime
-import io, json, os, shutil, threading, webbrowser
+import io, json, os, shutil, sys, threading, webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 from PIL import Image, ImageOps
 
 import exportar_pdf
 import exportar_pptx
+
+# Aqui se piden los archivos que baja la barra del editor. Cada ruta dice
+# quien la atiende, con que argumentos y como se llama el archivo que sale;
+# asi el manejador sigue siendo uno solo para las tres. El PDF de carta es
+# el mismo exportador con carta=True: no hay un segundo modulo que mantener.
+EXPORTADORES = {
+    '/api/pdf':       (exportar_pdf,  {},              exportar_pdf.NOMBRE),
+    '/api/pdf-carta': (exportar_pdf,  {'carta': True}, exportar_pdf.NOMBRE_CARTA),
+    '/api/pptx':      (exportar_pptx, {},              exportar_pptx.NOMBRE),
+}
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 IMG = os.path.join(BASE, 'img')
@@ -79,10 +89,11 @@ class Manejador(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store')
         camino = self.path.split('?')[0].lower()
-        for final, modulo in (('.pdf', exportar_pdf), ('.pptx', exportar_pptx)):
-            if camino.endswith(final):
+        for _, _, nombre in EXPORTADORES.values():
+            # por nombre exacto, no por extension: hay dos archivos .pdf
+            if camino.endswith('/' + nombre.lower()):
                 self.send_header('Content-Disposition',
-                                 'attachment; filename="%s"' % modulo.NOMBRE)
+                                 'attachment; filename="%s"' % nombre)
         super().end_headers()
 
     def responder(self, codigo, obj):
@@ -99,7 +110,7 @@ class Manejador(SimpleHTTPRequestHandler):
         if largo > MAX_BYTES:
             return self.responder(400, {'ok': False, 'error': 'Archivo demasiado grande'})
         cuerpo = self.rfile.read(largo) if largo else b''
-        if ruta.path not in ('/api/pdf', '/api/pptx') and not cuerpo:
+        if ruta.path not in EXPORTADORES and not cuerpo:
             return self.responder(400, {'ok': False, 'error': 'No llego nada'})
 
         if ruta.path == '/api/encuadre':
@@ -122,18 +133,12 @@ class Manejador(SimpleHTTPRequestHandler):
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': str(err)})
 
-        if ruta.path == '/api/pdf':
+        trabajo = EXPORTADORES.get(ruta.path)
+        if trabajo:
+            modulo, argumentos, nombre = trabajo
             try:
-                _, megas = exportar_pdf.generar()
-                return self.responder(200, {'ok': True, 'archivo': exportar_pdf.NOMBRE,
-                                            'megas': round(megas, 1)})
-            except Exception as err:
-                return self.responder(500, {'ok': False, 'error': str(err)})
-
-        if ruta.path == '/api/pptx':
-            try:
-                _, megas = exportar_pptx.generar()
-                return self.responder(200, {'ok': True, 'archivo': exportar_pptx.NOMBRE,
+                _, megas = modulo.generar(**argumentos)
+                return self.responder(200, {'ok': True, 'archivo': nombre,
                                             'megas': round(megas, 1)})
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': str(err)})
@@ -162,14 +167,47 @@ class Manejador(SimpleHTTPRequestHandler):
         return self.responder(404, {'ok': False, 'error': 'Ruta desconocida'})
 
 
+def sin_freno():
+    """Quita el freno de energia de Windows a este proceso.
+
+    Windows ralentiza a proposito los programas que no estan en primer plano,
+    y este servidor vive minimizado. Como los Chrome que lanza el exportador
+    heredan ese freno, el PowerPoint tardaba el triple pedido desde el boton de
+    la pagina que escribiendo  python exportar_pptx.py  en una consola.
+    Si la llamada no existe (Windows viejo, o no es Windows), no pasa nada.
+    """
+    if os.name != 'nt':
+        return
+    import ctypes
+    from ctypes import wintypes
+
+    class Energia(ctypes.Structure):
+        _fields_ = [('Version', wintypes.ULONG),
+                    ('ControlMask', wintypes.ULONG),
+                    ('StateMask', wintypes.ULONG)]
+
+    # ControlMask = EXECUTION_SPEED, StateMask = 0 -> "no me frenes"
+    estado = Energia(1, 1, 0)
+    try:
+        k = ctypes.windll.kernel32
+        k.SetProcessInformation(k.GetCurrentProcess(), 4,
+                                ctypes.byref(estado), ctypes.sizeof(estado))
+    except (AttributeError, OSError):
+        pass
+
+
 def main():
+    sin_freno()
     if not os.path.exists(ENCUADRE_CSS):
         escribir_css({})
     servidor = ThreadingHTTPServer(('127.0.0.1', PUERTO), Manejador)
     url = 'http://localhost:%d/index.html' % PUERTO
     print('Brochure en:  ' + url)
     print('Ctrl+C para parar.')
-    threading.Timer(1.0, lambda: webbrowser.open(url)).start()
+    # con --sin-navegador no abre pestana: lo usa mantener_servidor.bat, que
+    # relanza el servidor si se cae y llenaria el navegador de pestanas
+    if '--sin-navegador' not in sys.argv:
+        threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     try:
         servidor.serve_forever()
     except KeyboardInterrupt:

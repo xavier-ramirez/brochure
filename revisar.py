@@ -43,9 +43,12 @@ SONDA = (
  '});</scr' + 'ipt>')
 
 fuente = open(os.path.join(BASE, 'index.html'), encoding='utf-8').read()
+# sin encaje.js: aqui se mide y se captura a 1280 px, sin achicar nada
+fuente = fuente.replace('<script src="encaje.js"></script>', '')
 open(os.path.join(BASE, '_revision.html'), 'w', encoding='utf-8').write(
     fuente.replace('</body>',
-        '<style>.lamina{opacity:1!important;transform:none!important}.lamina.prueba,.rotulo-prueba{display:none!important}</style>'
+        '<style>html{scrollbar-gutter:auto}'
+        '.lamina{opacity:1!important;transform:none!important}.lamina.prueba,.rotulo-prueba{display:none!important}</style>'
         + SONDA + '</body>'))
 
 r = subprocess.run([CHROME, '--headless=new', '--disable-gpu', '--virtual-time-budget=9000',
@@ -57,14 +60,21 @@ print('--- desbordes ---')
 for linea in informe.replace('CHK|', '').split(' || '):
     print(' ', linea)
 
-# una captura por lamina, desplazando el body
-N = fuente.count('class="lamina') - fuente.count('prueba pr-')
-for i in range(N):
+# una captura por lamina REAL, desplazando el body. Las de prueba se ocultan
+# con display:none y no ocupan sitio en el flujo -por eso no se imprimen ni se
+# numeran-, asi que el desplazamiento de cada captura tiene que contar solo
+# las laminas reales que vienen antes, no su posicion cruda en el DOM: contar
+# TODAS (incluidas las prueba) corria cada captura que viniera despues de la
+# primera prueba, y a partir de ahi las capturas salian en blanco o a medias.
+clases = re.findall(r'<section class="([^"]*)"', fuente)
+reales = [n for n, c in enumerate(clases)
+         if 'lamina' in c.split() and 'prueba' not in c.split()]
+for i, _ in enumerate(reales):
     destino = OUT + '/lamina_%02d.png' % (i + 1)
     if os.path.exists(destino):
         os.remove(destino)
     marco = fuente.replace('</body>',
-        '<style>body{margin-top:-%dpx}.lamina{margin-bottom:24px;'
+        '<style>html{scrollbar-gutter:auto}body{margin-top:-%dpx}.lamina{margin-bottom:24px;'
         'opacity:1!important;transform:none!important}#ed-barra{display:none!important}'
         '.lamina.prueba,.rotulo-prueba{display:none!important}</style></body>' % (i * 744))
     tmp = os.path.join(BASE, '_shot.html')

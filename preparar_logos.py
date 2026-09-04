@@ -44,6 +44,25 @@ def fuente(px):
     return ImageFont.load_default()
 
 
+ANCHO_MAX = 744        # en la lamina se ven a 248 px: con el triple sobra
+
+
+def guardar(im, nombre):
+    """Guarda el logotipo ya aligerado.
+
+    Son dibujos de color plano, no fotos: a tamano completo y en PNG de color
+    verdadero cada uno pesaba medio mega para verse a 248 px. Reducidos al
+    triple de ese ancho y con paleta de 64 colores quedan en ~16 KB, sin
+    diferencia a simple vista y conservando la transparencia (FASTOCTREE es el
+    unico metodo de Pillow que respeta el canal alfa).
+    """
+    im = im.convert('RGBA')
+    if im.width > ANCHO_MAX:
+        im = im.resize((ANCHO_MAX, round(im.height * ANCHO_MAX / im.width)), Image.LANCZOS)
+    im.quantize(colors=64, method=Image.FASTOCTREE).save(
+        os.path.join(OUT, nombre + '.png'), optimize=True)
+
+
 base = Image.open(os.path.join(DES, 'MONAGAS.jpg')).convert('RGB')
 base = base.resize((base.width * ESCALA, base.height * ESCALA), Image.LANCZOS)
 S = ESCALA
@@ -53,13 +72,13 @@ muestra = np.array(base.crop((30 * S, 100 * S, 60 * S, 130 * S))).reshape(-1, 3)
 rojo = tuple(int(v) for v in muestra[muestra.sum(1) < 500].mean(axis=0))
 
 # ---------------------------------------------------- 1. Petromonagas ------
-recortar(sin_fondo(base)).save(os.path.join(OUT, 'logo_petromonagas.png'), optimize=True)
+guardar(recortar(sin_fondo(base)), 'logo_petromonagas')
 
 # ---------------------------------------------------- 2. PDVSA solo --------
 solo = base.copy()
 ImageDraw.Draw(solo).rectangle([TEXTO_X * S, (SUB_Y - 6) * S, solo.width, solo.height],
                                fill=(255, 255, 255))
-recortar(sin_fondo(solo)).save(os.path.join(OUT, 'logo_pdvsa.png'), optimize=True)
+guardar(recortar(sin_fondo(solo)), 'logo_pdvsa')
 
 # ---------------------------------------------------- 3. Sinovensa ---------
 # mismo bloque simbolo + PDVSA, con "PETROLERA / SINOVENSA" debajo
@@ -84,7 +103,7 @@ marca = solo.crop((0, 0, MARCA_X * S, solo.height))
 lienzo.paste((255, 255, 255), (0, 0, MARCA_X * S, lienzo.height))
 lienzo.paste(marca, (0, centro - marca.height // 2))
 
-recortar(sin_fondo(lienzo)).save(os.path.join(OUT, 'logo_sinovensa.png'), optimize=True)
+guardar(recortar(sin_fondo(lienzo)), 'logo_sinovensa')
 
 print('rojo PDVSA:', '#%02X%02X%02X' % rojo)
 for n in ('logo_pdvsa', 'logo_petromonagas', 'logo_sinovensa'):

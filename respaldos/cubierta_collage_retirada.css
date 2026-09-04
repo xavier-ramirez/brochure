@@ -1,0 +1,30 @@
+/* CSS de la cubierta en collage, retirada el 2026-09-03. Ver
+   respaldos/cubierta_collage_retirada.py. */
+.cb-texto .cbt-collage{position:absolute;left:0;top:0;width:var(--ancho-lamina);
+  height:604px;overflow:hidden;background:#fff;
+  display:grid;grid-template-columns:38fr 31fr 31fr;grid-template-rows:56fr 44fr;gap:5px}
+.cb-texto .cbt-collage figure{position:relative;overflow:hidden;background:var(--navy)}
+.cb-texto .cbt-collage img{width:100%;height:100%}
+/* La hero ocupa las dos filas de la primera columna: es la unica vertical,
+   asi la rejilla no se lee como una cuadricula pareja sino como un collage
+   -una foto grande y cuatro de apoyo-. Las otras cuatro celdas se colocan
+   por su propio grid-column/grid-row, asi que el orden en el HTML no
+   importa para donde caen. */
+.cb-texto .cbt-hero{grid-row:1 / 3;grid-column:1}
+.cb-texto .cbt-b{grid-column:2;grid-row:1}
+.cb-texto .cbt-c{grid-column:3;grid-row:1}
+.cb-texto .cbt-d{grid-column:3;grid-row:2}
+.cb-texto .cbt-marca{grid-column:2;grid-row:2;background:var(--navy);
+  display:flex;flex-direction:column;justify-content:center;padding:0 30px}
+.cb-texto .cbt-marca .epigrafe{color:#fff}
+.cb-texto .cbt-marca h2{color:#fff;font-size:30px;line-height:1.14;margin-top:14px}
+/* El faldon: la misma pieza que ya usa 'plena' para su pie -banda blanca,
+   filo de gradiente arriba-, aqui con el logotipo Y el sello EN FILA y no
+   en columna: a 116 px de alto -lo que sobra bajo el collage- no cabian
+   apilados como en el panel viejo, de 250. */
+.cb-texto .cbt-faldon{position:absolute;left:0;right:0;bottom:0;height:116px;
+  background:#fff;display:flex;align-items:center;justify-content:center;gap:28px}
+.cb-texto .cbt-faldon::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;
+  background:linear-gradient(90deg,#2A3C78 0%,#4966AD 46%,#8FA0CB 100%)}
+.cb-texto .cbt-logo{height:64px;width:auto}
+.cb-texto .cbt-sello span,.cb-texto .cbt-sello b{color:var(--azul)}

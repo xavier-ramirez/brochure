@@ -1,6 +1,6 @@
 # Presentación — Constructora Vidalsa 27, C.A.
 
-Brochure corporativo en HTML, maquetado como **17 láminas panorámicas de
+Brochure corporativo en HTML, maquetado como **18 láminas panorámicas de
 1280 × 720 px (13,333 × 7,5 pulgadas)**: el mismo tamaño de una diapositiva de
 PowerPoint. Cada lámina sale como **una página del PDF**.
 
@@ -21,7 +21,6 @@ Abrir `index.html` con doble clic también funciona, pero sin editor de fotos.
 | Doble clic | abre el explorador para elegir otra imagen |
 | Arrastrar | mueve el encuadre: eliges qué parte se ve |
 | Rueda del ratón | acerca o aleja (hasta 3×), anclado al punto que estás mirando |
-| Botón **Centrar** | vuelve al encuadre original |
 
 Se guarda solo: la imagen en `img/` (redimensionada y optimizada) y el encuadre
 en `encuadre.css`. El PDF exportado sale idéntico a lo que se ve en pantalla.
@@ -38,10 +37,12 @@ El botón **Descargar PDF** de la barra genera y descarga el archivo.
 
 | Archivo | Para qué |
 | --- | --- |
-| `index.html` | las 17 láminas (generado) |
+| `index.html` | las 19 láminas panorámicas 16:9 (generado) |
+| `carta.html` | las mismas 19 en hoja carta apaisada, con encabezado y pie (generado) |
 | `estilos.css` | el diseño |
+| `carta.css` | lo poco que cambia en la hoja carta: las franjas y el ancho |
 | `contenido.py` | todos los textos |
-| `generar.py` | arma `index.html` con `contenido.py` + `estilos.css` |
+| `generar.py` | arma `index.html` y `carta.html` con `contenido.py` + `estilos.css` |
 | `editor.js` | editor de fotos (no se imprime) |
 | `servidor.py` | servidor local, puerto 8787 |
 | `encuadre.css` | encuadre de cada foto (lo escribe el editor) |
@@ -52,7 +53,9 @@ Utilidades:
 | Comando | Para qué |
 | --- | --- |
 | `python revisar.py` | avisa si algo se sale de la lámina o si un texto quedó cortado; deja un PNG de cada lámina |
-| `python exportar_pdf.py` | genera `Brochure_Vidalsa27.pdf` |
+| `python exportar_pdf.py` | genera **los dos** PDF (así ninguno se queda viejo) |
+| `python exportar_pdf.py carta` | genera `Brochure_Vidalsa27_Carta.pdf` (11 × 8,5", misma letra) |
+| `python revisar_carta.py` | compara los dos PDF letra a letra: mismo texto, mismo cuerpo y nada fuera de sitio |
 | `python preparar_imagenes.py` | re-extrae las fotos del `Brochure.pdf` original (`--rehacer` para pisar las cambiadas) |
 | `python preparar_fuentes.py` | vuelve a bajar las tipografías |
 | `python preparar_logos.py` | rehace los logotipos de los clientes |

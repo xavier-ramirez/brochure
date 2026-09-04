@@ -1,7 +1,7 @@
 BROCHURE CONSTRUCTORA VIDALSA 27
 ================================
 
-Es el mismo diseno de la pagina, cortado en 17 laminas panoramicas.
+Es el mismo diseno de la pagina, cortado en 19 laminas panoramicas.
 Cada lamina mide 1280 x 720 px = 13,333 x 7,5 pulgadas: el mismo tamano de una
 diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
@@ -25,7 +25,6 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
                                     para elegir la nueva imagen
      arrastrar sobre la foto    ->  mueve el encuadre: eliges que parte se ve
      rueda del raton sobre ella ->  acerca o aleja (hasta 3x)
-     boton CENTRAR              ->  deja la foto como estaba
 
    Todo se guarda solo (abajo aparece "Guardado"). La imagen nueva se guarda
    en img/ ya redimensionada, y el encuadre en encuadre.css. Por eso el PDF
@@ -50,13 +49,43 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
 4) SACAR EL PDF
 ---------------
-   python exportar_pdf.py        ->  Brochure_Vidalsa27.pdf  (17 paginas)
+   python exportar_pdf.py        ->  LOS DOS PDF, para que ninguno se quede
+                                     viejo. Con  pano  o  carta  sale solo uno.
+   python exportar_pdf.py carta  ->  Brochure_Vidalsa27_Carta.pdf  (las mismas
+                                     18 en hoja carta apaisada, 11 x 8,5 pulg,
+                                     con encabezado, pie y numero de hoja)
+
+   Las dos llevan la MISMA letra, del mismo tamano en milimetros: la de carta
+   no encoge nada, solo cambia la forma de la hoja. Se mira en carta.html, con
+   el boton "Ver en hoja carta" de la barra del editor.
 
    A mano: Ctrl+P en la pagina, Guardar como PDF,
            Margenes = Ninguno  y  Graficos de fondo = activado.
 
 
-5) CAMBIAR UN TEXTO
+5) SACAR EL POWERPOINT
+----------------------
+   python exportar_pptx.py       ->  Brochure_Vidalsa27.pptx  (19 diapositivas)
+   o el boton "Descargar PowerPoint" de la barra del editor.
+
+   No es una estampa: la diapositiva viene desarmada en piezas y cada una se
+   puede agarrar por separado.
+
+     los textos    cuadros de texto de verdad, con su tipografia y su color
+     las fotos     una imagen cada una, con su nombre y su corte en diagonal
+     las figuras   las rayitas de los epigrafes, las vinetas, los rieles
+                   diagonales, los guiones y las franjas de color son formas
+                   de PowerPoint: se mueven, se estiran y se recolorean
+
+   Solo se quedan pegados en la imagen del fondo los degradados y los velos,
+   que PowerPoint no sabe dibujar igual.
+
+   Tarda alrededor de medio minuto: dibuja las laminas con cinco Chrome a la
+   vez. Para que se vea igual hay que tener instaladas Barlow y Barlow
+   Condensed (estan en fuentes/: seleccionar los .ttf, clic derecho, Instalar).
+
+
+6) CAMBIAR UN TEXTO
 -------------------
    1. Editar contenido.py
    2. python generar.py
@@ -65,18 +94,23 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
 QUE HAY EN LA CARPETA
 ---------------------
-   index.html        las 17 laminas
+   index.html        las 19 laminas
    estilos.css       el diseno
    contenido.py      todos los textos
-   generar.py        arma index.html con contenido.py + estilos.css
+   generar.py        arma index.html y carta.html con contenido.py + estilos.css
+   carta.css         lo poco que cambia en la hoja carta: las franjas y el ancho
    editor.js         el editor de fotos (no se imprime)
    servidor.py       el servidor local, puerto 8787
+   exportar_pdf.py   saca el PDF
+   exportar_pptx.py  saca el PowerPoint por piezas (textos, fotos y figuras)
    encuadre.css      encuadre de cada foto (lo escribe el editor)
    img/              las fotos, un archivo por foto
    fonts/            Barlow y Barlow Condensed, incrustadas (no necesita internet)
 
    revisar.py            avisa si algo se sale de la lamina o si un texto
                          quedo cortado, y deja un PNG de cada lamina en revision/
+   revisar_carta.py      compara los dos PDF letra a letra: que la hoja carta
+                         lleve el mismo texto, el mismo cuerpo y nada fuera de sitio
    preparar_imagenes.py  vuelve a sacar las fotos del Brochure.pdf original.
                          Por defecto NO pisa las fotos que ya cambiaste;
                          usa  python preparar_imagenes.py --rehacer  para

@@ -5,16 +5,24 @@
 !LEEME.txt
 !README.md
 !index.html
+!carta.html
 !estilos.css
+!carta.css
 !fuentes.css
 !encuadre.css
 !editor.js
+!encaje.js
 !abrir.bat
 !contenido.py
 !generar.py
 !servidor.py
 !revisar.py
+!revisar_carta.py
 !exportar_pdf.py
+!exportar_pptx.py
+!montar_fotos.py
+!probar_encuadre.py
+!mantener_servidor.bat
 !preparar_imagenes.py
 !preparar_fuentes.py
 !preparar_logos.py
@@ -26,6 +34,18 @@
 !fonts/
 !fonts/**
 !Brochure_Vidalsa27.pdf
+!Brochure_Vidalsa27.pptx
+!Brochure_Vidalsa27_Carta.pdf
+
+# Las piezas retiradas del brochure -maquetas que se probaron y se quitaron-.
+# SI van al repositorio: son justamente lo que hay que poder recuperar sin
+# rehacerlo, y ya paso una vez que se perdio una cubierta entera por no
+# tenerla en ningun commit.
+!respaldos/
+!respaldos/**
+# menos el volcado de la base de datos del sistema, que se quedo aqui de paso:
+# no es del brochure y no tiene por que viajar en su historial.
+respaldos/*.sql
 
 # copias de seguridad automaticas de las fotos: no van al repositorio
 img/_anteriores/
