@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Exporta index.html a PowerPoint 16:9 (13,333 x 7,5 pulgadas), una lamina por
-diapositiva.
+"""Exporta el brochure a PowerPoint, una lamina por diapositiva.
 
-    python exportar_pptx.py
+    python exportar_pptx.py             -> los dos
+    python exportar_pptx.py panoramico  -> Brochure_Vidalsa27.pptx
+                                           16:9, 13,333 x 7,5 pulgadas, de index.html
+    python exportar_pptx.py carta       -> Brochure_Vidalsa27_Carta.pptx
+                                           hoja carta apaisada, 11 x 8,5, de carta.html
+                                           (con su encabezado y su pie de pagina)
 
 Cada diapositiva se arma en cinco capas, para que se pueda retocar de verdad
 desde PowerPoint y no sea una estampa pegada:
@@ -32,7 +36,8 @@ Las capas se apilan como en el navegador: lo que el diseno pone por encima
 Para que se vea bien hay que tener instaladas Barlow y Barlow Condensed: estan
 en la carpeta fuentes/ (seleccionar los .ttf -> clic derecho -> Instalar).
 
-El boton "Descargar PowerPoint" de la barra del editor llama a este codigo.
+El boton "Descargar PowerPoint" de la barra del editor llama a este codigo, y
+sabe en que hoja esta: el de carta.html pide el de carta.
 """
 import io, json, os, re, shutil, subprocess, sys, html as _html
 from concurrent.futures import ThreadPoolExecutor
@@ -48,15 +53,33 @@ import exportar_pdf                      # reutiliza la busqueda de Chrome/Edge
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 D = BASE.replace(chr(92), '/')
-NOMBRE = 'Brochure_Vidalsa27.pptx'
-SALIDA = os.path.join(BASE, NOMBRE)
 TEMP = os.path.join(BASE, '_pptx')
 
 EMU_POR_PX = 9525                        # 1280 px x 9525 = 12.192.000 EMU = 13,333"
-ALTO_LAMINA = 720
-SALTO = 744                              # 720 de lamina + 24 de separacion
-POR_TANDA = 6                            # laminas por captura: 6 x 744 x 2 = 8928 px,
-                                         # dentro del limite de lienzo de Chrome
+SEPARACION = 24                          # el hueco entre laminas, de estilos.css
+
+#: Las dos hojas que se pueden exportar. TODO lo que cambia entre una y otra
+#: esta aqui -de que pagina se lee, como se llama el archivo y cuanto mide la
+#: lamina-, asi que no hay un segundo exportador que mantener: el de carta es
+#: este mismo con otra hoja. Es el mismo criterio que ya sigue exportar_pdf.
+#: 1056 x 816 px a 9525 EMU son 11 x 8,5 pulgadas, la hoja carta apaisada.
+HOJAS = {
+    False: dict(pagina='index.html', nombre='Brochure_Vidalsa27.pptx',
+                ancho=1280, alto=720),
+    True:  dict(pagina='carta.html', nombre='Brochure_Vidalsa27_Carta.pptx',
+                ancho=1056, alto=816),
+}
+NOMBRE = HOJAS[False]['nombre']
+NOMBRE_CARTA = HOJAS[True]['nombre']
+POR_TANDA = 6                            # laminas por captura: 6 x 744 x 2 = 8928 px
+                                         # en la panoramica y 6 x 840 x 2 = 10.080 en
+                                         # la de carta, las dos dentro del limite de
+                                         # lienzo de Chrome
+
+
+def _salto(hoja):
+    """Lo que hay de una lamina a la siguiente: su alto mas la separacion."""
+    return hoja['alto'] + SEPARACION
 
 MAX_HILOS = 5           # tope de Chrome capturando a la vez
 GB_POR_HILO = 1.5       # lo que se come cada uno entre navegador y tira
@@ -418,11 +441,12 @@ def _navegador():
     return nav
 
 
-def _fuente():
-    """El index.html sin los dos scripts de pantalla: el editor de fotos y
-    encaje.js, que achica la lamina cuando la ventana es angosta. Aqui la
-    lamina tiene que medir sus 1280 px exactos o los recortes no cuadran."""
-    f = io.open(os.path.join(BASE, 'index.html'), encoding='utf-8').read()
+def _fuente(hoja):
+    """La pagina de la hoja -index.html o carta.html- sin los dos scripts de
+    pantalla: el editor de fotos y encaje.js, que achica la lamina cuando la
+    ventana es angosta. Aqui la lamina tiene que medir sus pixeles exactos
+    -1280 o 1056- o los recortes no cuadran."""
+    f = io.open(os.path.join(BASE, hoja['pagina']), encoding='utf-8').read()
     f = f.replace('<script src="editor.js" defer></script>', '')
     return f.replace('<script src="encaje.js"></script>', '')
 
@@ -436,11 +460,11 @@ def _escribir(nombre, contenido):
     return ruta
 
 
-def medir(nav, fuente):
+def medir(nav, fuente, hoja):
     """Por lamina: la caja y el formato de cada texto, y la caja de cada foto."""
     _escribir('_pptx_medida.html', fuente.replace('</body>', VISIBLE + SONDA + '</body>'))
     r = subprocess.run([nav, '--headless=new', '--disable-gpu', '--virtual-time-budget=20000',
-                        '--window-size=1280,720', '--dump-dom',
+                        '--window-size=%d,%d' % (hoja['ancho'], hoja['alto']), '--dump-dom',
                         'file:///' + D + '/_pptx_medida.html'],
                        capture_output=True, text=True, encoding='utf-8', errors='replace',
                        **ARRANQUE)
@@ -450,7 +474,7 @@ def medir(nav, fuente):
     return json.loads(_html.unescape(m.group(1)))
 
 
-def _tira(nav, fuente, ini, cuantas_tanda, capas, transparente=False, etiqueta='tanda'):
+def _tira(nav, fuente, hoja, ini, cuantas_tanda, capas, transparente=False, etiqueta='tanda'):
     """Corre Chrome y deja en TEMP el PNG de una tirada de laminas seguidas, a
     doble resolucion. Devuelve la ruta del PNG; NO lo abre.
 
@@ -462,8 +486,8 @@ def _tira(nav, fuente, ini, cuantas_tanda, capas, transparente=False, etiqueta='
     corren a la vez y con un nombre fijo se pisarian.
     """
     marco = fuente.replace('</body>',
-        '<style>body{margin-top:-%dpx}.lamina{margin-bottom:24px}</style>'
-        % (ini * SALTO) + VISIBLE + capas + '</body>')
+        '<style>body{margin-top:-%dpx}.lamina{margin-bottom:%dpx}</style>'
+        % (ini * _salto(hoja), SEPARACION) + VISIBLE + capas + '</body>')
     html = '_pptx_%s.html' % etiqueta
     _escribir(html, marco)
     # el prefijo _tira_ lo separa de los recortes (fondo_06.jpg, encima_06.png):
@@ -476,7 +500,7 @@ def _tira(nav, fuente, ini, cuantas_tanda, capas, transparente=False, etiqueta='
     orden = [nav, '--headless=new', '--disable-gpu', '--hide-scrollbars',
              '--user-data-dir=' + perfil.replace(chr(92), '/'),
              '--force-device-scale-factor=2', '--virtual-time-budget=15000',
-             '--window-size=1280,%d' % (cuantas_tanda * SALTO)]
+             '--window-size=%d,%d' % (hoja['ancho'], cuantas_tanda * _salto(hoja))]
     if transparente:
         orden.append('--default-background-color=00000000')
     orden += ['--screenshot=' + png.replace(chr(92), '/'),
@@ -498,7 +522,7 @@ def _abrir(png, transparente):
     return tira.convert('RGBA' if transparente else 'RGB')
 
 
-def capturar_capas(nav, fuente, medidas):
+def capturar_capas(nav, fuente, medidas, hoja):
     """Recorta cada lamina en dos capas y devuelve (fondos, fotos_por_lamina).
 
     El decorado va en una sola imagen y CADA FOTO en la suya, con el fondo
@@ -528,7 +552,8 @@ def capturar_capas(nav, fuente, medidas):
                 # como formas y si no saldrian pintadas dos veces
                 estilo = capas + (apagado if etiq == 'fondo' else '')
                 pendientes[(ini, etiq)] = pool.submit(
-                    _tira, nav, fuente, ini, n, estilo, transp, '%s_%02d' % (etiq, ini))
+                    _tira, nav, fuente, hoja, ini, n, estilo, transp,
+                    '%s_%02d' % (etiq, ini))
 
         for ini in arranques:
             n = min(POR_TANDA, cuantas - ini)
@@ -537,10 +562,11 @@ def capturar_capas(nav, fuente, medidas):
             capa_encima = _abrir(pendientes[(ini, 'encima')].result(), True)
             for i in range(n):
                 lam = ini + i
-                arriba = i * SALTO * 2
+                arriba = i * _salto(hoja) * 2
                 # a JPEG: es un fondo opaco y en PNG pesaria cuatro veces mas
                 jpg = os.path.join(TEMP, 'fondo_%02d.jpg' % (lam + 1))
-                capa_fondo.crop((0, arriba, 1280 * 2, arriba + ALTO_LAMINA * 2)).save(
+                capa_fondo.crop((0, arriba, hoja['ancho'] * 2,
+                                 arriba + hoja['alto'] * 2)).save(
                     jpg, 'JPEG', quality=90, optimize=True, progressive=True)
                 fondos.append(jpg)
 
@@ -562,7 +588,8 @@ def capturar_capas(nav, fuente, medidas):
                 fotos.append(sueltas)
 
                 arriba_png = os.path.join(TEMP, 'encima_%02d.png' % (lam + 1))
-                capa_encima.crop((0, arriba, 1280 * 2, arriba + ALTO_LAMINA * 2)).save(
+                capa_encima.crop((0, arriba, hoja['ancho'] * 2,
+                                  arriba + hoja['alto'] * 2)).save(
                     arriba_png, 'PNG', optimize=True)
                 encimas.append(arriba_png)
             capa_fondo.close()
@@ -719,24 +746,34 @@ def poner_texto(lamina, caja):
             r.font._rPr.set('spc', str(int(round(caja['e'] * 0.75 * 100))))
 
 
-def generar():
-    """Genera el PPTX. Devuelve (ruta, megas) o lanza RuntimeError."""
+def generar(carta=False):
+    """Genera el PPTX. Devuelve (ruta, megas) o lanza RuntimeError.
+    Con carta=True saca la version de hoja carta a partir de carta.html, con
+    diapositivas de 11 x 8,5 pulgadas en vez de 16:9. Es el mismo camino
+    entero -medir, capturar por capas, armar- con otra hoja: lo unico que
+    cambia esta en HOJAS."""
+    hoja = HOJAS[bool(carta)]
+    salida = os.path.join(BASE, hoja['nombre'])
     nav = _navegador()
-    if os.path.exists(SALIDA):
+    if not os.path.exists(os.path.join(BASE, hoja['pagina'])):
+        raise RuntimeError('Falta %s. Ejecuta antes: python generar.py' % hoja['pagina'])
+    if os.path.exists(salida):
         try:
-            os.remove(SALIDA)
+            os.remove(salida)
         except PermissionError:
             raise RuntimeError('El PowerPoint esta abierto en otro programa. '
                                'Cierralo y vuelve a intentar.')
     os.makedirs(TEMP, exist_ok=True)
-    fuente = _fuente()
+    fuente = _fuente(hoja)
     try:
-        medidas = medir(nav, fuente)
-        fondos, fotos, encimas = capturar_capas(nav, fuente, medidas)
+        medidas = medir(nav, fuente, hoja)
+        fondos, fotos, encimas = capturar_capas(nav, fuente, medidas, hoja)
 
         pres = Presentation()
-        pres.slide_width = Emu(1280 * EMU_POR_PX)      # 13,333 pulgadas
-        pres.slide_height = Emu(ALTO_LAMINA * EMU_POR_PX)   # 7,5 pulgadas
+        # px x 9525 EMU: 1280 x 720 son 13,333 x 7,5 pulgadas -16:9- y
+        # 1056 x 816 son 11 x 8,5, la hoja carta apaisada.
+        pres.slide_width = Emu(hoja['ancho'] * EMU_POR_PX)
+        pres.slide_height = Emu(hoja['alto'] * EMU_POR_PX)
         vacia = pres.slide_layouts[6]                  # diapositiva en blanco
 
         # el orden importa: primero el decorado y sus figuras, luego las fotos,
@@ -771,7 +808,7 @@ def generar():
             for caja in med['textos']:
                 poner_texto(lamina, caja)
 
-        pres.save(SALIDA)
+        pres.save(salida)
     finally:
         shutil.rmtree(TEMP, ignore_errors=True)
         # los HTML de trabajo llevan el nombre de su capa y su tanda
@@ -783,13 +820,19 @@ def generar():
                 except OSError:
                     pass
 
-    return SALIDA, os.path.getsize(SALIDA) / 1024 / 1024
+    return salida, os.path.getsize(salida) / 1024 / 1024
 
 
 if __name__ == '__main__':
+    # Sin argumentos salen LOS DOS, igual que en exportar_pdf.py y por lo
+    # mismo: con uno solo era facil dejarse el otro viejo sin enterarse.
+    pedido = [a.lower() for a in sys.argv[1:]]
+    cuales = [True] if 'carta' in pedido else ([False] if 'panoramico' in pedido
+                                               else [False, True])
     try:
-        ruta, megas = generar()
+        for carta in cuales:
+            ruta, megas = generar(carta)
+            print('PowerPoint listo: %s  (%.1f MB)' % (ruta, megas))
     except RuntimeError as err:
         sys.exit(str(err))
-    print('PowerPoint listo: %s  (%.1f MB)' % (ruta, megas))
     print('Instala las tipografias de fuentes/ para que se vea igual.')

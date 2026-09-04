@@ -65,8 +65,14 @@ diapositiva de PowerPoint. Cada lamina sale como UNA pagina del PDF.
 
 5) SACAR EL POWERPOINT
 ----------------------
-   python exportar_pptx.py       ->  Brochure_Vidalsa27.pptx  (19 diapositivas)
-   o el boton "Descargar PowerPoint" de la barra del editor.
+   python exportar_pptx.py             ->  los dos, uno detras del otro
+   python exportar_pptx.py panoramico  ->  Brochure_Vidalsa27.pptx
+                                           16:9, 19 diapositivas
+   python exportar_pptx.py carta       ->  Brochure_Vidalsa27_Carta.pptx
+                                           hoja carta apaisada (11 x 8,5),
+                                           con su encabezado y su pie
+   o el boton "Descargar PowerPoint" de la barra del editor: cada hoja baja
+   el suyo, igual que con el PDF.
 
    No es una estampa: la diapositiva viene desarmada en piezas y cada una se
    puede agarrar por separado.

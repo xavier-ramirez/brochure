@@ -10,7 +10,7 @@
    carta.html carga este MISMO archivo y hace lo mismo: se encuadra igual
    en las dos hojas -lo pidio el usuario- y lo que se toca en una sale en la
    otra, porque las dos leen y escriben el mismo encuadre.css. Lo unico que
-   cambia entre hojas es la barra: cada una baja SU PDF. */
+   cambia entre hojas es la barra: cada una baja SU PDF y SU PowerPoint. */
 (function () {
   'use strict';
 
@@ -120,12 +120,14 @@
   /* En la panoramica la barra es una fila de trabajo: el rotulo a la
      izquierda y las descargas empujadas a la derecha con ed-derecha, que
      marca donde empieza ese grupo sin tener que atarlo a un id.
-     En la hoja carta no hay grupos: son dos botones y van juntos y
-     centrados, que es lo que pide una hoja que solo se mira y se baja. */
+     En la hoja carta no hay grupos: van juntos y centrados, que es lo que
+     pide una hoja que solo se mira y se baja. Los MISMOS botones que la
+     panoramica -PDF y PowerPoint-, cada uno con su version de esta hoja. */
   barra.innerHTML = esCarta
     ? '<b>Editor de fotos &middot; hoja carta</b>' +
       /* No genera nada: vuelve a la panoramica, que es la hoja que se edita. */
       '<a href="index.html">Ver la panoramica</a>' +
+      '<button type="button" id="ed-pptx">Descargar PowerPoint</button>' +
       '<button type="button" id="ed-pdf" class="ed-primario">Descargar PDF</button>' +
       '<span class="ed-estado" id="ed-estado"></span>'
     : '<b>Editor de fotos</b>' +
@@ -243,16 +245,18 @@
     });
   }
 
+  /* Cada hoja baja LO SUYO, y por eso la ruta se elige aqui y no en el
+     servidor: el mismo editor sirve a las dos paginas y es esta la que sabe
+     en cual esta. El PowerPoint tarda mas que el PDF -hay que capturar las
+     laminas por capas, una por una-, de ahi el aviso mas largo. */
   descargar(btnPdf, esCarta ? '/api/pdf-carta' : '/api/pdf', 'PDF',
             'Armando el PDF, tarda un momento...');
-  /* el PowerPoint tarda mas -hay que capturar las 18 laminas de una en una- y
-     solo esta en la panoramica: el boton no existe en la hoja carta. */
-  if (btnPptx) descargar(btnPptx, '/api/pptx', 'PowerPoint',
-                         'Armando el PowerPoint, tarda un minuto...');
+  descargar(btnPptx, esCarta ? '/api/pptx-carta' : '/api/pptx', 'PowerPoint',
+            'Armando el PowerPoint, tarda un minuto...');
 
   if (!conServidor) {
     btnPdf.disabled = true;
-    if (btnPptx) btnPptx.disabled = true;
+    btnPptx.disabled = true;
     aviso('Solo lectura: abre con python servidor.py para editar', true);
   }
 

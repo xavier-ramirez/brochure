@@ -22,12 +22,14 @@ import exportar_pptx
 
 # Aqui se piden los archivos que baja la barra del editor. Cada ruta dice
 # quien la atiende, con que argumentos y como se llama el archivo que sale;
-# asi el manejador sigue siendo uno solo para las tres. El PDF de carta es
-# el mismo exportador con carta=True: no hay un segundo modulo que mantener.
+# asi el manejador sigue siendo uno solo para las cuatro. Las versiones de
+# carta son el mismo exportador con carta=True -tanto el PDF como el
+# PowerPoint-: no hay un segundo modulo que mantener.
 EXPORTADORES = {
-    '/api/pdf':       (exportar_pdf,  {},              exportar_pdf.NOMBRE),
-    '/api/pdf-carta': (exportar_pdf,  {'carta': True}, exportar_pdf.NOMBRE_CARTA),
-    '/api/pptx':      (exportar_pptx, {},              exportar_pptx.NOMBRE),
+    '/api/pdf':        (exportar_pdf,  {},              exportar_pdf.NOMBRE),
+    '/api/pdf-carta':  (exportar_pdf,  {'carta': True}, exportar_pdf.NOMBRE_CARTA),
+    '/api/pptx':       (exportar_pptx, {},              exportar_pptx.NOMBRE),
+    '/api/pptx-carta': (exportar_pptx, {'carta': True}, exportar_pptx.NOMBRE_CARTA),
 }
 
 BASE = os.path.dirname(os.path.abspath(__file__))
