@@ -13,6 +13,10 @@
 !hoja.css
 !fuentes.css
 !encuadre.css
+# El de la hoja de pie va aparte: alli los marcos son de otra forma y el
+# trozo que se ve de cada foto no puede ser el mismo (ver ENCUADRES en
+# servidor.py). Su .json va mas abajo, junto al otro.
+!encuadre_vertical.css
 !editor.js
 !encaje.js
 !abrir.bat
@@ -32,6 +36,7 @@
 !preparar_flota.py
 !flota.json
 !encuadre.json
+!encuadre_vertical.json
 !img/
 !img/**
 !fonts/

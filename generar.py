@@ -631,9 +631,14 @@ def lamina_clientes():
                  ger, cart)
 
 
+#: Los dibujitos del pie de contacto. La clave es el CONCEPTO y no el rotulo
+#: que se imprime: las sedes comparten el mismo pin -se llamen "Sede
+#: Corporativa", "Sede Administrativa Oriente" o como el usuario las nombre-,
+#: asi que el pin se escribe una vez y vale para todas. Antes cada rotulo era
+#: una clave, con el pin copiado dos veces, y renombrar una sede en
+#: contenido.py tumbaba el generador con un KeyError.
 ICONOS = {
- 'Sede corporativa': '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
- 'Sede operativa':   '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+ 'sede':             '<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
  'Teléfono':         '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 '
                      '19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 '
                      '2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 '
@@ -653,7 +658,7 @@ def _cierre_pie():
     queda asi por si algun dia vuelve a hacer falta compartirlo."""
     def bloque(t, v):
         return '<div class="ct"><h4><svg viewBox="0 0 24 24">%s</svg>%s</h4><p>%s</p></div>' % (
-            ICONOS[t], espaciada(t), v)
+            ICONOS.get(t, ICONOS['sede']), espaciada(t), v)
     cols = ''.join(bloque(t, v) for t, v in CONTACTO)
     cols += '<div class="ct-directo">%s</div>' % ''.join(bloque(t, v) for t, v in CONTACTO_DIRECTO)
     # Sin el sello de trayectoria ("2007 - 2026 · 19 anos"): lo quito el
@@ -899,19 +904,26 @@ def construir():
                '<script src="encaje.js"></script>\n'
                '<script src="editor.js" defer></script>\n'))
 
-    # Las MISMAS laminas en hoja CARTA DE PIE (816 x 1056): la CUBIERTA, las
-    # fichas de proyecto -dos por lamina en la panoramica, aqui una encima de
-    # la otra-, FLOTA PROPIA, NUESTROS CLIENTES y el CIERRE, en ese orden.
-    # Quien las recoloca es vertical.css; aqui solo se eligen y se ordenan. Las
-    # que faltan -empresa, mision y vision, valores, oficinas, servicios y
-    # portafolio- todavia no estan pensadas para esta hoja y por eso no entran:
-    # sacarlas a medias seria ensenar el brochure roto.
+    # Las MISMAS laminas en hoja CARTA DE PIE (816 x 1056): la CUBIERTA,
+    # NUESTRA EMPRESA, MISION Y VISION, NUESTROS VALORES, NUESTRAS OFICINAS,
+    # las fichas de proyecto -dos por lamina en la panoramica, aqui una encima
+    # de la otra-, FLOTA PROPIA, NUESTROS CLIENTES y el CIERRE, en ese orden
+    # -el mismo del brochure panoramico-. Quien las recoloca es vertical.css;
+    # aqui solo se eligen y se ordenan. Las que faltan -servicios y portafolio-
+    # todavia no estan pensadas para esta hoja y por eso no entran: sacarlas a
+    # medias seria ensenar el brochure roto.
     #
-    # NO lleva editor.js -esta hoja se mira, no se edita, y sus botones de
-    # descarga apuntarian a un PDF vertical que todavia no existe-. Por eso la
-    # barra de vuelta se escribe aqui, y por eso hay que apagar a mano la
-    # aparicion de las laminas: la clase 'dentro' que las hace visibles en
-    # pantalla la pone editor.js (ver el @media screen de estilos.css).
+    # SI lleva editor.js: el usuario pidio poder mover las fotos tambien aqui,
+    # y las mueve SIN tocar la panoramica, porque esta hoja carga dos ficheros
+    # de encuadre -el comun primero y el suyo despues- y el editor le escribe
+    # solo al suyo (ver ENCUADRES en servidor.py). Una foto que no se haya
+    # tocado aqui sigue saliendo con el encuadre de la panoramica.
+    # La barra de vuelta la dibuja ahora el propio editor, que trae una
+    # variante para esta hoja, asi que ya no se escribe aqui.
+    # Lo que si se sigue apagando a mano es la aparicion de las laminas: la
+    # clase 'dentro' que las hace visibles la pone el editor al pasar por
+    # delante, y al exportar no pasa nadie (ver el @media screen de
+    # estilos.css).
     #
     # Con encabezado y pie, los mismos de la hoja carta apaisada: es una hoja
     # impresa y hoja_impresa() se los pone igual que alli. El folio va de 01 a
@@ -924,7 +936,10 @@ def construir():
     # lamina_proyecto_solo, que es de otra clase (.l-destacado) y aqui no
     # cabe-, asi que se le arma su propia ficha al final. Sin esto se caia del
     # cuadernillo sin que nada lo avisara.
-    paginas_v = [l for l in laminas if 'class="lamina l-proyectos"' in l]
+    paginas_v = []
+    for clase in ('l-empresa', 'l-nosotros', 'l-valores', 'l-oficinas',
+                  'l-servicios', 'l-portafolio', 'l-proyectos'):
+        paginas_v += [l for l in laminas if 'class="lamina %s"' % clase in l]
     if len(PROYECTOS) % 2:
         paginas_v.append(lamina_proyectos(PROYECTOS[-1]))
     for clase in ('l-flota', 'l-clientes'):
@@ -939,20 +954,18 @@ def construir():
     hojas_v = [hoja_impresa(cubierta, None, total_v)]
     hojas_v += [hoja_impresa(l, n, total_v) for n, l in enumerate(paginas_v, 1)]
     hojas_v.append(hoja_impresa(cierre, None, total_v))
-    barra_vertical = (
-        '<div id="vert-barra">'
-        '<b>Brochure vertical</b>'
-        '<a href="index.html">Ver la panoramica</a>'
-        '<a href="carta.html">Ver en hoja carta</a>'
-        '</div>')
     io.open(os.path.join(BASE, 'vertical.html'), 'w', encoding='utf-8').write(
         pagina('Brochure vertical — Constructora Vidalsa 27',
-               '\n'.join(hojas_v)
-               + '\n' + barra_vertical,
+               '\n'.join(hojas_v),
+               # El encuadre PROPIO de esta hoja va detras del comun, que ya
+               # enlaza pagina(): lo que se haya movido aqui pisa al comun, y lo
+               # que no, se hereda tal cual.
+               '<link rel="stylesheet" href="encuadre_vertical.css">\n'
                '<link rel="stylesheet" href="hoja.css">\n'
                '<link rel="stylesheet" href="vertical.css">\n'
                '<style>.lamina{opacity:1;transform:none}</style>\n',
-               '<script src="encaje.js"></script>\n'))
+               '<script src="encaje.js"></script>\n'
+               '<script src="editor.js" defer></script>\n'))
 
     # Las mismas laminas, con la misma letra y las mismas separaciones, pero
     # dibujadas en una hoja carta apaisada: 1056 x 816 px = 11 x 8,5 pulg a los

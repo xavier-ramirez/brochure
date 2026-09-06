@@ -224,6 +224,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-servicios .panel{top:160px;height:281px}
 .l-flota     .panel{top:0;height:546px}
 .l-clientes  .panel{top:300px;height:420px}
+/* Esta ultima no la usa ninguna pagina de hoy: la unica cubierta que se
+   dibuja es .cb-partida, que no lleva panel. Es de lamina_cubierta(), la
+   cubierta vieja que generar.py se guarda desactivada, y se queda por ella. */
 .l-cubierta  .panel{top:470px;height:250px}
 
 .banda{position:absolute;left:0;top:0;width:var(--ancho-lamina);overflow:hidden;background:var(--navy)}
@@ -664,6 +667,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .qs-texto{position:relative;z-index:4;margin-top:28px;
   color:#fff;font-weight:300;font-size:14.2px;line-height:1.78;
   text-align:justify;hyphens:auto}
+/* El nombre de la empresa, en negrita -lo pidio el usuario-. 600 y no el 700
+   que trae <b> de serie: de Barlow solo estan instaladas las variantes 300 a
+   600 (ver fuentes.css), asi que a 700 el navegador o baja al 600 igualmente o
+   se inventa una negrita falsa, segun donde se abra. Escrito, sale siempre la
+   misma. Contra el 300 del parrafo, el salto se ve de sobra. */
+.qs-texto b{font-weight:600}
 
 
 /* ==============================================  2. QUIENES SOMOS  ===== */

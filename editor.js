@@ -7,16 +7,28 @@
    Requiere abrir la pagina con: python servidor.py  ->  http://localhost:8787
    Nada de esto se imprime.
 
-   carta.html carga este MISMO archivo y hace lo mismo: se encuadra igual
-   en las dos hojas -lo pidio el usuario- y lo que se toca en una sale en la
-   otra, porque las dos leen y escriben el mismo encuadre.css. Lo unico que
-   cambia entre hojas es la barra: cada una baja SU PDF y SU PowerPoint. */
+   Las otras dos hojas cargan este MISMO archivo. La de CARTA se encuadra
+   junto con la panoramica -lo pidio el usuario-: las dos leen y escriben
+   encuadre.css, asi que lo que se toca en una sale en la otra. La de PIE no:
+   alli los marcos son de otra forma -mas anchos y mas bajos- y el trozo que se
+   ve no puede ser el mismo, asi que tiene su propio encuadre_vertical.css. Las
+   fotos que no se hayan tocado alli siguen saliendo con el encuadre comun.
+   Lo otro que cambia entre hojas es la barra: la panoramica y la carta bajan
+   SU PDF y SU PowerPoint; la de pie todavia no tiene los suyos. */
 (function () {
   'use strict';
 
   var conServidor = location.protocol === 'http:' || location.protocol === 'https:';
-  /* Quien manda es la hoja de estilo: carta.css solo la enlaza carta.html. */
-  var esCarta = !!document.querySelector('link[rel="stylesheet"][href="carta.css"]');
+  /* Quien manda es la hoja de estilo: cada HTML enlaza la suya. */
+  var esCarta    = !!document.querySelector('link[rel="stylesheet"][href="carta.css"]');
+  var esVertical = !!document.querySelector('link[rel="stylesheet"][href="vertical.css"]');
+
+  /* A DONDE se guarda el encuadre. La panoramica y la carta comparten fichero
+     -son la misma maqueta y el usuario encuadra una vez para las dos-; la hoja
+     de pie tiene el suyo, porque alli los marcos son de otra forma y el trozo
+     que se ve no puede ser el mismo. Mover una foto en la vertical NO toca el
+     encuadre de la panoramica, y al reves tampoco. */
+  var RUTA_ENCUADRE = '/api/encuadre' + (esVertical ? '?hoja=vertical' : '');
   var fotos = [].slice.call(document.querySelectorAll('.lamina img[data-foto]'));
   if (!fotos.length) return;
 
@@ -89,9 +101,9 @@
     sinGuardar = false;
     var cuerpo = JSON.stringify(encuadre);
     if (navigator.sendBeacon) {
-      navigator.sendBeacon('/api/encuadre', new Blob([cuerpo], { type: 'application/json' }));
+      navigator.sendBeacon(RUTA_ENCUADRE, new Blob([cuerpo], { type: 'application/json' }));
     } else {
-      fetch('/api/encuadre', { method: 'POST', keepalive: true,
+      fetch(RUTA_ENCUADRE, { method: 'POST', keepalive: true,
         headers: { 'Content-Type': 'application/json' }, body: cuerpo });
     }
   }
@@ -101,7 +113,7 @@
     sinGuardar = true;
     clearTimeout(pendiente);
     pendiente = setTimeout(function () {
-      fetch('/api/encuadre', {
+      fetch(RUTA_ENCUADRE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(encuadre)
@@ -116,14 +128,21 @@
   /* ---- barra de herramientas ------------------------------------------ */
   var barra = document.createElement('div');
   barra.id = 'ed-barra';
-  if (esCarta) barra.className = 'ed-carta';
+  if (esCarta || esVertical) barra.className = 'ed-carta';
   /* En la panoramica la barra es una fila de trabajo: el rotulo a la
      izquierda y las descargas empujadas a la derecha con ed-derecha, que
      marca donde empieza ese grupo sin tener que atarlo a un id.
      En la hoja carta no hay grupos: van juntos y centrados, que es lo que
      pide una hoja que solo se mira y se baja. Los MISMOS botones que la
      panoramica -PDF y PowerPoint-, cada uno con su version de esta hoja. */
-  barra.innerHTML = esCarta
+  barra.innerHTML = esVertical
+    ? '<b>Editor de fotos &middot; carta de pie</b>' +
+      /* No genera nada: las dos puertas de vuelta. Esta hoja no tiene todavia
+         su propio PDF ni su PowerPoint, asi que no lleva esos botones. */
+      '<a href="index.html">Ver la panoramica</a>' +
+      '<a href="carta.html" target="_blank" rel="noopener">Ver en hoja carta</a>' +
+      '<span class="ed-estado" id="ed-estado"></span>'
+    : esCarta
     ? '<b>Editor de fotos &middot; hoja carta</b>' +
       /* No genera nada: vuelve a la panoramica, que es la hoja que se edita. */
       '<a href="index.html">Ver la panoramica</a>' +

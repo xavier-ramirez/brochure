@@ -263,7 +263,9 @@
    suma -y dejarle ese pixel de solape- o se abre un hueco entre el panel y las
    fotos. */
 .l-servicios .cabecera{top:22px}
-.l-servicios .panel{top:136px !important;height:328px !important}   /* el top y el alto van en el style= de la lamina */
+.l-servicios .panel{top:136px;height:328px}   /* el top y el alto salieron
+   del style= de la lamina a estilos.css, asi que esta hoja, que carga
+   despues, los pisa sin necesidad de !important */
 .l-servicios .tira{top:463px;height:257px}
 /* La raya bajo cada titulo, un punto mas gruesa que en la panoramica (2 px).
    Aqui las columnas son mas angostas, asi que la raya es mas corta, y a esa

@@ -35,8 +35,19 @@ EXPORTADORES = {
 BASE = os.path.dirname(os.path.abspath(__file__))
 IMG = os.path.join(BASE, 'img')
 ANTERIORES = os.path.join(IMG, '_anteriores')
-ENCUADRE_JSON = os.path.join(BASE, 'encuadre.json')
-ENCUADRE_CSS = os.path.join(BASE, 'encuadre.css')
+# El encuadre de las fotos se guarda por HOJA. La panoramica y la carta
+# comparten uno -son la misma maqueta, y el usuario quiere encuadrar una vez
+# para las dos-; la hoja de pie tiene el SUYO, porque alli los marcos son de
+# otra forma y el trozo que se ve no puede ser el mismo.
+# vertical.html carga los dos ficheros, el comun primero: una foto que no se
+# haya tocado en la vertical sigue saliendo con el encuadre de la panoramica, y
+# en cuanto se mueve alli se queda con el suyo sin tocar el de la otra.
+ENCUADRES = {
+    '':         (os.path.join(BASE, 'encuadre.json'),
+                 os.path.join(BASE, 'encuadre.css')),
+    'vertical': (os.path.join(BASE, 'encuadre_vertical.json'),
+                 os.path.join(BASE, 'encuadre_vertical.css')),
+}
 PUERTO = 8787
 MAX_BYTES = 40 * 1024 * 1024
 
@@ -69,8 +80,10 @@ def guardar_anterior(ruta, nombre):
     shutil.copy2(ruta, os.path.join(ANTERIORES, '%s_%s.jpg' % (nombre, sello)))
 
 
-def escribir_css(datos):
-    lineas = ['/* Encuadre de las fotos. Lo escribe el editor; no hace falta tocarlo. */']
+def escribir_css(datos, destino, hoja=''):
+    rotulo = ('/* Encuadre de las fotos%s. Lo escribe el editor; no hace falta '
+              'tocarlo. */' % (' en la HOJA DE PIE' if hoja else ''))
+    lineas = [rotulo]
     for nombre in sorted(datos):
         e = datos[nombre]
         x, y = float(e.get('x', 50)), float(e.get('y', 50))
@@ -78,7 +91,7 @@ def escribir_css(datos):
             'img[data-foto="%s"]{object-position:%.1f%% %.1f%%;'
             '--org:%.1f%% %.1f%%;--zoom:%.3f}'
             % (nombre, x, y, x, y, float(e.get('zoom', 1))))
-    io.open(ENCUADRE_CSS, 'w', encoding='utf-8').write('\n'.join(lineas) + '\n')
+    io.open(destino, 'w', encoding='utf-8').write('\n'.join(lineas) + '\n')
 
 
 class Manejador(SimpleHTTPRequestHandler):
@@ -117,20 +130,27 @@ class Manejador(SimpleHTTPRequestHandler):
 
         if ruta.path == '/api/encuadre':
             try:
+                # ?hoja=vertical -> el encuadre propio de la hoja de pie. Sin el
+                # parametro, el comun de la panoramica y la carta. Un valor que
+                # no conozcamos cae en el comun, que es el de siempre.
+                hoja = (parse_qs(ruta.query).get('hoja') or [''])[0]
+                if hoja not in ENCUADRES:
+                    hoja = ''
+                destino_json, destino_css = ENCUADRES[hoja]
                 # El navegador solo manda las fotos que tocaste en ESTA sesion.
                 # Hay que FUSIONAR con lo ya guardado; si se reemplazara, cada
                 # visita borraria los encuadres de las anteriores.
                 nuevos = json.loads(cuerpo.decode('utf-8'))
                 datos = {}
-                if os.path.exists(ENCUADRE_JSON):
+                if os.path.exists(destino_json):
                     try:
-                        datos = json.load(io.open(ENCUADRE_JSON, encoding='utf-8'))
+                        datos = json.load(io.open(destino_json, encoding='utf-8'))
                     except ValueError:
                         datos = {}
                 datos.update(nuevos)
-                io.open(ENCUADRE_JSON, 'w', encoding='utf-8').write(
+                io.open(destino_json, 'w', encoding='utf-8').write(
                     json.dumps(datos, indent=1, ensure_ascii=False, sort_keys=True))
-                escribir_css(datos)
+                escribir_css(datos, destino_css, hoja)
                 return self.responder(200, {'ok': True, 'guardados': len(datos)})
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': str(err)})
@@ -200,8 +220,9 @@ def sin_freno():
 
 def main():
     sin_freno()
-    if not os.path.exists(ENCUADRE_CSS):
-        escribir_css({})
+    for hoja, (_, destino_css) in ENCUADRES.items():
+        if not os.path.exists(destino_css):
+            escribir_css({}, destino_css, hoja)
     servidor = ThreadingHTTPServer(('127.0.0.1', PUERTO), Manejador)
     url = 'http://localhost:%d/index.html' % PUERTO
     print('Brochure en:  ' + url)

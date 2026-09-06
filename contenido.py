@@ -15,7 +15,8 @@ EMPRESA = dict(
 #: La direccion de Caracas se escribe UNA vez: la usan el pie de contacto del
 #: cierre -aqui debajo- y la tarjeta de Caracas de la lamina de oficinas. Sin
 #: la ciudad al final, que cada sitio la pone a su manera: el pie la remata
-#: con " — Caracas." y en la tarjeta la ciudad ya va en el chip de la foto.
+#: con " Caracas." -llevaba una raya delante y la quito el usuario el
+#: 2026-09-05- y en la tarjeta la ciudad ya va en el chip de la foto.
 DIR_CARACAS = ('Calle París entre New York y Caroní, Edif.&nbsp;#177, '
                'Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda')
 
@@ -32,8 +33,12 @@ CONTACTO = [
     # Siguen siendo espacios normales al leerlos.
     # El edificio se nombraba "Edf. Pedreañera #177"; el usuario quito el nombre
     # propio y queda el numeral con el numero.
-    ('Sede corporativa', DIR_CARACAS + ' — Caracas.'),
-    ('Sede operativa',   'Lechería, estado Anzoátegui.'),
+    ('Sede corporativa', DIR_CARACAS + ' Caracas.'),
+    # El mismo rotulo que le da la lamina de oficinas -OFICINAS, abajo-: el
+    # usuario la nombro asi el 2026-09-04 y aqui seguia diciendo "Sede
+    # operativa", de modo que el mismo PDF llamaba de dos maneras a la misma
+    # oficina.
+    ('Sede Administrativa Oriente', 'Lechería, estado Anzoátegui.'),
 ]
 
 #: LAS OFICINAS (lamina "Nuestras oficinas"). Una foto por ciudad; el nombre de
