@@ -1020,7 +1020,7 @@ def construir():
     print('index.html (13,333 x 7,5 pulg) y carta.html (11 x 8,5 pulg) listos '
           '-> cubierta + %d laminas numeradas' % numero)
     print('vertical.html (8,5 x 11 pulg, carta de pie) -> cubierta + %d paginas '
-          '(fichas + flota + clientes) + cierre' % total_v)
+          'de contenido + cierre' % total_v)
 
 
 if __name__ == '__main__':
