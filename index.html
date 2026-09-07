@@ -22,7 +22,6 @@
   --hielo:#EBEEF6;
   --rojo-pdvsa:#E02128;   /* el rojo de los logotipos de los clientes */
   --gris:#5F6980;          /* datos secundarios */
-  --texto:#3E4A63;         /* parrafos sobre fondo claro */
 
   /* La hoja. La panoramica mide 1280 x 720 px = 13,333 x 7,5 pulg a 96 ppp.
      Va en variables porque carta.css dibuja la MISMA maqueta en una hoja
@@ -665,8 +664,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-empresa h2{color:#fff;font-size:38px;margin-top:12px}
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
-/* Justificado, y es el UNICO del brochure: el usuario lo pidio expresamente
-   aqui -prefiere el canto derecho recto a los renglones de distinto largo-.
+/* Justificado, y en la panoramica es el UNICO: el usuario lo pidio
+   expresamente aqui -prefiere el canto derecho recto a los renglones de
+   distinto largo-. De pie tambien lo van la Mision y la Vision, que alli se
+   apilan y se llevan el panel entero (ver .l-nosotros .pilar p, vertical.css).
    Para que el justificado no abra los huecos que se quitaron en las demas
    laminas va con hyphens:auto: con lang="es" en el <html>, el navegador parte
    las palabras largas al final de linea y reparte el sobrante en varios
@@ -697,18 +698,14 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .num{background:var(--navy-medio);color:#fff;transform:skewX(-22deg);padding:4px 15px}
 .num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14px}
 .pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.3em}
-/* Justificada con hyphens:auto: con el texto actual de Mision y Vision el
-   navegador si parte palabras (reconoci-dos, eco-nomico) y el interpalabra
-   queda parejo, sin los huecos que daba el justificado sin partir palabras
-   con el texto viejo. Si se cambia el texto, revisar que siga parejo -si el
-   navegador deja de partir palabras en alguna linea, vuelve a abrir huecos. */
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
-/* Sin justificar, por lo mismo que .ct p: la columna es media lamina y el
-   castellano trae palabras largas -"infraestructura", "constructivas"-, asi
-   que para cuadrar el canto derecho se abrian huecos entre palabras y la
-   Mision se leia a saltos. En este brochure ya no se justifica en ningun
-   sitio: todas las columnas son estrechas. */
+/* Sin justificar, por lo mismo que .ct p: aqui los dos pilares van uno al lado
+   del otro y cada columna es media lamina; con palabras largas -"infraestruc-
+   tura", "constructivas"- cuadrar el canto derecho abria huecos entre palabras
+   y la Mision se leia a saltos. En la panoramica solo se justifica .qs-texto,
+   que se lleva una columna ancha. De pie estos dos parrafos SI van
+   justificados, porque alli se apilan (ver .l-nosotros .pilar p, vertical.css). */
 .pilar p{color:#fff;font-weight:300;font-size:14px;line-height:1.82}
 
 /* =====================================================  2b. VALORES  ===
@@ -910,7 +907,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   width:78px;height:2px;background:rgba(73,102,173,.4)}
 /* La descripcion de cada proyecto va en NEGRO y no en el gris de texto del
    resto del brochure: lo pidio el usuario. Es el unico parrafo del documento
-   que se aparta de --texto, y a proposito -es el dato duro de la obra: que se
+   que se aparta del gris de --gris, y a proposito -es el dato duro de la obra: que se
    construyo, de que medida y donde-. */
 /* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
    con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los
@@ -1170,7 +1167,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   <div class="ofi-panel">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="ofi-cab"><div class="epigrafe claro">DÓNDE ESTAMOS</div><h2>Nuestras oficinas</h2></div>
-    <div class="ofi-lista"><article><div class="ofi-rotulo"><h3>Caracas</h3><span class="estado sede"><b>Sede Corporativa</b></span></div><p>Calle París entre New York y Caroní, Edif.&nbsp;#177, Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda.</p></article><article><div class="ofi-rotulo"><h3>Lechería</h3><span class="estado sede"><b>Sede Administrativa Oriente</b></span></div><p>Avenida Intercomunal, entre el Banco Venezolano de Crédito y el Centro Médico Meditotal, planta baja del Spa Hotel, estado Anzoátegui.</p></article><article><div class="ofi-rotulo"><h3>El Tigre</h3><span class="estado sede"><b>Centro Operativo</b></span></div><p>Patio de máquinas. Avenida La Bomba, adyacente a la Finca La Valentina, municipio Simón Rodríguez, estado Anzoátegui.</p></article><article><div class="ofi-rotulo"><h3>Maturín</h3><span class="estado sede"><b>Centro Operativo</b></span></div><p>Patio de máquinas. Vía El Rincón de Monagas, adyacente a la Urb. Sabana Club, municipio Maturín, estado Monagas.</p></article></div>
+    <div class="ofi-lista"><article><div class="ofi-rotulo"><h3>Caracas</h3><span class="estado sede"><b>Sede Corporativa</b></span></div><p>Calle París entre New York y Caroní, Edif.&nbsp;#177, Urb. Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda.</p></article><article><div class="ofi-rotulo"><h3>Lechería</h3><span class="estado sede"><b>Sede Administrativa Oriente</b></span></div><p>Avenida Intercomunal, entre el Banco Venezolano de Crédito y el Centro Médico Meditotal, planta baja del Spa Hotel, estado Anzoátegui.</p></article><article><div class="ofi-rotulo"><h3>El Tigre</h3><span class="estado sede"><b>Centro Operativo</b></span></div><p>Patio de máquinas. Avenida La Bomba, adyacente a la Finca La Valentina, municipio Simón Rodríguez, estado Anzoátegui.</p></article><article><div class="ofi-rotulo"><h3>Maturín</h3><span class="estado sede"><b>Centro Operativo</b></span></div><p>Patio de máquinas. Vía El Rincón de Monagas, adyacente a la Urb. Sabana Club, municipio Maturín, estado Monagas.</p></article></div>
   </div>
 </section>
 <section class="lamina l-servicios">
@@ -1408,7 +1405,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   </div>
   <div class="pie-navy">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="contacto"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE CORPORATIVA</h4><p>Calle París entre New York y Caroní, Edif.&nbsp;#177, Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda Caracas.</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE ADMINISTRATIVA ORIENTE</h4><p>Lechería, estado Anzoátegui.</p></div><div class="ct-directo"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>TELÉFONO</h4><p>+58 212 994.1106 / 1253 / 0987 / 0730</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/></svg>CORREO</h4><p>Info@cvidalsa27.com</p></div></div></div>
+    <div class="contacto"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE CORPORATIVA</h4><p>Calle París entre New York y Caroní, Edif.&nbsp;#177, Urb. Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda Caracas.</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>SEDE ADMINISTRATIVA ORIENTE</h4><p>Lechería, estado Anzoátegui.</p></div><div class="ct-directo"><div class="ct"><h4><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>TELÉFONO</h4><p>+58 212 994.1106 / 1253 / 0987 / 0730</p></div><div class="ct"><h4><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.6 6.2 12 13l8.4-6.8"/></svg>CORREO</h4><p>Info@cvidalsa27.com</p></div></div></div>
   </div>
 </section>
 <script src="encaje.js"></script>

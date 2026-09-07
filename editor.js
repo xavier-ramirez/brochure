@@ -51,6 +51,19 @@
   /* ---- estado de encuadre -------------------------------------------- */
   var encuadre = {};   // nombre -> {x, y, zoom}
   window.__encuadre = encuadre;   // solo para poder comprobarlo desde fuera
+  /* Las fotos que se han MOVIDO en esta hoja y en esta sesion. Se guarda solo
+     esto, no el mapa entero, y es lo que hace que la carta de pie herede de la
+     panoramica: al abrir se lee el encuadre de las 100 y pico fotos -hace
+     falta para saber de donde parte cada arrastre- pero esas cifras vienen del
+     encuadre COMUN, y volcarlas al fichero de la vertical la habria congelado:
+     cada foto se habria quedado con una regla propia identica a la comun, y a
+     partir de ahi cualquier cambio en la panoramica dejaria de llegar aqui.
+     Mandando solo lo tocado, el fichero de la vertical guarda unicamente las
+     fotos que de verdad se encuadraron distinto alli.
+     El servidor ya cuenta con esto: FUSIONA lo que le llega con lo que tenia
+     (ver /api/encuadre en servidor.py), asi que mandar de menos no borra nada
+     de lo guardado en visitas anteriores. */
+  var tocadas = {};
 
   /* Ojo: aqui NO se puede usar "|| 50". Un encuadre pegado al borde vale 0,
      que en JavaScript es falso, y la foto se volvia al centro sola. */
@@ -77,8 +90,11 @@
     return encuadre[n];
   }
 
+  /* aplicar() es el unico sitio por donde pasa un cambio -el arrastre, la
+     rueda y el cambio de foto llaman aqui-, asi que es donde se apunta. */
   function aplicar(nombre) {
     var e = encuadre[nombre];
+    tocadas[nombre] = true;
     document.querySelectorAll('img[data-foto="' + nombre + '"]').forEach(function (im) {
       var punto = e.x.toFixed(1) + '% ' + e.y.toFixed(1) + '%';
       im.style.objectPosition = punto;
@@ -95,11 +111,17 @@
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') volcar();
   });
+  function loTocado() {
+    var o = {};
+    Object.keys(tocadas).forEach(function (n) { if (encuadre[n]) o[n] = encuadre[n]; });
+    return o;
+  }
+
   function volcar() {
     if (!conServidor || !sinGuardar) return;
     clearTimeout(pendiente);
     sinGuardar = false;
-    var cuerpo = JSON.stringify(encuadre);
+    var cuerpo = JSON.stringify(loTocado());
     if (navigator.sendBeacon) {
       navigator.sendBeacon(RUTA_ENCUADRE, new Blob([cuerpo], { type: 'application/json' }));
     } else {
@@ -116,7 +138,7 @@
       fetch(RUTA_ENCUADRE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(encuadre)
+        body: JSON.stringify(loTocado())
       }).then(function (r) {
         if (r.ok) sinGuardar = false;
         aviso(r.ok ? 'Guardado' : 'No se pudo guardar', !r.ok);
@@ -245,8 +267,18 @@
      cuando contesta, lo bajan. Lo unico que cambia es a que ruta llaman y como
      se llama la cosa en los avisos, asi que va en una sola funcion.
      El ?v= del enlace es para que el navegador no sirva una version vieja de
-     su cache: el archivo siempre se llama igual. */
+     su cache: el archivo siempre se llama igual.
+
+     Se sale si el boton NO ESTA, y no es una precaucion de adorno: la barra de
+     la carta de pie no lleva descargas -esa hoja todavia no tiene su PDF ni su
+     PowerPoint- asi que alli getElementById devuelve null. Sin esta linea, el
+     addEventListener sobre null reventaba el editor ENTERO en esa hoja: la
+     excepcion cortaba el archivo a la mitad y ya no se llegaba a enganchar el
+     arrastre, la rueda ni el doble clic, de modo que las fotos de la vertical
+     no se dejaban encuadrar ni cambiar. Se veia la barra -que se arma antes- y
+     parecia que el editor estaba, pero estaba muerto. */
   function descargar(boton, ruta, que, espera) {
+    if (!boton) return;
     boton.addEventListener('click', function () {
       if (!conServidor) { aviso('Abre la pagina con: python servidor.py', true); return; }
       boton.disabled = true;
@@ -280,8 +312,10 @@
             'Armando el PowerPoint, tarda un minuto...');
 
   if (!conServidor) {
-    btnPdf.disabled = true;
-    btnPptx.disabled = true;
+    /* Con los mismos si-existen que descargar(): en la carta de pie no hay
+       botones que apagar, y sin la comprobacion esto reventaba igual. */
+    if (btnPdf) btnPdf.disabled = true;
+    if (btnPptx) btnPptx.disabled = true;
     aviso('Solo lectura: abre con python servidor.py para editar', true);
   }
 

@@ -207,7 +207,7 @@ ETIQUETA_SECCION = {
 }
 
 
-def hoja_impresa(lamina, numero, total):
+def hoja_impresa(lamina, numero):
     """Prepara la lamina para una hoja IMPRESA -la carta apaisada y la
     vertical-. La panoramica no pasa por aqui: va a sangre por los cuatro
     lados y no tiene donde poner nada.
@@ -233,12 +233,17 @@ def hoja_impresa(lamina, numero, total):
         # Con numero None el pie se arma igual -rieles, etiqueta y raya- pero
         # sin el folio. Van asi la CUBIERTA -una portada no se numera- y la
         # lamina de CIERRE, que la pidio el usuario sin numero. Ninguna de las
-        # dos cuenta para el total, de modo que la numeracion va de 01 a 17
-        # de 17 sin huecos. El encabezado y las rayas si se quedan, para que
-        # la hoja no cambie de altura ni de reparto.
+        # dos se numera, de modo que la numeracion va de 01 a la ultima sin
+        # huecos. El encabezado y las rayas si se quedan, para que la hoja no
+        # cambie de altura ni de reparto.
+        #
+        # SOLO el numero de la pagina, sin el total: el pie decia "01 / 18" y
+        # el usuario lo pidio sin el "de cuantas" el 2026-09-06. Por eso esta
+        # funcion ya no recibe un total; quien quiera saber cuantas hay lo
+        # cuenta donde se arma cada hoja.
         '<div class="pie-hoja">%s%s%s%s</div>'
         % (rieles, pie_etiqueta, raya,
-           '' if numero is None else '<b>%02d / %02d</b>' % (numero, total)),
+           '' if numero is None else '<b>%02d</b>' % numero),
         lamina[cierra:]))
 
 
@@ -906,12 +911,12 @@ def construir():
 
     # Las MISMAS laminas en hoja CARTA DE PIE (816 x 1056): la CUBIERTA,
     # NUESTRA EMPRESA, MISION Y VISION, NUESTROS VALORES, NUESTRAS OFICINAS,
-    # las fichas de proyecto -dos por lamina en la panoramica, aqui una encima
-    # de la otra-, FLOTA PROPIA, NUESTROS CLIENTES y el CIERRE, en ese orden
-    # -el mismo del brochure panoramico-. Quien las recoloca es vertical.css;
-    # aqui solo se eligen y se ordenan. Las que faltan -servicios y portafolio-
-    # todavia no estan pensadas para esta hoja y por eso no entran: sacarlas a
-    # medias seria ensenar el brochure roto.
+    # NUESTROS SERVICIOS, PORTAFOLIO, las fichas de proyecto -dos por lamina en
+    # la panoramica, aqui una encima de la otra-, FLOTA PROPIA, NUESTROS
+    # CLIENTES y el CIERRE, en ese orden -el mismo del brochure panoramico-.
+    # Estan TODAS: servicios y portafolio se quedaron fuera mientras no tenian
+    # maqueta de pie, y la tienen desde que vertical.css les dio la suya.
+    # Quien las recoloca es vertical.css; aqui solo se eligen y se ordenan.
     #
     # SI lleva editor.js: el usuario pidio poder mover las fotos tambien aqui,
     # y las mueve SIN tocar la panoramica, porque esta hoja carga dos ficheros
@@ -951,9 +956,9 @@ def construir():
     # hoja_impresa(): el usuario pidio que llevara el pie de pagina -la foto a
     # sangre por los cuatro lados le resultaba demasiado grande-. El encabezado
     # no lo lleva; de recortarle solo esa franja se encarga vertical.css.
-    hojas_v = [hoja_impresa(cubierta, None, total_v)]
-    hojas_v += [hoja_impresa(l, n, total_v) for n, l in enumerate(paginas_v, 1)]
-    hojas_v.append(hoja_impresa(cierre, None, total_v))
+    hojas_v = [hoja_impresa(cubierta, None)]
+    hojas_v += [hoja_impresa(l, n) for n, l in enumerate(paginas_v, 1)]
+    hojas_v.append(hoja_impresa(cierre, None))
     io.open(os.path.join(BASE, 'vertical.html'), 'w', encoding='utf-8').write(
         pagina('Brochure vertical — Constructora Vidalsa 27',
                '\n'.join(hojas_v),
@@ -978,15 +983,12 @@ def construir():
     # Lleva editor.js, igual que la panoramica: aqui tambien se encuadran las
     # fotos -lo pidio el usuario- y el mismo script sabe en que hoja esta, asi
     # que su boton "Descargar PDF" saca el de carta y no el panoramico.
-    # Ni la cubierta ni el CIERRE entran en la cuenta: la primera no se numera
-    # a si misma y la ultima la pidio el usuario sin folio. Al dejarlas fuera
-    # del total la numeracion cierra redonda -la ultima numerada es la 17 de
-    # 17- en vez de saltarse un numero al final.
+    # Ni la cubierta ni el CIERRE se numeran: la primera no se numera a si
+    # misma y la ultima la pidio el usuario sin folio. Al saltarlas, `numero`
+    # no avanza en ellas y la numeracion sale seguida, de 01 a la ultima, en
+    # vez de dejar un hueco al principio y otro al final.
     def se_imprime(l):
         return 'class="lamina ' in l and 'lamina prueba' not in l
-    sin_folio = (cubierta, cierre)
-    total = sum(1 for l in laminas
-                if se_imprime(l) and not any(l is x for x in sin_folio))
     hojas, numero = [], 0
     for l in laminas:
         if not se_imprime(l):
@@ -1003,10 +1005,10 @@ def construir():
             # El cierre SI lleva encabezado y pie -con sus rieles, su raya y
             # su etiqueta de seccion- pero sin folio: hoja_impresa() con
             # numero None quita el numero y deja el pie tal cual.
-            hojas.append(hoja_impresa(l, None, total))
+            hojas.append(hoja_impresa(l, None))
         else:
             numero += 1
-            hojas.append(hoja_impresa(l, numero, total))
+            hojas.append(hoja_impresa(l, numero))
     io.open(os.path.join(BASE, 'carta.html'), 'w', encoding='utf-8').write(
         pagina('Brochure carta — Constructora Vidalsa 27', '\n'.join(hojas),
                '<link rel="stylesheet" href="hoja.css">\n'

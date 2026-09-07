@@ -18,7 +18,7 @@ EMPRESA = dict(
 #: con " Caracas." -llevaba una raya delante y la quito el usuario el
 #: 2026-09-05- y en la tarjeta la ciudad ya va en el chip de la foto.
 DIR_CARACAS = ('Calle París entre New York y Caroní, Edif.&nbsp;#177, '
-               'Urb.&nbsp;Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda')
+               'Urb. Las&nbsp;Mercedes, Municipio Baruta, Edo. Miranda')
 
 CONTACTO = [
     # SIN <br>: los saltos los decide el ANCHO de la columna, que no es el mismo
@@ -26,11 +26,14 @@ CONTACTO = [
     # de referencia partia la direccion donde no tocaba y encima volvia a
     # partir cada trozo por su cuenta. El texto no cambia ni una coma.
     #
-    # Los &nbsp; de "Urb. Las Mercedes" y "Edif. #177" son espacios que NO dejan
-    # partir: sueltos, el renglon cortaba en "Urb. / Las Mercedes" y podia dejar
-    # el numero del edificio en la linea siguiente, huerfano de su "Edif.".
-    # Atados, el corte se va solo a una coma, que es donde lo haria uno a mano.
-    # Siguen siendo espacios normales al leerlos.
+    # Los &nbsp; de "Edif. #177" y "Las Mercedes" son espacios que NO dejan
+    # partir: sueltos, el renglon podia dejar el numero del edificio en la
+    # linea siguiente, huerfano de su "Edif.", o partir en dos el nombre de la
+    # urbanizacion. Siguen siendo espacios normales al leerlos.
+    # El de "Urb. Las" estuvo atado por lo mismo y el usuario lo solto el
+    # 2026-09-06: en la hoja de pie quiso el corte JUSTO ahi, con la primera
+    # linea cerrando en "Urb.". Es el unico sitio donde el corte cae en un
+    # punto y no en una coma, y es a peticion suya.
     # El edificio se nombraba "Edf. Pedreañera #177"; el usuario quito el nombre
     # propio y queda el numeral con el numero.
     ('Sede corporativa', DIR_CARACAS + ' Caracas.'),
@@ -88,8 +91,10 @@ OFICINAS = [
 # un parrafo partido a mano con <br>-. lamina_cierre() los junta en un solo
 # bloque, .ct-directo, que la CSS reparte distinto segun la hoja: en la
 # panoramica, uno al lado del otro, como una columna mas; en la carta, uno
-# debajo del otro, porque ahi no cabe una cuarta columna (ver .ct-directo en
-# estilos.css y carta.css).
+# debajo del otro, porque ahi no cabe una cuarta columna; y en la hoja de pie,
+# tambien apilados, pero ocupando la columna de la derecha entera -enfrente de
+# las dos sedes- porque el usuario quiso los dos pares separados (ver
+# .ct-directo en estilos.css, carta.css y vertical.css).
 CONTACTO_DIRECTO = [
     ('Teléfono', '+58 212 994.1106 / 1253 / 0987 / 0730'),
     ('Correo',   'Info@cvidalsa27.com'),

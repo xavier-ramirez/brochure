@@ -15,7 +15,6 @@
   --hielo:#EBEEF6;
   --rojo-pdvsa:#E02128;   /* el rojo de los logotipos de los clientes */
   --gris:#5F6980;          /* datos secundarios */
-  --texto:#3E4A63;         /* parrafos sobre fondo claro */
 
   /* La hoja. La panoramica mide 1280 x 720 px = 13,333 x 7,5 pulg a 96 ppp.
      Va en variables porque carta.css dibuja la MISMA maqueta en una hoja
@@ -658,8 +657,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-empresa h2{color:#fff;font-size:38px;margin-top:12px}
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
-/* Justificado, y es el UNICO del brochure: el usuario lo pidio expresamente
-   aqui -prefiere el canto derecho recto a los renglones de distinto largo-.
+/* Justificado, y en la panoramica es el UNICO: el usuario lo pidio
+   expresamente aqui -prefiere el canto derecho recto a los renglones de
+   distinto largo-. De pie tambien lo van la Mision y la Vision, que alli se
+   apilan y se llevan el panel entero (ver .l-nosotros .pilar p, vertical.css).
    Para que el justificado no abra los huecos que se quitaron en las demas
    laminas va con hyphens:auto: con lang="es" en el <html>, el navegador parte
    las palabras largas al final de linea y reparte el sobrante en varios
@@ -690,18 +691,14 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .num{background:var(--navy-medio);color:#fff;transform:skewX(-22deg);padding:4px 15px}
 .num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14px}
 .pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.3em}
-/* Justificada con hyphens:auto: con el texto actual de Mision y Vision el
-   navegador si parte palabras (reconoci-dos, eco-nomico) y el interpalabra
-   queda parejo, sin los huecos que daba el justificado sin partir palabras
-   con el texto viejo. Si se cambia el texto, revisar que siga parejo -si el
-   navegador deja de partir palabras en alguna linea, vuelve a abrir huecos. */
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
-/* Sin justificar, por lo mismo que .ct p: la columna es media lamina y el
-   castellano trae palabras largas -"infraestructura", "constructivas"-, asi
-   que para cuadrar el canto derecho se abrian huecos entre palabras y la
-   Mision se leia a saltos. En este brochure ya no se justifica en ningun
-   sitio: todas las columnas son estrechas. */
+/* Sin justificar, por lo mismo que .ct p: aqui los dos pilares van uno al lado
+   del otro y cada columna es media lamina; con palabras largas -"infraestruc-
+   tura", "constructivas"- cuadrar el canto derecho abria huecos entre palabras
+   y la Mision se leia a saltos. En la panoramica solo se justifica .qs-texto,
+   que se lleva una columna ancha. De pie estos dos parrafos SI van
+   justificados, porque alli se apilan (ver .l-nosotros .pilar p, vertical.css). */
 .pilar p{color:#fff;font-weight:300;font-size:14px;line-height:1.82}
 
 /* =====================================================  2b. VALORES  ===
@@ -903,7 +900,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   width:78px;height:2px;background:rgba(73,102,173,.4)}
 /* La descripcion de cada proyecto va en NEGRO y no en el gris de texto del
    resto del brochure: lo pidio el usuario. Es el unico parrafo del documento
-   que se aparta de --texto, y a proposito -es el dato duro de la obra: que se
+   que se aparta del gris de --gris, y a proposito -es el dato duro de la obra: que se
    construyo, de que medida y donde-. */
 /* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
    con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los

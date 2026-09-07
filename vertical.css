@@ -18,10 +18,11 @@
    anotada abajo con su motivo. La excepcion son los cuatro textos de la
    CUBIERTA, que el usuario pidio medio punto mas grandes.
 
-   Entran la CUBIERTA, NUESTRA EMPRESA, MISION Y VISION, NUESTROS VALORES,
-   NUESTRAS OFICINAS, las fichas de proyecto, FLOTA PROPIA, NUESTROS CLIENTES
-   y el CIERRE. Las que faltan -servicios y portafolio- todavia no estan
-   pensadas para esta hoja y por eso no salen.
+   Entran TODAS: la CUBIERTA, NUESTRA EMPRESA, MISION Y VISION, NUESTROS
+   VALORES, NUESTRAS OFICINAS, NUESTROS SERVICIOS, PORTAFOLIO, las fichas de
+   proyecto, FLOTA PROPIA, NUESTROS CLIENTES y el CIERRE. Servicios y
+   portafolio entraron despues que el resto -por eso se leia aqui que faltaban-
+   y cada una tiene su bloque mas abajo, como las demas.
    ============================================================ */
 
 :root{
@@ -42,15 +43,24 @@
 
   /* Los MARGENES de la hoja, en centimetros y no en pixeles: es una hoja que
      se imprime y el usuario los pidio como se piden en imprenta -2,5 cm a la
-     izquierda, por donde se encuaderna, y 1,5 a la derecha-. Son ASIMETRICOS, y
+     izquierda, por donde se encuaderna, y 1,6 a la derecha-. Son ASIMETRICOS, y
      por eso no basta con el --lado de siempre, que vale para los dos lados a
      la vez: todo lo que se coloca contra un canto usa una de estas dos, y lo
      que ocupa el ancho entero usa --ancho-util.
-     A 96 ppp salen 94,5 y 56,7 px, contra los 44 iguales que llevaba antes.
+     A 96 ppp salen 94,5 y 60,5 px, contra los 44 iguales que llevaba antes.
+     El derecho lo fue moviendo el usuario el 2026-09-06: 1,5 -> 1,7 -> 2 -> 1
+     -> 1,6, donde quedo. La mancha mide hoy 661 px, cuatro menos que con el 1,5
+     de partida, y ese ancho lo notan TODAS las laminas que van a --ancho-util.
+     Antes de volver a moverlo hay que mirar TRES piezas, que son las que van
+     justas: la columna de SERVICIOS Y ALQUILER del portafolio -su rotulo es el
+     mas largo de la hoja y tiene que caber en un renglon-, la direccion de
+     Caracas en el cierre -tiene que seguir cortando despues de "Urb."- y el
+     tope de --va-corte en Nuestros valores, que se mueve con este margen.
+     A 1,6 cm las tres aguantan.
      --lado se deja apuntando al margen izquierdo para que cualquier pieza de
      estilos.css que no este recolocada aqui caiga al menos en la linea buena. */
   --marg-izq:2.5cm;
-  --marg-der:1.5cm;
+  --marg-der:1.6cm;
   /* Las FRANJAS -encabezado y pie- van un poco mas abiertas que el texto: el
      usuario quiso la raya mas larga. Ya no arrancan en la misma linea que las
      fichas, y es a proposito: son el marco de la hoja, no una columna mas. */
@@ -67,11 +77,17 @@
 .enc-hoja,.pie-hoja{left:var(--marg-franja-izq);right:var(--marg-franja-der)}
 /* Con la franja del pie en 60 px, sus piezas se quedaban chicas dentro de
    ella: los rieles crecen a la mitad de los del encabezado -que van al doble-
-   y la raya y el folio suben con ellos. */
+   y la raya y el folio suben con ellos.
+   El rotulo de seccion y el folio -"FLOTA PROPIA" y "17 / 18"- subieron otra
+   vez el 2026-09-06, de 11 a 13 y de 17 a 20: el usuario los queria mas
+   visibles. Los dos van en el pie de TODAS las hojas y por eso se tocan aqui y
+   no en la lamina, que si no unas quedarian con un pie y otras con otro. La
+   franja aguanta -mide 60 y el folio, a 20 y con interlineado 1, sigue siendo
+   lo mas alto que hay dentro-; de subirlos mas habria que ensanchar --pie. */
 .pie-hoja .hoja-rieles{zoom:1.5}
 .pie-hoja .hoja-raya{height:2px}
-.pie-hoja b{font-size:17px}
-.hoja-etiqueta{font-size:11px}
+.pie-hoja b{font-size:20px}
+.hoja-etiqueta{font-size:13px}
 
 @page{ size: 8.5in 11in; margin: 0; }
 
@@ -83,24 +99,42 @@
    Van uno por uno y no con un truco global porque no lo hay: los cuerpos estan
    en px, y un calc(1em + 1px) mide contra el PADRE, no contra el propio
    tamano, asi que no sirve. Si algun dia cambia un valor en estilos.css, hay
-   que traerlo aqui tambien: son las unicas diecinueve cifras copiadas del
+   que traerlo aqui tambien: son las unicas dieciocho cifras copiadas del
    archivo base, y estan juntas a proposito para que se vean de un vistazo. */
 .chip b{font-size:12px}
 .estado{font-size:11.5px}
 .banda-txt h2{font-size:55px}
 /* El sello "ACTUALIZADO AL / 6 de septiembre de 2026" baja de cuerpo: es un
    dato de servicio, no un titular, y al lado de "Nuestros proyectos" pesaba
-   demasiado. Es la unica pieza que NO sube el punto que subio el resto. */
-.banda-fecha span{font-size:9.5px}
-.banda-fecha b{font-size:17px}
+   demasiado. Es la unica pieza que NO sube el punto que subio el resto.
+   Bajo dos veces: primero de 10,5/22 a 9,5/17 y el 2026-09-06 otra vez, a
+   8,5/14, que el usuario lo seguia viendo grande. La fecha se queda por encima
+   del rotulo de arriba -8,5 contra 14- porque es el dato, no la etiqueta. */
+.banda-fecha span{font-size:8.5px}
+.banda-fecha b{font-size:14px}
 .num b{font-size:15px}
 .pilar-cab h3{font-size:13.5px}
 .pilar p{font-size:15px}
 .l-valores .va-cab p{font-size:15.5px}
 .va-lista .v-texto h3{font-size:15.5px}
-.va-lista .v-texto p{font-size:14.5px}
+/* .va-lista .v-texto p NO esta en esta lista, y su ausencia es el dato: es el
+   unico cuerpo de la hoja que NO sube el punto que subio el resto. Llego a
+   estar en 14,5 y volvio a los 13,5 de estilos.css cuando el usuario pidio los
+   cinco valores justificados: la columna alli mide 260 px -la mas angosta que
+   se justifica en todo el brochure- y a 14,5 los huecos entre palabras se
+   abrian hasta 87 px, un tercio del renglon. A 13,5 el peor baja a la mitad.
+   Si algun dia se deja de justificar, puede volver a 14,5. */
 .l-oficinas .ofi-lista h3{font-size:23px}
-.l-oficinas .ofi-lista p{font-size:13.5px}
+/* Las direcciones son la excepcion de este bloque: 14,5 contra los 12,5 de la
+   panoramica, un punto por encima del punto de mas que subio el resto. No es
+   un capricho de cuerpo: a 13,5 la direccion ocupaba unos 65 px y las cuatro se
+   leian como islas sueltas. Con este cuerpo los bloques miden 192, 120, 120 y
+   120, que es lo que hoy da la columna apilada (ver la seccion de abajo).
+   Llego a estar en 16,5 y bajo a 14,5 cuando el usuario pidio la foto mas
+   ancha: la columna de texto encogio con ella y a 16,5 el justificado se
+   abria. Los dos valores van AMARRADOS -no se toca uno sin el otro- y la tabla
+   de medidas esta en la nota de .ofi-lista p, en la seccion de la lamina. */
+.l-oficinas .ofi-lista p{font-size:14.5px}
 .srv .num{font-size:13px}
 .pf-col h3{font-size:18px}
 .pf-col .cuenta{font-size:26px}
@@ -185,6 +219,42 @@
 .l-proyectos .tarjeta .caja-cliente .rot{font-size:13px}
 .l-proyectos .tarjeta .caja-cliente b{font-size:18px}
 
+/* LA HOJA DE UNA SOLA FICHA. Los proyectos van de dos en dos y son diecinueve,
+   asi que el ultimo -Laguna de Curataquiche- se queda solo en su hoja: en la
+   panoramica ese impar se lleva la lamina a toda plana del destacado, que aqui
+   no cabe. Con el reparto de arriba salia una ficha del tamano de media hoja
+   flotando en el centro, con un palmo de blanco arriba y otro abajo; el
+   usuario pidio el 2026-09-06 que ocupara la pagina entera.
+   Sola, la ficha deja de partirse en dos columnas y se lee de arriba abajo: la
+   foto grande a todo el ancho, debajo lo que identifica la obra, luego las dos
+   miniaturas -tambien al ancho entero- y el recuadro del cliente al pie. Es el
+   orden en que ya vienen en el marcado, asi que basta con soltar las piezas de
+   la rejilla de dos (grid-area:auto) y dejarlas colocarse solas.
+   La PROPORCION de las fotos no se toca, que es lo que hace que se vea el
+   trozo encuadrado: 2,957 la grande y 1,941 las miniaturas. A los 665 px de
+   ancho de la hoja salen 225 px de alto la grande y 168 cada miniatura -antes
+   115 y 85 en una columna de 340-, o sea el doble de foto.
+   Los cuerpos suben con la ficha -titulo 23,5 -> 30, subtitulo 15 -> 17,
+   parrafo 13,5 -> 15-: a los de la ficha de media hoja, estirados a 665 px de
+   ancho, el parrafo se quedaba en cuatro renglones perdidos.
+   El :has de la rejilla es lo que le da a la ficha el alto entero de la hoja
+   -sin el, su fila mide lo que mida el contenido y align-content la centraba-,
+   y con el alto ya en la mano el space-between reparte lo que sobre entre las
+   piezas, sin dejarlo todo en un hueco. */
+.l-proyectos .rejilla:has(> .tarjeta:only-child){align-content:stretch;
+  grid-auto-rows:1fr}
+.l-proyectos .tarjeta:only-child{grid-template-columns:1fr;grid-template-rows:none;
+  align-content:space-between}
+.l-proyectos .tarjeta:only-child > *{grid-area:auto}
+.l-proyectos .tarjeta:only-child .hero{width:auto;height:225px}
+.l-proyectos .tarjeta:only-child .insignias{margin:0}
+.l-proyectos .tarjeta:only-child h3{font-size:30px}
+.l-proyectos .tarjeta:only-child .sub{font-size:17px;margin-top:10px}
+.l-proyectos .tarjeta:only-child .desc{font-size:15px;line-height:1.6;margin-top:10px}
+.l-proyectos .tarjeta:only-child .minis{width:auto;padding-top:0;gap:12px}
+.l-proyectos .tarjeta:only-child .minis figure{height:168px}
+.l-proyectos .tarjeta:only-child .caja-cliente{margin-top:0}
+
 /* SIN las cuatro cunas azules -.barras-. Salen en dos sitios de esta hoja, la
    cubierta y el cierre, y el usuario las pidio fuera de las dos el 2026-09-04.
    Una sola regla, no una por lamina: es la misma pieza. En la panoramica y en
@@ -213,7 +283,7 @@
 .l-cubierta{--alto-diseno:calc(var(--alto-lamina) - var(--pie))}
 .l-cubierta .hoja-diseno{top:0}
 .l-cubierta .enc-hoja{display:none}
-.cb-partida .cbp-foto{width:var(--ancho-lamina);height:var(--alto-diseno)}
+.cb-partida .cbp-foto{width:var(--ancho-lamina)}
 /* La fila de las dos cajas va de CANTO A CANTO, sin los margenes de la hoja:
    lo pidio asi el usuario. Es la unica pieza de la vertical que los ignora, y
    se sostiene porque la cubierta ya es una lamina a sangre -la foto tambien
@@ -235,7 +305,7 @@
        navy   71% = 579 - 56 de relleno = 523 utiles
        la razon social a 17,3 px pide 516   ->  entra por 7 px
        el titular a 34,3 pide 479
-       blanco 29% = 237 - 52 de relleno = 185 para un logotipo de 170
+       blanco 29% = 237 - 28 de relleno = 209 de logotipo
    El relleno del navy hace dos trabajos y por eso lleva cifras distintas:
      - a los LADOS, 40 por delante y 16 por detras. NO el margen de la hoja: la
        caja va a sangre y ese margen solo le quitaba ancho a la letra y al
@@ -247,13 +317,26 @@
 .cb-partida .cbp-titulo{position:relative;left:auto;bottom:auto;
   flex:0 0 71%;width:auto;height:auto;padding:64px 16px 64px 40px;
   background:rgba(9,17,42,.80)}
-/* La caja blanca se ensancha al 29% -237 px- y el logotipo deja de llenarla:
-   lleva relleno propio, asi que le queda aire por los cuatro lados en vez de
-   tocar los cantos. El ancho sale de lo que suelta el navy al bajar la letra
-   0,4 y acortar la rayita. */
+/* La caja blanca se ensancha al 29% -237 px- y el logotipo no llega a tocar
+   los cantos: le queda el aire del relleno. El ancho sale de lo que suelta el
+   navy al bajar la letra 0,4 y acortar la rayita.
+   El relleno lleva DOS cifras porque los dos lados no aprietan igual. Quien
+   manda en el tamano del logotipo es el ANCHO -es apaisado, 2492 x 1592, y se
+   queda sin sitio a lo ancho mucho antes que a lo alto-, asi que el relleno de
+   los LADOS es el que lo hace crecer o encoger: el usuario lo pidio mas grande
+   el 2026-09-06 y bajo de 26 a 14, que es lo que lo lleva de 185 a 209 px de
+   ancho sin tocar el reparto 71/29 -al navy no le sobra: la razon social pide
+   516 de los 523 que tiene-. ARRIBA Y ABAJO se quedan los 26: alli sobra sitio
+   -la caja mide 235 y el logotipo, ya crecido, 134- y ese aire es el que lo
+   mantiene despegado de los cantos.
+   Va centrado, y eso NO se escribe aqui: el flex centrado se lo da ya
+   estilos.css y esta hoja solo le cambia la forma a la caja. Hacia falta
+   comprobarlo: antes la imagen se apoyaba en ser mas alta que el dibujo y en
+   que el hueco del object-fit hiciera de aire, y ahora mide lo que se ve. */
 .cb-partida .cbp-logo{position:relative;left:auto;top:auto;
-  flex:1 1 29%;width:auto;height:auto;padding:26px;box-sizing:border-box;
+  flex:1 1 29%;width:auto;height:auto;padding:26px 14px;box-sizing:border-box;
   background:rgba(255,255,255,.86)}
+.cb-partida .cbp-logo img{width:100%;height:auto}
 /* Los cuerpos de la cubierta. Los cuatro -los dos del panel y los dos del
    sello sobre la foto- se mueven JUNTOS para que no se descompensen entre si;
    los ultimos movimientos fueron de -0,4 y -0,3, que el usuario pidio para que
@@ -262,10 +345,9 @@
    sitio a la letra; nacio en 38 x 3 y el usuario la quiso mas presente. */
 .cb-partida .cbp-titulo .epigrafe{font-size:17.3px}
 .cb-partida .cbp-titulo .epigrafe::before{width:28px;height:4px}
-.cb-partida .cbp-titulo h2{font-size:34.3px;margin-top:12px}
+.cb-partida .cbp-titulo h2{font-size:34.3px}
 .cb-partida .cbp-foto .cbp-sello span{font-size:17px}
 .cb-partida .cbp-foto .cbp-sello b{font-size:82.5px}
-.cb-partida .cbp-logo img{height:170px;max-width:100%;object-fit:contain}
 /* El velo que cierra el pie de la foto para que se sostenga el sello del ano.
    En la panoramica cubria el 44% de una columna angosta; aqui la foto es casi
    la hoja entera, asi que se reparte en menos altura o se comeria el
@@ -323,43 +405,48 @@
 .cr-der figure{clip-path:none}
 :is(.l-cierre,.l-portada) .rieles-portada{display:none}
 .pie-navy{top:707px;height:calc(var(--alto-diseno) - 707px)}
-/* Los cuatro datos, DOS A CADA LADO: las dos sedes en la fila de arriba y el
-   telefono y el correo en la de abajo. Estuvieron uno debajo de otro -cuatro
-   renglones de banda entera- y el usuario pidio repartirlos en dos columnas
-   justamente para que el navy encogiera y se viera mas foto: la banda paso de
-   333 px a 200.
-   No es la fila de tres de la panoramica -380 + 210 + 430-, que aqui no cabe:
-   son dos columnas iguales de unos 300 px, que es lo que pide la direccion de
-   Caracas para no partirse en mas de cuatro renglones. El par telefono+correo
-   deja de apilarse y ocupa la fila entera, uno en cada columna. */
-/* Las dos columnas no van a partes iguales: la izquierda se lleva 1,15 y la
-   derecha 0,85. La direccion de Caracas es el renglon largo del pie -103
-   caracteres- y a mitades se le partia en TRES lineas, con un "Caracas."
-   suelto al final; la de Lecheria, enfrente, cabe en media. Con este reparto
-   la izquierda pasa de 312 a 359 px y la direccion entra en DOS. */
-/* El reparto se escribe UNA vez y lo usan las dos rejillas encajadas: la de
-   los cuatro datos y la de telefono+correo, que ocupa la fila entera y tiene
-   la suya propia. Con 1,15/0,85 fuera y 1/1 dentro, CORREO caia 48 px a la
-   izquierda de SEDE ADMINISTRATIVA y las dos filas no se alineaban. */
-.l-cierre .contacto{--cols:1.15fr 0.85fr;
+/* Los cuatro datos en DOS COLUMNAS, cada una con lo suyo: a la izquierda las
+   dos SEDES, una debajo de la otra, y a la derecha el TELEFONO y el CORREO,
+   tambien uno debajo del otro. Lo pidio asi el usuario el 2026-09-06; antes
+   iban en dos filas mezclando las dos cosas -las sedes arriba y telefono y
+   correo abajo-, y ahora cada columna se lee como lo que es: donde estamos y
+   como llamarnos. Los cuatro renglones de banda entera que hubo al principio
+   tampoco vuelven: el usuario los repartio en columnas para que el navy
+   encogiera y se viera mas foto, y la banda sigue midiendo lo mismo -dos
+   bloques de alto a cada lado-.
+   No es la fila de tres de la panoramica -380 + 210 + 430-, que aqui no cabe.
+   El reparto sale de lo que pide CADA columna:
+     - la derecha, 250 px, que es lo que ocupa el telefono entero: va sin
+       partir (white-space:nowrap en estilos.css) y es el dato mas ancho de las
+       dos filas;
+     - la izquierda se lleva el resto, 375, y es la que manda de verdad: es
+       donde va la direccion de Caracas, el renglon largo del pie.
+   Ese 1fr es tambien lo que coloca el salto de la direccion donde lo quiso el
+   usuario, despues de "Urb." (ver DIR_CARACAS en contenido.py): a 359 px la
+   linea cerraba en "#177," y "Urb." bajaba con el resto. */
+.l-cierre .contacto{
   left:var(--marg-izq);width:var(--ancho-util);top:30px;
-  grid-auto-flow:row;grid-template-columns:var(--cols);gap:20px 40px}
-.l-cierre .ct-directo{grid-column:1 / -1;display:grid;
-  grid-template-columns:var(--cols);gap:20px 40px}
-/* La direccion de Caracas es el renglon largo de los cuatro -103 caracteres- y
-   se partia en TRES lineas. Entra en DOS con las dos cosas juntas: la columna
-   de la izquierda mas ancha (arriba) y el cuerpo de 14 a 13 px.
-   SIN text-wrap:balance, que aqui juega en contra: al equilibrar reparte el
-   texto entre las lineas que YA decidio usar, asi que mientras fueran tres las
-   dejaba a 214 px de los 312 que habia y seguian siendo tres. La carta
-   apaisada si lo lleva porque alli el renglon ya entra en dos (ver
-   carta.css). */
-.l-cierre .contacto .ct p{font-size:14px}
-/* El rotulo baja de 11 a 10 px por el efecto de rebote del reparto de arriba:
-   al estrecharse la columna derecha, "SEDE ADMINISTRATIVA ORIENTE" -27
-   caracteres espaciados a .3em, mas el icono- dejaba de caber en un renglon y
-   se partia, y las dos columnas arrancaban a distinta altura. */
-.l-cierre .contacto .ct h4{font-size:11px}
+  grid-auto-flow:row;grid-template-columns:1fr 250px;gap:22px 40px}
+/* Las dos sedes son las dos .ct sueltas de .contacto -telefono y correo van
+   envueltos en .ct-directo- asi que basta con mandarlas a la primera columna:
+   caen una debajo de la otra sin numerar filas. Eso es lo que pide el
+   grid-auto-flow:row de arriba, que pisa el 'column' de estilos.css: alli los
+   bloques SON las columnas y aqui son las filas de una de ellas. */
+.l-cierre .contacto > .ct{grid-column:1}
+/* El par telefono+correo ocupa la segunda columna ENTERA, las dos filas, y por
+   dentro se apila: solo se le da la direccion, porque el flex y el hueco de 22
+   ya se los pone estilos.css. Es lo mismo que hace carta.css, que tampoco
+   repite el display. En flex y no en rejilla: aqui no hay nada que alinear con
+   la columna de al lado -las sedes miden lo que midan sus direcciones- y una
+   rejilla de dos filas les habria dado el mismo alto a los dos. */
+.l-cierre .ct-directo{grid-column:2;grid-row:1 / span 2;flex-direction:column}
+/* NI el cuerpo del texto ni el del rotulo se tocan aqui: los dos se quedan con
+   los de estilos.css -14 y 11- y esta hoja no los repite. Los tuvo, en 13 y en
+   10, mientras la direccion de Caracas se partia en tres renglones y "SEDE
+   ADMINISTRATIVA ORIENTE" no cabia en la columna estrecha; con el reparto de
+   arriba las dos cosas entran a su tamano de siempre. Es la unica hoja donde
+   el pie de contacto va al cuerpo de la panoramica: la carta apaisada si los
+   baja (ver carta.css). */
 /* Sin las dos barras diagonales de los paneles -.rieles-panel-. Salen en tres
    sitios de esta hoja: el pie de contacto del cierre, el panel de Flota propia
    y el de Nuestros clientes. No es capricho quitarlas: miden el 116% del alto
@@ -379,8 +466,21 @@
    mas alto y la cabecera y la tira le dejan el suyo. */
 .cabecera{left:var(--marg-izq);top:36px;width:var(--ancho-util)}
 .l-servicios .cabecera h2{font-size:39px}
-.l-servicios .panel{top:150px;height:510px}
-.cols4{left:var(--marg-izq);top:26px;width:var(--ancho-util);
+/* El panel SUBE 18 px -de 150 a 132-: entre el titular y el "01" del primer
+   servicio habia 71 px -45 de blanco y 26 ya dentro del navy- y el usuario los
+   vio de sobra el 2026-09-06. Quedan 47.
+   El panel NO crece esos 18 px, sube ENTERO y la tira sube con el: dandole el
+   alto al panel, el navy vacio que ya hay entre el ultimo servicio y las fotos
+   pasaba de 64 a 88 px, o sea el hueco no desaparecia, se mudaba abajo. Subir
+   los dos deja ese fondo como estaba y los 18 px se los queda la tira, que es
+   foto.
+   Y el panel ADEMAS se recorta de 510 a 480: debajo del ultimo servicio
+   sobraban 64 px de navy vacio y el usuario pidio el 2026-09-06 que las fotos
+   se agrandaran con ese sitio. Quedan 40 px de aire bajo el texto -que hacen
+   falta, si no la lista queda pegada al canto- y la tira pasa de 275 a 323 px
+   de alto, casi un 20% mas de foto. */
+.l-servicios .panel{top:132px;height:480px}
+.cols4{left:var(--marg-izq);top:20px;width:var(--ancho-util);
   grid-template-columns:repeat(2,1fr);gap:28px 40px}
 /* El titulo de cada servicio pierde la altura fija de dos renglones -en la
    panoramica la lleva para que las cuatro reglas queden a la misma linea-:
@@ -389,7 +489,22 @@
 .srv .regla{margin:10px 0 12px}
 .srv ul{gap:7px}
 .srv li{font-size:13.5px;padding-left:19px}
-.l-servicios .tira{top:659px;height:calc(var(--alto-diseno) - 659px)}
+/* La tira baja de CINCO fotos a CUATRO: la quinta -servicio_5_maquinaria- se
+   cae de la hoja de pie porque aqui la tira mide 816 px de ancho contra los
+   1280 de la panoramica, y a cinco cada foto se quedaba en 163 px, una franja
+   tan angosta que con el corte en diagonal no se veia de que era. Con cuatro
+   miden 204. Lo pidio el usuario el 2026-09-06 y solo vale AQUI: la
+   panoramica sigue con las cinco.
+   Se quita con display:none y no borrandola del marcado -generar.py arma una
+   sola tira para las dos hojas- y por eso hay que pasarle a la CUARTA el canto
+   recto de la ultima: la regla :last-child de estilos.css se la sigue llevando
+   la quinta, que ya no se ve, y la cuarta se quedaba con su corte en diagonal
+   y una cuna blanca contra el canto derecho de la hoja. */
+.l-servicios .tira{top:611px;height:calc(var(--alto-diseno) - 611px);
+  grid-template-columns:repeat(4,1fr)}
+.l-servicios .tira figure:nth-child(5){display:none}
+.l-servicios .tira figure:nth-child(4){margin-right:0;
+  clip-path:polygon(15% 0,100% 0,100% 100%,0 100%)}
 
 /* --------------------------------------------------------- PORTAFOLIO --- */
 /* Los tres grupos -7, 5 y 7 obras- van en tres columnas en la panoramica. De
@@ -401,8 +516,26 @@
    dos, ocupa cuatro renglones y la hoja cierra. */
 /* El top y los huecos se apretaron al subir la letra un punto: con 200 y 24 la
    ultima obra de la tercera lista se salia por debajo del pie. */
+/* Las dos columnas de arriba NO van a mitades: 1,06 la izquierda y 0,94 la
+   derecha, o sea 329 y 292. Lo pide una sola obra, la del Veladero: su gestor
+   -"Coordinacion Operacional Faja (COF)"- es el rotulo mas largo de las
+   diecinueve y con la columna a la mitad no le cabia detras la pildora de
+   estado, que se caia a un renglon suelto debajo. El usuario lo vio como el
+   texto de una obra partido en dos.
+   1,06 es el TOPE: a 1,1 la derecha baja de 292 y ahi "SERVICIOS Y ALQUILER"
+   deja de caber en un renglon, que era el problema que se arreglo antes.
+   El reparto solo no bastaba -se quedaba a 12 px- asi que va junto con los dos
+   cuerpos de abajo. */
+/* "Nuestros proyectos" al tamano del titular de Nuestros servicios -39 px- y
+   no a los 55 que esta hoja le da a los titulos sobre banda. El usuario lo
+   pidio el 2026-09-06 ("copiate de la de servicios"): los 55 se pensaron para
+   las bandas ALTAS -la de Mision y vision mide 600 px de foto y ahi un titular
+   grande cuadra-, pero esta banda tiene 190 y el titular se comia la franja,
+   ademas de asomarse por delante del sello de "ACTUALIZADO AL". Va acotado a
+   .l-portafolio: las demas bandas de la hoja se quedan como estan. */
+.l-portafolio .banda-txt h2{font-size:39px}
 .pf-cols{left:var(--marg-izq);top:185px;width:var(--ancho-util);
-  grid-template-columns:repeat(2,1fr);gap:20px 40px}
+  grid-template-columns:1.06fr 0.94fr;gap:20px 40px}
 /* El ORDEN de los tres grupos cambia: el usuario quiso SERVICIOS Y ALQUILER al
    lado de CONSTRUCCION, que son los dos de siete obras y llenan la fila de
    arriba por igual. AMBIENTE, que trae cinco, baja entero y se lleva el ancho
@@ -414,13 +547,38 @@
 .pf-cols .pf-col:nth-child(2) ol{display:grid;grid-template-columns:repeat(2,1fr);
   gap:8px 40px}
 /* Los 19 proyectos de las tres listas piden 65 px mas de los que da la hoja, y
-   salen de aqui: el nombre baja de 17 a 15,5 px -a 17, en columna de 312, los
+   salen de aqui: el NOMBRE baja de 17 a 16,5 px -a 17, en columna angosta, los
    nombres largos como "Completacion mecanica Oleoducto de 42 - PTO-TAEJ" se
-   partian en dos renglones- y el pie de 12 a 11. Con eso cada obra ocupa un
-   renglon y las tres listas cierran dentro de la hoja. */
+   partian en dos renglones-. El pie se queda en los 12 de estilos.css: llego a
+   bajar a 11 y ya no hace falta, asi que no se repite aqui. Con eso cada obra
+   ocupa un renglon y las tres listas cierran dentro de la hoja. */
 .pf-col ol{gap:8px}
 .pf-col .nom{font-size:16.5px}
-.pf-col .pie{font-size:12px}
+/* Las otras dos piezas de la cuenta del Veladero. Son las dos cosas que van en
+   ese renglon: el gestor y la pildora.
+   El PIE baja a 11 -de los 12 de estilos.css-. Este valor estuvo aqui, se
+   quito por no hacer nada y vuelve ahora que si lo hace: son 16 px de gestor.
+   La PILDORA vuelve a los 10,5 de estilos.css, o sea NO sube el punto que subio
+   el resto de la hoja: son otros 11 px. Va acotada a .l-portafolio a proposito,
+   porque la misma .estado es la que rotula las sedes en Nuestras oficinas y
+   alli no sobra sitio ni hace falta encogerla.
+   Con las tres cosas juntas el renglon del Veladero pasa de faltarle 31 px a
+   sobrarle 12, y los demas quedan con 23 o mas. */
+.pf-col .pie{font-size:11px}
+.l-portafolio .estado{font-size:10.5px}
+/* "SERVICIOS Y ALQUILER" se partia en dos renglones: su lista arrancaba 18 px
+   mas abajo que la de CONSTRUCCION, al lado, y la cuenta -el 07- se quedaba
+   colgada junto al primer renglon. En la panoramica no pasa porque las tres
+   columnas son mas anchas; aqui el rotulo tiene 290 px -312 de columna menos
+   la cuenta y su hueco- y a .3em pedia 320.
+   Lo que cede es el ESPACIADO y no el cuerpo: los tres rotulos se quedan en
+   los 18 px que les da el bloque de cuerpos de arriba -esta es la otra mitad
+   de .pf-col h3: el cuerpo alla, con los demas, y lo que no es cuerpo aqui-,
+   porque bajar uno obliga a bajar los tres -van a la misma linea- y la lamina
+   esta calculada sobre ese punto de mas. A .22em el mas largo
+   mide 263 y le sobran 27; se queda ahi y no mas apretado para no alejarlo de
+   los epigrafes de las otras laminas, que van a .3em. */
+.pf-col h3{letter-spacing:.22em}
 
 /* --------------------------------------------------------- FLOTA PROPIA --- */
 /* En la panoramica la lamina se parte en dos franjas horizontales: el panel
@@ -430,13 +588,35 @@
    rejilla necesita mas filas: a 816 de ancho no caben las SEIS columnas de la
    panoramica -saldrian a 121 px y el nombre del equipo se partiria en tres
    renglones-.
-   Van a TRES, y no a cuatro, por una razon de cuentas: los dos bloques traen
-   18 y 6 tipos, y ninguno de los dos es multiplo de 4, asi que a cuatro
-   columnas la ultima fila de CADA bloque quedaba con dos huecos en blanco que
-   se leian como si faltaran equipos. Entre 3 y 6 divide sin resto, y 6 no
-   caben. Con tres, los 24 tipos ocupan 6 filas + 2 y no sobra ni una celda. */
-.l-flota .panel{height:730px}
-.tira-flota{top:729px;height:calc(var(--alto-diseno) - 729px)}
+   Van a CUATRO columnas, y para que no queden celdas vacias las dos listas se
+   funden en una sola rejilla (ver .fl-bloques, mas abajo).
+   --fl-tira es la linea donde acaba el navy y empiezan las fotos, y la usan las
+   DOS piezas: el panel mide hasta ahi y la tira arranca ahi. Escrita una sola
+   vez porque moverla a mano en dos sitios es como se descuadra una hoja.
+   El panel lleva un pixel de mas -la tira le monta encima- por lo mismo que el
+   pie del cierre: si la junta cae justa, entre los dos asoma una raya blanca
+   (ver la nota de .tira en estilos.css).
+   Subio de 729 a 664 el 2026-09-06. Al pasar la rejilla a cuatro columnas los
+   24 equipos bajaron de ocho filas a seis y la rejilla acabo en 644 en vez de
+   llegar casi hasta la tira: quedaban 85 px de navy vacio que no pintaban nada.
+   Con la tira en 664 las fotos pasan de 205 a 270 px de alto -un tercio mas- y
+   siguen dejando 20 px de aire bajo la ultima fila de equipos. Bajar mas de ahi
+   pega las fotos a los numeros. */
+.l-flota{--fl-tira:664px}
+.l-flota .panel{height:calc(var(--fl-tira) + 1px)}
+/* La tira baja de CUATRO fotos a TRES: se cae flota_1, que el usuario quito el
+   2026-09-06, y solo en la hoja de pie -la panoramica sigue con las cuatro-.
+   A cuatro cada foto media 204 px de ancho por 270 de alto, mas alta que ancha
+   y con la diagonal encima no se leia el equipo; con tres miden 272.
+   La quitada es la PRIMERA, asi que hay que pasarle a la segunda el canto
+   recto de la punta izquierda: la regla :first-child de .tira (estilos.css) se
+   la sigue llevando la que ya no se ve, y la segunda entraba con su corte en
+   diagonal, que contra el canto de la hoja deja una cuna blanca. */
+.tira-flota{top:var(--fl-tira);height:calc(var(--alto-diseno) - var(--fl-tira));
+  grid-template-columns:repeat(3,1fr)}
+.l-flota .tira-flota figure:nth-child(1){display:none}
+.l-flota .tira-flota figure:nth-child(2){margin-left:0;
+  clip-path:polygon(0 0,100% 0,85% 100%,0 100%)}
 /* El titular y el total siguen uno al lado del otro -son dos piezas cortas y
    apilarlas dejaria la mitad del ancho vacio-, pero repartidos 380/230 en vez
    de 540/396: es lo que dan los 646 utiles menos el hueco entre los dos. El h2
@@ -445,25 +625,49 @@
 .fl-cab{left:var(--marg-izq);top:38px;width:380px}
 .l-flota h2{font-size:33px}
 .l-flota .fl-cab p{margin-top:12px;font-size:14px;line-height:1.7}
-.fl-total{right:var(--marg-der);top:38px;width:230px}
-.fl-total>b{font-size:63px}
-/* La rejilla arranca mas abajo -240 y no 216- porque el parrafo del titular,
-   en 420 px de ancho, ocupa un renglon mas que en la panoramica.
-   A tres columnas los 24 tipos de equipo pasan de cuatro filas a OCHO -seis del
-   bloque pesado y dos del liviano-, asi que las cifras y los nombres bajan lo
-   justo para que las ocho quepan: sin esto la ultima fila se cortaba por abajo
-   y la lamina perdia tipos de equipo sin avisar. */
-/* Igual que en el portafolio: el punto de mas obligo a subir el arranque de la
-   rejilla y a apretar los huecos, o la ultima fila se metia bajo la tira. */
-.fl-bloques{left:var(--marg-izq);top:228px;width:var(--ancho-util);gap:18px}
-.fl-bloque ul{grid-template-columns:repeat(3,1fr);gap:6px 18px}
+/* El bloque del total -el 841, "equipos propios" y las dos cifras de abajo-
+   alineado a la DERECHA y con el numero mas chico, las dos cosas a peticion
+   del usuario. Van juntas: apoyado en el canto derecho, el 841 a 63 px pesaba
+   como un segundo titular y se comia al de la izquierda; a 48 sigue siendo la
+   cifra grande de la lamina sin discutirle el sitio.
+   El text-align lo heredan las dos lineas de debajo; la fila de "44 tipos" y
+   "38 marcas" es flex y no lo escucha, asi que se le dice aparte. */
+.fl-total{right:var(--marg-der);top:38px;width:230px;text-align:right}
+.fl-total>b{font-size:48px}
+.fl-total .fl-sub{justify-content:flex-end}
+/* La rejilla arranca en 228 y no en los 216 de la panoramica porque el parrafo
+   del titular, mas angosto aqui, ocupa un renglon mas.
+   CUATRO columnas, no las seis de la panoramica: lo pidio el usuario el
+   2026-09-06 y antes de eso estuvo en tres.
+   Y UNA SOLA rejilla, no las dos que trae el HTML. Eso es lo importante de
+   este bloque. El marcado parte los equipos en dos <section>: 18 de maquinaria
+   pesada y 6 de apoyo, cada una con su <ul> y su propia rejilla. A tres
+   columnas encajaban justas -seis filas y dos- pero a cuatro no: 18 no es
+   multiplo de 4, asi que la ultima fila de la pesada se quedaba con dos huecos
+   y la del apoyo con otros dos. El usuario los vio como equipos a los que les
+   faltaba el nombre, y con razon: son celdas vacias en medio de la tabla.
+   Con display:contents las dos <section> y sus dos <ul> dejan de dibujar caja
+   y sus 24 <li> pasan a ser hijos directos de .fl-bloques, que es quien lleva
+   ahora la rejilla. 24 entre 4 son SEIS filas exactas, sin un solo hueco.
+   Lo que se pierde es el respiro de 18 px que separaba los dos grupos. Se
+   acepta porque en esta hoja ya no los separaba nada mas: la regla de abajo
+   iguala los filos de los dos, asi que el grupo de apoyo ya se leia como una
+   continuacion de la lista y no como otra cosa.
+   La celda queda en 152 px y a 11,5 el nombre mas largo, "Camiones elevadores
+   12 t", entra en un renglon; si se anade un tipo con nombre mas largo hay que
+   comprobar que no se parta, porque una ficha a dos renglones estira su fila
+   entera. Y si se anade o se quita un equipo, mirar que el total siga siendo
+   multiplo de 4 o volveran los huecos. */
+.fl-bloques{left:var(--marg-izq);top:228px;width:var(--ancho-util);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px 18px}
+.l-flota .fl-bloque,.l-flota .fl-bloque ul{display:contents}
 .fl-bloque li{padding-top:5px}
-/* Los dos bloques -pesada y liviana- llevan de serie filos distintos: 3 px
-   azules el primero y 2 px palidos el segundo, que es lo unico que los separa
-   en la panoramica (ver .fl-bloque:last-child li en estilos.css). De pie, con
-   la lista en tres columnas y ocho filas seguidas, esa diferencia no se leia
-   como una division sino como dos renglones mal dibujados, asi que aqui van
-   todos iguales; los separa el hueco de 18 px entre bloques. */
+/* Los dos bloques -pesada y apoyo- llevan de serie filos distintos: 3 px azules
+   el primero y 2 px palidos el segundo, que es lo unico que los separa en la
+   panoramica (ver .fl-bloque:last-child li en estilos.css). Aqui van todos
+   iguales, y ya no es solo cuestion de gusto: desde que las dos listas son una
+   sola rejilla, seis fichas con el filo distinto en medio de la tabla se
+   leerian como un error de dibujo. Esta regla es la que lo impide. */
 .l-flota .fl-bloque:last-child li{border-top-width:3px;border-top-color:var(--azul)}
 .fl-bloque b{font-size:25px}
 .fl-bloque span{font-size:11.5px}
@@ -498,9 +702,8 @@
    En la panoramica la hoja se parte de arriba abajo -panel navy a la
    izquierda, collage de fotos a la derecha-. De pie ese corte no vale: las
    fotos son apaisadas y en media hoja angosta se quedarian en un sello. Aqui
-   la hoja se parte al reves, en horizontal: las fotos ARRIBA, a todo el ancho
-   y una encima de otra, y el panel navy con el texto DEBAJO. Es el mismo
-   marcado; solo cambian de sitio las dos cajas. */
+   la hoja se parte al reves, en horizontal: las dos cajas a todo el ancho, una
+   encima de la otra. Es el mismo marcado; solo cambian de sitio. */
 /* El texto ARRIBA y las fotos debajo -el usuario lo pidio asi el 2026-09-05;
    estuvieron al reves-. 294 px de panel y los 640 que restan de fotos, 320 por
    franja. El reparto se midio en la hoja: el texto son el epigrafe, el titular
@@ -515,9 +718,20 @@
 /* El titulo baja de 38 a 32: aqui el panel es una franja ancha y baja, y a 38
    el titular pesaba mas que el parrafo que tiene al lado. */
 .l-empresa h2{font-size:33px}
-/* El parrafo cruza los 665 px utiles de la hoja: a 14,2 px daban lineas de mas
-   de 100 caracteres, que se leen a saltos. Con 13,4 y algo mas de interlinea
-   la mancha queda del mismo grueso que en la panoramica. */
+/* El parrafo cruza los 665 px utiles de la hoja. Con 14,4 px y algo mas de
+   interlinea la mancha queda del mismo grueso que en la panoramica, y a ese
+   ancho el primer renglon cierra en "...desde entonces", que es donde el
+   usuario lo quiere.
+   text-align-last: el JUSTIFICADO de estilos.css cuadra todos los renglones
+   menos el ULTIMO, que se quedaba en "Petrolifera del Orinoco." -141 de 661
+   px- y dejaba el bloque con un escalon al pie. El usuario lo pidio del mismo
+   ancho de arriba abajo el 2026-09-06, asi que se probo a estirar tambien el
+   ultimo con text-align-last:justify. NO se hace: esas tres palabras repartidas
+   por 661 px dejaban unos huecos enormes entre ellas y el usuario lo mando
+   quitar el mismo dia. No hay termino medio -el texto es el que es, y a ningun
+   cuerpo entre 14 y 15,2 px, que es el margen donde el primer renglon sigue
+   cerrando en "desde entonces", el ultimo llega solo al canto-, asi que el
+   ultimo renglon se queda corto, como en cualquier parrafo. */
 .l-empresa .qs-texto{margin-top:20px;font-size:14.4px;line-height:1.8}
 
 /* ==========================================  MISION Y VISION  =========
@@ -531,49 +745,191 @@
    estilos.css- y esta hoja carga despues, asi que gana sin ayuda. */
 .l-nosotros .banda{height:600px !important}
 .l-nosotros .panel{top:600px;height:calc(var(--alto-diseno) - 600px)}
+/* El chip del lugar -"PATIO DE MAQUINAS · MATURIN"- sube al ARRANQUE de la
+   foto, que es donde va el de todas las demas: el de las dos fotos de "Nuestra
+   empresa" y el de cada oficina (.qse-foto figcaption y .l-oficinas
+   figcaption, en estilos.css) llevan el mismo left:-14px/top:0. En la
+   panoramica se queda abajo a la derecha porque alli comparte franja con el
+   titular y arriba no hay foto donde apoyarlo; de pie la banda mide 600 px y
+   ese canto de arriba esta libre, asi que el usuario pidio igualarlo con el
+   resto. El -14 mete la punta del paralelogramo fuera de la banda y la corta
+   su overflow, igual que en las otras. */
+.l-nosotros .banda-lugar{left:-14px;top:0;right:auto;bottom:auto}
 /* Los dos pilares, uno DEBAJO del otro y no en dos columnas: a 665 px de
    ancho, dos columnas dejan renglones de 40 caracteres y la Vision -que es
    larga- se estiraba hasta el canto del panel. Apilados leen como dos
    parrafos, que es lo que son. */
 .l-nosotros .pilares{grid-auto-flow:row;grid-auto-columns:auto;gap:30px;
   left:var(--marg-izq);width:var(--ancho-util)}
+/* Los dos parrafos justificados, a peticion del usuario. Aqui cuadra y en la
+   panoramica no, y es por el ancho: alli cada pilar es media lamina y para
+   cerrar el canto derecho se abrian huecos entre palabras -por eso .pilar p va
+   en bandera en estilos.css-; de pie van apilados y cada uno se lleva los 665
+   px del panel entero, un renglon de unos 90 caracteres, donde el sobrante se
+   reparte sin que se note.
+   Con hyphens:auto, igual que .qs-texto: con lang="es" en el <html> el
+   navegador parte las palabras largas -"infraestruc-tura", "socioambien-tal"-
+   al final del renglon en vez de estirar los espacios de uno solo. Si se
+   cambia el texto de la Mision o de la Vision, mirar que siga parejo. */
+.l-nosotros .pilar p{text-align:justify;hyphens:auto}
 
 
 /* ========================================  NUESTROS VALORES  ==========
-   Como "Nuestra empresa" y por lo mismo: en la panoramica la foto y el panel
-   van uno al lado del otro, y de pie eso deja las dos cosas angostas. Aqui la
-   foto se lleva la franja de arriba, a todo el ancho, y el panel navy con los
-   cinco valores ocupa el resto.
-   La foto se queda con 300 px: los cinco valores piden sitio -cada uno es un
-   rotulo y un par de renglones- y el panel necesita los 634 restantes. */
+   La FOTO a un lado y el TEXTO al otro, como en la panoramica: el usuario lo
+   pidio asi el 2026-09-06 -"coloca el texto de un lado y la foto del otro,
+   quiero que se vea mas la foto"-. Antes de eso la hoja se partia en
+   horizontal, con la foto en una franja de 300 px arriba y el panel navy
+   debajo; la foto media 816 x 300 y ahora mide 401 x 934, un 53% mas de
+   superficie, y ademas de canto a canto por arriba y por abajo.
+   Es la misma pieza de la panoramica -.va-foto a la izquierda, .va-panel a la
+   derecha- solo que con OTRO reparto: alli la foto se lleva el 45% de una hoja
+   apaisada, aqui casi la mitad de una angosta.
+   --va-corte es donde acaba la foto y empieza el navy. Se escribe como una
+   RESTA, 420 menos medio centimetro, y no como el 401 que sale, porque las dos
+   cifras dicen algo: 420 es el TOPE medido -de 20 en 20; a 440 la lista se sale
+   de la hoja por abajo, 955 de 934- y el medio centimetro es lo que el usuario
+   pidio quitarle despues para que la foto no llegara justo al limite.
+   A 401 la foto mide 401 x 934, al texto le quedan 322, la lista acaba en 870 y
+   la cabecera en 210, justo encima de los 236 en los que arranca la lista.
+   El tope DEPENDE del margen derecho: con el margen en 2 cm estaba en 400, y
+   al bajarlo a 1,6 la columna de texto gano sitio y subio a 420. Si se vuelve
+   a mover --marg-der hay que repetir esta medida antes de tocar la foto.
+   Para ensanchar mas la foto habria que bajarle el cuerpo a los cinco valores,
+   que es lo que no se quiso. */
+.l-valores{--va-corte:calc(420px - 0.5cm)}
 .l-valores .va-foto{left:0;top:0;
-  width:var(--ancho-lamina);height:300px}
-.l-valores .va-panel{left:0;top:300px;
-  width:var(--ancho-lamina);height:calc(var(--alto-diseno) - 300px)}
-/* La cabecera y la lista se miden con los margenes de la hoja, no con el
-   --lado-medio de la panoramica: asi arrancan en la misma linea que el resto
-   de las paginas. La lista sube de 222 a 186 px -el parrafo de la cabecera,
-   al ir a todo el ancho, pasa de cuatro renglones a dos-. */
-.l-valores .va-cab{left:var(--marg-izq);width:var(--ancho-util);top:34px}
-.l-valores .va-lista{left:var(--marg-izq);width:var(--ancho-util);top:186px}
+  width:var(--va-corte);height:var(--alto-diseno)}
+.l-valores .va-panel{left:var(--va-corte);top:0;
+  width:calc(var(--ancho-lamina) - var(--va-corte));height:var(--alto-diseno)}
+/* La cabecera y la lista, dentro del panel: arrancan 32 px despues del corte
+   -el aire que separa el texto de la foto- y llegan al margen derecho de la
+   hoja. No usan --lado-medio, que es la medida de la panoramica.
+   OJO con el left: las dos van en absoluto DENTRO de .va-panel, asi que su
+   origen es el canto del panel y no el de la hoja. Por eso son 32 pelados y no
+   el corte mas 32; escrito de la segunda manera se iban 264 px fuera del
+   papel. El ancho si se cuenta desde la hoja, que es de donde sale el margen.
+   La lista arranca en 236 y no en los 222 de la panoramica: en una columna de
+   322 el parrafo de la cabecera se parte en cuatro renglones y acaba en 210. */
+.l-valores .va-cab,.l-valores .va-lista{left:32px;
+  width:calc(var(--ancho-lamina) - var(--va-corte) - 32px - var(--marg-der))}
+.l-valores .va-cab{top:34px}
+.l-valores .va-lista{top:236px}
+/* Los cinco valores justificados, a peticion del usuario, y con hyphens:auto
+   como el resto de los parrafos justificados de la hoja: con lang="es" el
+   navegador parte las palabras largas al final del renglon en vez de estirar
+   los espacios de uno solo. Aqui hace falta de verdad, porque estos parrafos
+   traen las palabras mas largas del brochure -"COMPROMISO AMBIENTAL" arrastra
+   "salvaguardando" y "generaciones"- en una columna de 322. */
+.l-valores .v-texto p{text-align:justify;hyphens:auto}
 .l-valores h2{font-size:33px}
 
 /* ========================================  NUESTRAS OFICINAS  =========
-   El panel con las cuatro direcciones ARRIBA -como en "Nuestra empresa"- y las
-   fotos debajo, en dos columnas por dos filas: cuatro franjas a todo el ancho
-   saldrian de 128 px de alto, una tira demasiado estrecha para una foto de
-   grupo. En dos columnas cada foto mide 408 x 317, que es casi la proporcion
-   que traen.
-   Las oficinas tambien van de dos en dos: a todo el ancho, cada direccion
-   dejaba un renglon larguisimo con medio panel en blanco a la derecha. */
-/* 330 y no 300: a 300 el bloque -titulo mas cuatro direcciones- casi tocaba
-   los dos cantos del panel y se leia apretado contra el encabezado. */
-.l-oficinas .ofi-panel{left:0;top:0;
-  width:var(--ancho-lamina);height:330px;
+   Cada oficina, su TEXTO y AL LADO su FOTO: cuatro filas, la direccion a la
+   izquierda y la foto de esa misma oficina enfrente. Lo pidio asi el usuario el
+   2026-09-06. Es la maqueta de la panoramica -alli tambien van las direcciones
+   en una columna y las fotos en la de al lado- puesta de pie, y no la que
+   habia aqui, que separaba las dos cosas: las cuatro direcciones en un panel
+   arriba y las cuatro fotos en una rejilla debajo, de modo que para saber de
+   que oficina era una foto habia que contar posiciones.
+   Las dos columnas arrancan en CERO, pegadas a la franja blanca de arriba: el
+   usuario pidio que la foto empezara ahi y no despues de un trozo de navy. Eso
+   deja a la cabecera -"DONDE ESTAMOS / Nuestras oficinas"- encima de la primera
+   direccion, y por eso esa primera lleva un apartado propio y las otras no.
+   Las dos columnas NO se reparten el alto igual, y es a proposito. La FOTO si:
+   cuatro tiras de 233 que llenan la hoja. El TEXTO no: las direcciones van
+   apiladas y apretadas contra el titulo, cada una midiendo lo suyo. Estuvieron
+   repartidas en cuatro filas iguales, para que cada direccion quedara a la
+   altura de su foto, y el usuario lo rechazo tres veces -"todo muy separado",
+   "se ven super separado, comprimelo"-: la fila mide 233 y la direccion 120,
+   asi que sobraban 100 px debajo de cada una y las cuatro se leian como islas.
+   Apretadas se pierde el emparejado exacto -la cuarta direccion acaba en 631 y
+   su foto en 934- y a cambio la columna de texto se lee de un tiron. El orden
+   sigue siendo el mismo en las dos, que es lo que empareja ahora. Debajo de la
+   lista quedan 300 px de navy limpio; ese es el precio y se acepto. */
+/* --ofi-corte: la linea que separa el texto de la foto. A 450 la foto mide
+   366 x 233 -las cuatro tiras se reparten los 934- y al texto le quedan 328. El usuario
+   fue pidiendo la foto mas ancha, asi que este numero BAJA -es donde acaba la
+   foto, no donde empieza- y con el baja el ancho del texto. Va de la mano con
+   el cuerpo de la direccion: cada vez que se mueve uno hay que volver a medir
+   el otro (la tabla, en la nota de .ofi-lista p, mas abajo).
+   --ofi-aire-titulo: lo que separa el titulo de la primera direccion. Es un
+   hueco y no una posicion: el titulo ya no vive en un sitio fijo de la hoja,
+   baja con la lista (ver .ofi-panel, aqui debajo). */
+.l-oficinas{--ofi-corte:450px;--ofi-aire-titulo:40px}
+/* El panel navy pasa a ser el fondo de la lamina ENTERA: antes era solo la
+   franja de arriba, con las fotos fuera.
+   Lo que lleva dentro va CENTRADO, y eso no se escribe aqui: el flex en
+   columna centrado ya se lo da estilos.css y esta hoja solo le cambia el ancho
+   y los margenes. El titulo y las cuatro direcciones van los dos EN FLUJO, uno
+   detras del otro, asi que se centran como un solo bloque. Antes el titulo
+   estaba clavado arriba y la lista centrada por su cuenta, y entre los dos
+   quedaban 165 px de navy: el usuario los vio como que el titulo se habia
+   quedado descolgado de su lista. Ahora bajan juntos.
+   Sin relleno arriba, que ese sitio ya no se reserva: lo reparte el centrado. */
+.l-oficinas .ofi-panel{width:var(--ancho-lamina);
   padding:0 var(--marg-der) 0 var(--marg-izq)}
-.l-oficinas .ofi-lista{display:grid;grid-template-columns:1fr 1fr;
-  gap:20px 40px;margin-top:24px}
-.l-oficinas .ofi-fotos{left:0;top:330px;
-  width:var(--ancho-lamina);height:calc(var(--alto-diseno) - 330px);
-  grid-template-columns:1fr 1fr}
+/* Las cuatro direcciones, apiladas y APRETADAS: filas de min-content -cada una
+   mide lo que pide su texto- separadas por 42 px. Con filas de 1fr se repartian
+   los 934 de la hoja y dejaban 100 px de hueco debajo de cada direccion; luego
+   el usuario las fue abriendo a mano, 26 -> 34 -> 42, hasta darlas por buenas.
+   Va EN FLUJO, no colocada en absoluto, y ahi esta el truco: siendo una pieza
+   mas de la columna del panel, el centrado de este la coloca a ella y al titulo
+   a la vez, sin numeros escritos a mano. El alto lo pone el contenido.
+   El hueco entre columnas -28- se le quita al ancho del texto y no se pone como
+   gap, que aqui no hay rejilla comun con las fotos. */
+.l-oficinas .ofi-lista{margin-top:var(--ofi-aire-titulo);
+  width:calc(var(--ofi-corte) - var(--marg-izq) - 28px);
+  display:grid;grid-template-rows:repeat(4,min-content);gap:42px}
+/* Cada direccion mide lo suyo y lleva una raya encima. El align-self:start no
+   es de adorno aunque la fila ya sea min-content: la fila la estira el hermano
+   mas alto si alguna vez vuelve a haber uno, y sin el bloque quedaria centrado.
+   La raya es la MISMA de .va-lista .valor -la lista de "Nuestros valores", que
+   tambien va apilada sobre navy-: un pelo de 1 px en el azul palido a .28. No
+   es una pieza nueva, es la que este brochure ya usa para separar los puntos de
+   una lista, y es la que hace que cuatro bloques pegados se sigan leyendo como
+   cuatro y no como un parrafo largo. */
+.l-oficinas .ofi-lista>article{align-self:start;padding-top:16px;
+  border-top:1px solid rgba(124,139,186,.28)}
+/* La PRIMERA no lleva raya: arriba no tiene de que separarse -no hay otra
+   direccion, solo el aire que la separa del titulo- y una raya suelta ahi se
+   leeria como un subrayado de la cabecera. Es lo mismo que hace
+   .va-lista .valor:first-child en estilos.css.
+   El padding-top:0 es para PISAR el de las otras tres: la separacion de esta
+   con el titulo la pone ahora el centrado, no un relleno propio. */
+.l-oficinas .ofi-lista>article:first-child{border-top:none;padding-top:0}
+/* Las cuatro direcciones justificadas, a peticion del usuario, y con
+   hyphens:auto como .qs-texto y como la Mision y la Vision: con lang="es" en
+   el <html> el navegador parte las palabras largas al final del renglon en vez
+   de estirar los espacios de uno solo. Hace falta: el castellano de estas
+   direcciones trae palabras que no perdonan -"Intercomunal", "Anzoategui",
+   "Meditotal"-.
+   El reparto se eligio MIDIENDO, no a ojo, y no se puede elegir el ancho sin
+   elegir a la vez el cuerpo: al estrechar la columna cambian los cortes de
+   linea y el justificado se abre o se cierra a saltos, sin seguir una curva.
+   Se cruzaron cinco anchos con tres cuerpos y se anoto cuanto tiene que
+   ESTIRAR el peor renglon de cada una de las cuatro direcciones:
+                     cuerpo 14,5      15,5        16,5
+       corte 410 (288)  24 55 46 21  53 39 63 51  38 50 48 65
+             430 (308)  44 18 66 41  26 59 49 22  58 43 68 56
+             450 (328)  13  5 19 44  46 79 69 42  28 63 53 24   <- este
+             470 (348)  33 25 14 64  11 19 17 45  48 83 73 44
+             490 (368)  53 42 34  6  31 23 11 65  10 18 16 45
+   450 con 14,5 es la mejor casilla de las que dejan la foto ancha: tres
+   direcciones por debajo de 20 px de 328 -o sea nada- y solo Maturin en 44, un
+   13%, porque el navegador no parte "adyacente" y ahi se le acaba el renglon.
+   Se intento forzarlo con hyphenate-limit-chars y con text-wrap:pretty y
+   ninguno de los dos movio un pixel, asi que no se dejan puestos de adorno.
+   Si se cambia una direccion o se vuelve a mover la foto, repetir la tabla: no
+   vale interpolar. */
+.l-oficinas .ofi-lista p{text-align:justify;hyphens:auto}
+/* Las fotos, a sangre por el canto derecho y una debajo de otra. Las filas se
+   reparten solas -grid-auto-rows:1fr, en estilos.css- y son cuatro, las mismas
+   cuatro de la lista.
+   El z-index es obligatorio y no un retoque: las fotos van ANTES que el panel
+   en el HTML, y desde que el panel pasa a cubrir la lamina entera su fondo
+   navy -que se pinta despues- las tapaba enteras. Va en 3, por encima del
+   fondo y por debajo del 4 de la cabecera y de la lista. */
+.l-oficinas .ofi-fotos{z-index:3;left:var(--ofi-corte);
+  width:calc(var(--ancho-lamina) - var(--ofi-corte));
+  grid-template-columns:1fr}
 .l-oficinas h2{font-size:33px}
