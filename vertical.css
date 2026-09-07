@@ -204,10 +204,18 @@
    Una regla por pieza -su sitio y su cuerpo juntos- y todas acotadas a
    .l-proyectos: asi ninguna alcanza a la lamina del proyecto destacado, que
    comparte los nombres de clase y no sale en esta hoja. */
+/* Las cinco filas van a AUTO y el sobrante se reparte entre ellas
+   -align-content-, en vez de dejar una fila en 1fr que se lo tragaba entero.
+   Con el 1fr, todo el aire caia detras del parrafo: el ano, el titulo, el
+   subtitulo y el texto salian apretados arriba y debajo quedaba un palmo de
+   blanco hasta la caja del cliente. Repartido, el bloque de texto baja hasta
+   la linea de las miniaturas y lo que sobra se lee como aire entre las piezas,
+   que es como esta la ficha que va sola (ver .tarjeta:only-child). */
 .l-proyectos .tarjeta{
   display:grid;
   grid-template-columns:360px 1fr;
-  grid-template-rows:auto auto auto 1fr auto;
+  grid-template-rows:auto auto auto auto auto;
+  align-content:space-between;
   column-gap:20px;
 }
 /* La columna de fotos sube de 340 a 360 px y con ella las tres: la grande de
