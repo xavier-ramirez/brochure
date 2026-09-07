@@ -242,44 +242,59 @@
    :not(:only-child).
    A MEDIAS: el texto se lleva la mitad izquierda de la hoja y las fotos la
    derecha, 322 px cada una. Lo pidio asi el usuario el 2026-09-07, y no sale
-   gratis: bajo la foto de la obra solo quedan 190 px -432 de ficha, 167 de
-   foto y 71 de la caja del cliente con su margen- y a media hoja de ancho ni
-   el texto ni las fotos entran en 190 con los tamanos que tenian.
+   gratis: bajo la foto de la obra quedan 207 px -432 de ficha, 167 de foto,
+   54 de la caja del cliente con su margen y 4 de aire bajo la foto- y a media
+   hoja de ancho ni el texto ni las fotos entran ahi con los tamanos que
+   tenian.
        el texto, a 322 px, pedia 253 de alto con los cuerpos de antes -titulo
-       23,5, subtitulo 15, parrafo 13,5-. Por eso bajan a 18, 12,5 y 11: con
-       esos pide 185 de 190, y son los mas grandes que caben. Medido sobre las
-       dieciocho, que la peor es la de COMOR.
+       23,5, subtitulo 15, parrafo 13,5-. Por eso bajan a 19, 13 y 11,5: con
+       esos pide 196 de 207. Medido sobre las dieciocho; la peor es la de
+       Equipos transversales.
        las dos fotos apiladas, a 322 px de ancho y con su forma de siempre
        -1,941-, pedian 166 de alto cada una, o sea 342. Por eso pasan a 88 de
-       alto: 88 + 10 + 88 = 186 de 190. A ese ancho son una franja de 3,7 a 1,
+       alto: 88 + 10 + 88 = 186 de 207. A ese ancho son una franja de 3,7 a 1,
        parecida a la de la foto de la obra, que va a 4.
-   Lo que no se puede es tener las dos cosas: a media hoja el texto ya no entra
-   con la letra de antes, y las fotos apiladas no entran con su forma de antes.
-   Si algun dia se quiere la letra grande de vuelta, hay que ir a un proyecto
-   por hoja, que es lo unico que da sitio para las dos cosas.
+   Lo que no se puede es tener las dos cosas a su tamano: a media hoja el texto
+   no entra con la letra de antes y las fotos apiladas no entran con su forma
+   de antes. Si algun dia se quieren las dos, hay que ir a un proyecto por
+   hoja, que es lo unico que da sitio.
    La rejilla pasa a DOS columnas y cada pieza vuelve a llevar la suya escrita,
    porque ya no valen el orden del marcado ni la columna unica: la foto de la
-   obra y la caja del cliente cruzan las dos -grid-area a -1-, el texto ocupa
+   obra cruza las dos -grid-area a -1-, el texto y la caja del cliente ocupan
    la izquierda y las miniaturas la derecha, abarcando las cuatro filas del
    texto para quedar apoyadas arriba, a la linea del ano. */
 .l-proyectos .tarjeta:not(:only-child){
   grid-template-columns:1fr 1fr;
   column-gap:20px;
 }
-/* Los cuerpos de la ficha de media hoja, los mas grandes que entran a 322 px
-   de ancho (ver las cuentas de arriba). No van en la regla comun porque la
-   ficha que va SOLA no los quiere: alli hay hoja de sobra y la letra es
-   grande. */
+/* Los cuerpos de la ficha de media hoja (ver las cuentas de arriba). No van en
+   la regla comun porque la ficha que va SOLA no los quiere: alli hay hoja de
+   sobra y la letra es grande.
+   Con estos, el texto mas alto de los dieciocho -el de Equipos transversales-
+   pide 196 de los 207 que hay. Un punto mas -20 / 13,5 / 12- tambien entra,
+   pero deja UN pixel de margen y cualquier retoque de contenido.py lo tumba;
+   por eso se queda en estos, que dejan once. */
 .l-proyectos .tarjeta:not(:only-child) .insignias .anio{font-size:13px}
-.l-proyectos .tarjeta:not(:only-child) h3{font-size:18px}
-.l-proyectos .tarjeta:not(:only-child) .sub{font-size:12.5px}
-.l-proyectos .tarjeta:not(:only-child) .desc{font-size:11px;line-height:1.45}
+.l-proyectos .tarjeta:not(:only-child) h3{font-size:19px}
+.l-proyectos .tarjeta:not(:only-child) .sub{font-size:13px}
+.l-proyectos .tarjeta:not(:only-child) .desc{font-size:11.5px;line-height:1.5}
 .l-proyectos .tarjeta:not(:only-child) .hero{grid-area:1 / 1 / 2 / -1}
 .l-proyectos .tarjeta:not(:only-child) .insignias{grid-area:2 / 1}
 .l-proyectos .tarjeta:not(:only-child) h3{grid-area:3 / 1}
 .l-proyectos .tarjeta:not(:only-child) .sub{grid-area:4 / 1}
 .l-proyectos .tarjeta:not(:only-child) .desc{grid-area:5 / 1}
-.l-proyectos .tarjeta:not(:only-child) .caja-cliente{grid-area:6 / 1 / 7 / -1}
+/* La caja del cliente, SOLO en la columna del texto -6 / 1, no de canto a
+   canto- y mas baja: el usuario la vio grande de mas en las dos medidas el
+   2026-09-07. Se queda con los 322 px del parrafo, que es contra lo que se
+   lee, y su alto baja de 65 a 48 -relleno de 13 a 8, el rotulo CLIENTE de 13
+   a 11 y el nombre de 18 a 15-.
+   Los 17 px que suelta no se pierden: se los queda el bloque de texto, y por
+   eso los cuerpos de aqui arriba pueden ser un punto mas grandes de lo que
+   entraba antes. */
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente{grid-area:6 / 1;
+  padding:8px 16px 8px 28px}
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente .rot{font-size:11px}
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente b{font-size:15px}
 /* Las dos, UNA DEBAJO DE OTRA: una sola columna en vez de las dos que trae
    .minis de serie (estilos.css). align-content:start las deja arriba de su
    hueco -abarcan las cuatro filas del texto, que es mas alto que ellas-, no
@@ -299,14 +314,12 @@
    fichas para que su parrafo entre entero. Ver la nota de .desc, aqui debajo. */
 .l-proyectos .tarjeta .insignias{margin:4px 0 6px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
-.l-proyectos .tarjeta h3{font-size:23.5px}
-/* El aire entre el subtitulo y el parrafo baja de 16 a 10 px -4 de la raya
-   del subtitulo y 6 del parrafo-. Son los 6 px que le faltaban a cinco de las
-   dieciocho fichas -Veladero, Diluenducto, Estacion de Flujo O-16, Equipos
-   transversales y Chuto con batea-, que con el texto recogido a 481 px se
-   pasaban por dos de la caja del cliente. Ahora la mas cargada acaba en 363 y
-   la caja empieza en 367. */
-.l-proyectos .tarjeta .sub{font-size:15px;margin-top:6px;padding-bottom:4px}
+/* Los CUERPOS de letra no estan aqui: cada ficha tiene el suyo -19/13/11,5 la
+   de media hoja y 30/17/15 la que va sola- y una talla comun no la veria
+   nadie. Aqui solo lo que comparten: el aire entre el subtitulo y el parrafo,
+   10 px en total -4 de la raya del subtitulo y 6 del parrafo-, que son los que
+   hacen entrar el parrafo de las fichas de titulo largo. */
+.l-proyectos .tarjeta .sub{margin-top:6px;padding-bottom:4px}
 /* SIN el overflow:hidden que .desc trae de estilos.css. Alli hace falta -en la
    panoramica la ficha es una caja flexible y el recorte evita que un texto
    largo se salga-, pero aqui recortaba EN SILENCIO: la fila del parrafo va en
@@ -316,10 +329,14 @@
    texto: si algun dia no cupiera, la ficha se saldria de la hoja y revisar.py
    lo cantaria, que es un fallo que se ve. */
 .l-proyectos .tarjeta .desc{margin-top:6px;
-  font-size:13.5px;line-height:1.55;
   overflow:visible;min-height:auto}
+/* El relleno de la IZQUIERDA es 28 y no 20, y no es capricho: la caja lleva
+   una cuna diagonal en su esquina de abajo a la izquierda -clip-path en
+   estilos.css, 22 px- y el nombre del cliente, que va en el renglon de abajo,
+   se metia dentro del corte y parecia salirse de la caja. 28 lo deja libre con
+   seis de aire. Si alguna vez se cambia la cuna, este numero va detras. */
 .l-proyectos .tarjeta .caja-cliente{
-  margin-top:6px;height:auto;padding:13px 20px}
+  margin-top:6px;height:auto;padding:13px 20px 13px 28px}
 .l-proyectos .tarjeta .caja-cliente .rot{font-size:13px}
 .l-proyectos .tarjeta .caja-cliente b{font-size:18px}
 

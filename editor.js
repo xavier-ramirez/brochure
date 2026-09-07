@@ -247,7 +247,22 @@
        en las dos se encuadra. */
     '.lamina img[data-foto]{cursor:grab}' +
     '.lamina img[data-foto].ed-activa{outline:3px solid #4966AD;outline-offset:-3px;cursor:grabbing}' +
-    '@media print{.lamina img[data-foto].ed-activa{outline:none}}';
+    '@media print{.lamina img[data-foto].ed-activa{outline:none}}' +
+    /* El menu del clic derecho y el marco vacio. El menu va en position
+       fixed y con el z-index de la barra: las laminas llevan transform
+       -encaje.js las achica- y dentro de un elemento transformado el fixed
+       se ancla a la lamina y no a la ventana, asi que se cuelga del body,
+       no de la foto. */
+    '#ed-menu{position:fixed;z-index:9999;background:#122149;padding:4px;' +
+    'box-shadow:0 6px 24px rgba(6,12,30,.45);border-radius:2px}' +
+    '#ed-menu button{display:block;width:100%;text-align:left;background:none;border:0;' +
+    'font:600 11px/1 "Barlow",sans-serif;letter-spacing:.14em;text-transform:uppercase;' +
+    'color:#fff;padding:9px 16px;cursor:pointer}' +
+    '#ed-menu button:hover{background:#8E2F3C}' +
+    '@media print{#ed-menu{display:none!important}}' +
+    /* El marco de una foto borrada: se esconde la imagen rota y queda el
+       fondo gris del <figure>, que ya estaba puesto para mientras cargan. */
+    '.lamina img[data-foto].ed-vacia{visibility:hidden}';
   document.head.appendChild(css);
 
   var elEstado = document.getElementById('ed-estado');
@@ -391,7 +406,84 @@
   });
 
   document.addEventListener('pointerdown', function (ev) {
+    if (ev.target.closest('#ed-menu')) return;
+    cerrarMenu();
     if (!ev.target.closest('.lamina img[data-foto]') && !ev.target.closest('#ed-barra')) seleccionar(null);
+  });
+
+  /* ---- vaciar el marco: clic izquierdo y luego clic derecho -----------
+     El usuario lo pidio asi el 2026-09-07: primero se ELIGE la foto con el
+     clic izquierdo -que es lo que ya hacia, marcarla con su recuadro azul- y
+     encima de esa misma foto el clic derecho saca la opcion de vaciarla.
+
+     Los dos pasos son la red de seguridad: sin el primero, un clic derecho
+     despistado sobre cualquier foto ofreceria borrarla. Por eso el menu solo
+     aparece sobre la foto ACTIVA; en cualquier otra, el clic derecho deja el
+     menu del navegador como siempre.
+
+     Y borrar no es perder: el servidor deja antes una copia con fecha en
+     img/_anteriores/ (ver /api/borrar-foto en servidor.py). */
+  var menu = null;
+  function cerrarMenu() {
+    if (!menu) return;
+    menu.remove();
+    menu = null;
+  }
+
+  document.addEventListener('contextmenu', function (ev) {
+    var img = ev.target.closest && ev.target.closest('.lamina img[data-foto]');
+    if (!img || img !== activa) return;      // sin elegirla antes, menu del navegador
+    ev.preventDefault();
+    cerrarMenu();
+    menu = document.createElement('div');
+    menu.id = 'ed-menu';
+    var boton = document.createElement('button');
+    boton.type = 'button';
+    boton.textContent = 'Eliminar foto';
+    boton.addEventListener('click', function () {
+      cerrarMenu();
+      vaciar(img);
+    });
+    menu.appendChild(boton);
+    document.body.appendChild(menu);
+    // que no se salga por el canto derecho ni por abajo de la ventana
+    var caja = menu.getBoundingClientRect();
+    menu.style.left = Math.min(ev.clientX, innerWidth - caja.width - 8) + 'px';
+    menu.style.top = Math.min(ev.clientY, innerHeight - caja.height - 8) + 'px';
+  });
+
+  addEventListener('keydown', function (ev) { if (ev.key === 'Escape') cerrarMenu(); });
+  addEventListener('scroll', cerrarMenu, true);
+
+  function vaciar(img) {
+    if (!conServidor) {
+      aviso('Abre la pagina con: python servidor.py', true);
+      return;
+    }
+    var nombre = img.dataset.foto;
+    aviso('Eliminando...');
+    fetch('/api/borrar-foto?nombre=' + encodeURIComponent(nombre), { method: 'POST', body: '1' })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) { aviso(res.error || 'No se pudo eliminar', true); return; }
+        // Todas las copias de esa foto, que la misma sale en varias hojas.
+        document.querySelectorAll('img[data-foto="' + nombre + '"]').forEach(marcarVacia);
+        seleccionar(null);
+        aviso('Foto eliminada · copia en img/_anteriores');
+      })
+      .catch(function () { aviso('No se pudo eliminar', true); });
+  }
+
+  function marcarVacia(im) {
+    im.classList.add('ed-vacia');
+    im.removeAttribute('src');       // sin src no hay icono de imagen rota
+  }
+
+  /* Al recargar, la foto borrada ya no esta en img/ y el navegador pinta el
+     icono de imagen rota. Esto lo cambia por el marco gris, que es como se
+     quedo al borrarla: el hueco se ve igual antes y despues de recargar. */
+  fotos.forEach(function (im) {
+    im.addEventListener('error', function () { marcarVacia(im); });
   });
 
   /* ---- cambiar la imagen ---------------------------------------------- */

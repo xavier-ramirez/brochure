@@ -186,6 +186,29 @@ class Manejador(SimpleHTTPRequestHandler):
             except Exception as err:
                 return self.responder(500, {'ok': False, 'error': 'No es una imagen valida (%s)' % err})
 
+        if ruta.path == '/api/borrar-foto':
+            # Vacia el marco: la foto sale de img/ y el hueco se queda con su
+            # fondo gris. No es un borrado a lo bruto -guardar_anterior() deja
+            # antes una copia con fecha en img/_anteriores/, la misma red que
+            # protege al cambio de foto-, asi que siempre se puede recuperar.
+            #
+            # El ENCUADRE de esa foto NO se toca. Es a proposito: casi siempre
+            # se borra para poner otra en el mismo sitio, y al subirla vuelve
+            # encuadrada como estaba. Una regla suelta en encuadre.css que no
+            # apunte a ninguna foto no molesta a nadie.
+            nombre = (parse_qs(ruta.query).get('nombre') or [''])[0]
+            if not nombre or not all(c.isalnum() or c in '_-' for c in nombre):
+                return self.responder(400, {'ok': False, 'error': 'Nombre de foto invalido'})
+            destino = os.path.join(IMG, nombre + '.jpg')
+            if not os.path.exists(destino):
+                return self.responder(404, {'ok': False, 'error': 'Esa foto ya no esta en img/'})
+            try:
+                guardar_anterior(destino, nombre)
+                os.remove(destino)
+                return self.responder(200, {'ok': True, 'copia': os.path.basename(ANTERIORES)})
+            except Exception as err:
+                return self.responder(500, {'ok': False, 'error': str(err)})
+
         return self.responder(404, {'ok': False, 'error': 'Ruta desconocida'})
 
 
