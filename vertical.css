@@ -178,22 +178,15 @@
 /* Las piezas de la ficha, ENCAJADAS en los 432 px que le tocan a cada una y en
    los 665 de ancho que dejan los margenes.
 
-   La ficha deja de ser una COLUMNA y pasa a ser una REJILLA de dos: las fotos a
-   la izquierda y, a su derecha, lo que identifica la obra -ano y estado,
-   titulo, subtitulo y el parrafo-. Con todo apilado, las fotos ocupaban 340 px
-   de los 665 y el resto de su banda quedaba en blanco; ahora ese hueco se lo
-   lleva el texto, que gana renglones en vez de perderlos. El recuadro de
-   cliente cruza las dos columnas al pie, que es donde cierra la ficha.
-
-   No hace falta tocar el marcado: las siete piezas se colocan por su fila y su
-   columna. Las fotos ABARCAN dos filas cada una -la grande las del ano y el
-   titulo, las miniaturas las del subtitulo y el parrafo-, asi que se apoyan
-   arriba de su hueco y el sobrante de la ficha cae en la fila del parrafo.
-
-   La FORMA de las fotos es propia de esta hoja -1,6 a 1 las tres- y no la de
-   la panoramica; el porque esta en la nota de .hero, mas abajo:
-       foto grande  360 x 225  = 1,60       (la panoramica: 2,958)
-       miniaturas   175 x 109  = 1,61       (la panoramica: 1,944)
+   El REPARTO de esos 432, que es de donde salen todas las cifras de aqui
+   abajo:
+       foto de la obra    167   (665 x 167, ver la nota de .hero)
+       bloque de texto    174   (el peor de los diecinueve, el del
+                                 Diluenducto: titulo de dos renglones y el
+                                 parrafo mas largo)
+       caja del cliente    77   (65 de alto y 12 de margen)
+       ---------------------------
+                          418   de 432, o sea 14 px de respiro
 
    Los cuerpos son los que pidio el usuario, punto y medio por encima de los que
    entraban: ano 13,5, titulo 22,5, subtitulo 14, parrafo 12,5, rotulo CLIENTE
@@ -203,50 +196,58 @@
    Una regla por pieza -su sitio y su cuerpo juntos- y todas acotadas a
    .l-proyectos: asi ninguna alcanza a la lamina del proyecto destacado, que
    comparte los nombres de clase y no sale en esta hoja. */
-/* La ultima fila -la caja del cliente- va a auto y las cuatro del texto se
-   reparten lo demas, con la del parrafo en 1fr. Como la ficha mide 432 px
-   fijos, esas cuatro filas suman SIEMPRE 355, tenga el texto lo que tenga:
-   es lo que sostiene la columna de fotos, que va anclada a ellas. */
+/* La ficha se lee DE ARRIBA ABAJO y a todo el ancho de la hoja: la foto de la
+   obra arriba, y debajo el ano y el estado, el titulo, el subtitulo, el
+   parrafo y la caja del cliente, cada cosa cruzando los 665 px. Lo pidio asi
+   el usuario el 2026-09-07 -"coloca todo esto debajo de la foto grande y que
+   ocupe todo o casi todo el ancho"-. Es la misma lectura de la ficha que va
+   sola (ver .tarjeta:only-child, mas abajo); lo unico que cambia entre las dos
+   es el tamano de las piezas, porque una tiene la hoja entera y estas tienen
+   media.
+   Antes iba partida en dos columnas -fotos a la izquierda, texto a la derecha-
+   y el texto se leia en una columna de 285 px, la mitad de lo que da la hoja.
+   Ninguna pieza necesita ya su sitio en la rejilla: van en el orden del
+   marcado, que es ese, y de colocarlas se encarga una sola columna. */
 .l-proyectos .tarjeta{
   display:grid;
-  grid-template-columns:360px 1fr;
-  grid-template-rows:auto auto auto 1fr auto;
-  column-gap:20px;
+  grid-template-columns:1fr;
+  grid-template-rows:auto auto auto auto 1fr auto;
 }
-/* LA FOTO DE LA OBRA, GRANDE. El usuario la vio chica el 2026-09-07 -"la foto
-   grande debe salir grande"- y aqui es donde crece: 360 x 225 px, casi el
-   doble de alto que los 122 que tenia, con las dos miniaturas debajo a
-   175 x 109 -antes 175 x 90-. Entre las tres se llevan 342 px de los 355 que
-   tiene la ficha, o sea la columna de fotos va del techo al suelo.
-   Para eso las tres CAMBIAN DE FORMA: las tres son ahora 1,6 a 1 -8 a 5-, en
-   vez de la panoramica 2,957 de la grande y el 1,941 de las pequenas. Es la
-   unica manera de que la foto de la obra sea grande en media hoja de pie: a su
-   forma de siempre, 360 px de ancho solo dan 122 de alto, y para que diera 225
-   habria que sacarla a 665, que es la hoja entera. La forma unica ademas hace
-   juego: la grande y las dos pequenas son la misma figura a dos tamanos.
-   Cambiar la forma cambia el TROZO que se ve de cada foto -el encuadre se
-   guarda en tanto por ciento y sigue apuntando al mismo sitio, pero el marco
-   es mas alto, asi que entra menos de los lados-. La hoja de pie tiene su
-   propio encuadre (encuadre_vertical.css), asi que la que no cuadre se recoloca
-   con un doble clic aqui sin tocar la panoramica.
-   Las dos fotos ocupan la MISMA celda -las cuatro filas del texto-, una
-   apoyada arriba y la otra abajo. Asi el alto del texto no las empuja ni ellas
-   recortan al texto: antes la grande vivia en las filas del ano y el titulo, y
-   al subir a 225 px se comia el sitio del parrafo, que salia cortado a media
-   frase. */
-.l-proyectos .tarjeta .hero{grid-area:1 / 1 / 5 / 2;align-self:start;
-  width:360px;height:225px}
-.l-proyectos .tarjeta .minis{grid-area:1 / 1 / 5 / 2;align-self:end;
-  width:360px;padding-top:0;gap:10px}
-.l-proyectos .tarjeta .minis figure{height:109px}
-.l-proyectos .tarjeta .insignias{grid-area:1 / 2;margin:0 0 8px}
+.l-proyectos .tarjeta > *{grid-area:auto}
+/* LA FOTO DE LA OBRA, a los 665 px de la hoja. Su alto es lo que sobra: la
+   ficha mide 432, la caja del cliente con su margen se lleva 77 y el bloque de
+   texto 174 en el peor caso -el del Diluenducto, que es el de titulo de dos
+   renglones y parrafo largo-, asi que quedan 167 para la foto. Son 111.055 px
+   cuadrados contra los 81.000 que tenia a 360 x 225: un 37% mas de foto,
+   ademas de cruzar la pagina de canto a canto.
+   El alto va FIJO y calculado sobre el peor texto, no en 1fr: con 1fr cada
+   foto medaria lo que le dejara SU texto -167, 188 o 209- y las dos fichas de
+   una misma hoja saldrian con la foto de distinto tamano, que es lo que se ve
+   mal. Fijo, las diecinueve son iguales. Si algun dia se alarga un texto de
+   contenido.py, revisar.py canta el TEXTO CORTADO y hay que bajar este numero.
+   La foto queda a 665 x 167, casi 4 a 1, y no en la panoramica 2,957 de
+   siempre: a esa forma, 665 px de ancho piden 225 de alto y solo hay 167. Es
+   la misma franja apaisada de las bandas de esta hoja -la de Portafolio va a
+   816 x 165-, asi que no desentona. Al ser mas apaisada que el marco anterior
+   se ve MENOS de arriba y abajo de cada foto; la hoja de pie tiene su propio
+   encuadre (encuadre_vertical.css), asi que la que no cuadre se recoloca con un
+   doble clic aqui sin tocar la panoramica. */
+.l-proyectos .tarjeta .hero{width:auto;height:167px}
+/* SIN las dos miniaturas. No es que sobren: es que no caben. Con la foto de la
+   obra a todo el ancho y el texto debajo, la ficha ya esta llena -167 + 174 +
+   77 son los 418 de los 432 que hay-, y meter una fila mas de fotos obligaria
+   a achicar la de la obra a la mitad, que es justo lo que el usuario no
+   quiere. Se quitan aqui y no en generar.py porque la ficha que va SOLA si las
+   lleva -cuatro, ver mas abajo-: es el mismo marcado para las dos.
+   :not(:only-child) es lo que separa los dos casos. */
+.l-proyectos .tarjeta:not(:only-child) .minis{display:none}
+.l-proyectos .tarjeta .insignias{margin:14px 0 6px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
-.l-proyectos .tarjeta h3{grid-area:2 / 2;font-size:23.5px}
-.l-proyectos .tarjeta .sub{grid-area:3 / 2;
-  font-size:15px;margin-top:8px;padding-bottom:6px}
-.l-proyectos .tarjeta .desc{grid-area:4 / 2;margin-top:8px;
+.l-proyectos .tarjeta h3{font-size:23.5px}
+.l-proyectos .tarjeta .sub{font-size:15px;margin-top:6px;padding-bottom:6px}
+.l-proyectos .tarjeta .desc{margin-top:10px;
   font-size:13.5px;line-height:1.55}
-.l-proyectos .tarjeta .caja-cliente{grid-area:5 / 1 / 6 / -1;
+.l-proyectos .tarjeta .caja-cliente{
   margin-top:12px;height:auto;padding:13px 20px}
 .l-proyectos .tarjeta .caja-cliente .rot{font-size:13px}
 .l-proyectos .tarjeta .caja-cliente b{font-size:18px}
@@ -257,25 +258,24 @@
    no cabe. Con el reparto de arriba salia una ficha del tamano de media hoja
    flotando en el centro, con un palmo de blanco arriba y otro abajo; el
    usuario pidio el 2026-09-06 que ocupara la pagina entera.
-   Sola, la ficha deja de partirse en dos columnas y se lee de arriba abajo: la
-   foto grande a todo el ancho, debajo lo que identifica la obra, luego las dos
-   miniaturas -tambien al ancho entero- y el recuadro del cliente al pie. Es el
-   orden en que ya vienen en el marcado, asi que basta con soltar las piezas de
-   la rejilla de dos (grid-area:auto) y dejarlas colocarse solas.
-   La PROPORCION de las fotos no se toca, que es lo que hace que se vea el
-   trozo encuadrado: 2,957 la grande y 1,941 las miniaturas. A los 665 px de
-   ancho de la hoja salen 225 px de alto la grande y 168 cada miniatura -antes
-   115 y 85 en una columna de 340-, o sea el doble de foto.
-   Los cuerpos suben con la ficha -titulo 23,5 -> 30, subtitulo 15 -> 17,
-   parrafo 13,5 -> 15-: a los de la ficha de media hoja, estirados a 665 px de
-   ancho, el parrafo se quedaba en cuatro renglones perdidos.
-   El alto entero de la hoja se lo da la rejilla, que pone sus filas a 1fr sea
-   una ficha o sean dos; con el alto ya en la mano, el space-between reparte lo
-   que sobre entre las piezas, sin dejarlo todo en un hueco. */
-.l-proyectos .tarjeta:only-child{grid-template-columns:1fr;grid-template-rows:none;
+   Se lee igual que las de media hoja -de arriba abajo y a todo el ancho, esa
+   parte ya viene de la regla de arriba- y lo que cambia es el TAMANO de cada
+   pieza, porque aqui hay 890 px de alto en vez de 432. Todo crece: la foto de
+   la obra a 665 x 225, las miniaturas vuelven -CUATRO, ver mas abajo- y los
+   cuerpos suben -titulo 23,5 -> 30, subtitulo 15 -> 17, parrafo 13,5 -> 15-,
+   que a los de media hoja, estirados a 665 px de ancho, el parrafo se quedaba
+   en cuatro renglones perdidos.
+   La foto de la obra SI conserva aqui su forma de siempre -2,957, la misma que
+   en la panoramica: 665 de ancho piden 225 de alto y los hay-, y las cuatro
+   miniaturas la suya, 1,941. En las fichas de media hoja no se puede, porque
+   alli la foto tiene que caber en 167 px de alto.
+   Las filas van a auto -grid-template-rows:none deshace las seis de la regla
+   de arriba, que son para el reparto apretado de media hoja- y el sobrante de
+   la pagina se reparte entre las piezas con space-between, sin dejarlo todo en
+   un hueco. */
+.l-proyectos .tarjeta:only-child{grid-template-rows:none;
   align-content:space-between}
-.l-proyectos .tarjeta:only-child > *{grid-area:auto}
-.l-proyectos .tarjeta:only-child .hero{width:auto;height:225px}
+.l-proyectos .tarjeta:only-child .hero{height:225px}
 .l-proyectos .tarjeta:only-child .insignias{margin:0}
 .l-proyectos .tarjeta:only-child h3{font-size:30px}
 .l-proyectos .tarjeta:only-child .sub{font-size:17px;margin-top:10px}
