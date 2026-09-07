@@ -153,17 +153,25 @@
    baja de 34 a 22 px: cada px que se le quita al blanco es un px que gana la
    foto. Quedan 890 de alto para las dos, o sea 432 por ficha contando el
    hueco de 26 que las separa.
-   Las filas van a min-content y no a 1fr: cada ficha mide LO SUYO -unos 377-
-   en vez de estirarse hasta llenar su mitad, y lo que sobra se reparte con
-   space-around, o sea arriba, en medio y abajo. Estiradas, ese mismo aire se
-   abria de golpe entre el parrafo y la caja azul de cada una. */
+   Las filas van a 1fr: cada ficha se ESTIRA hasta llenar su mitad de la hoja,
+   que es como lo quiere el usuario -lo pidio el 2026-09-07-. Estuvieron a
+   min-content, midiendo lo suyo -entre 337 y 418- y centradas con
+   space-around, y lo que se veia era un agujero de 100 px entre las dos y las
+   fichas flotando en medio de la pagina.
+   Estiradas, el sobrante de cada ficha -entre 14 y 95 px, segun lo largo que
+   sea su parrafo- se va a la fila del parrafo, que es la unica en 1fr dentro
+   de la ficha, asi que la caja azul del cliente queda apoyada en el suelo de
+   su mitad. Las dos cajas azules a la misma altura relativa es lo que hace que
+   las dos fichas se lean como dos bloques iguales aunque sus textos no lo
+   sean.
+   Esta misma regla es la que le da la hoja entera a la ficha SOLA: una fila de
+   1fr en una rejilla de 890 px mide 890. */
 .l-proyectos .rejilla{
   left:var(--marg-izq);width:var(--ancho-util);
   top:22px;
   height:calc(var(--alto-diseno) - 44px);
   grid-template-columns:1fr;
-  grid-auto-rows:min-content;
-  align-content:space-around;
+  grid-auto-rows:1fr;
   gap:26px;
 }
 
@@ -179,14 +187,14 @@
 
    No hace falta tocar el marcado: las siete piezas se colocan por su fila y su
    columna. Las fotos ABARCAN dos filas cada una -la grande las del ano y el
-   titulo, las miniaturas las del subtitulo y el parrafo-, asi que la altura de
-   la ficha la manda el texto y las fotos se apoyan arriba de su hueco.
+   titulo, las miniaturas las del subtitulo y el parrafo-, asi que se apoyan
+   arriba de su hueco y el sobrante de la ficha cae en la fila del parrafo.
 
    La PROPORCION de las fotos no se negocia: el encuadre se guarda en tanto por
    ciento (encuadre.css) y solo ensena el trozo que se encuadro si el marco
-   conserva su forma. Con la columna en 340:
-       foto grande  340 x 115  = 2,957      (la panoramica: 2,958)
-       miniaturas   165 x  85  = 1,941      (la panoramica: 1,944)
+   conserva su forma. Con la columna en 360:
+       foto grande  360 x 122  = 2,957      (la panoramica: 2,958)
+       miniaturas   175 x  90  = 1,941      (la panoramica: 1,944)
 
    Los cuerpos son los que pidio el usuario, punto y medio por encima de los que
    entraban: ano 13,5, titulo 22,5, subtitulo 14, parrafo 12,5, rotulo CLIENTE
@@ -198,15 +206,35 @@
    comparte los nombres de clase y no sale en esta hoja. */
 .l-proyectos .tarjeta{
   display:grid;
-  grid-template-columns:340px 1fr;
+  grid-template-columns:360px 1fr;
   grid-template-rows:auto auto auto 1fr auto;
   column-gap:20px;
 }
+/* La columna de fotos sube de 340 a 360 px y con ella las tres: la grande de
+   340 x 115 a 360 x 122 y las dos pequenas de 165 x 85 a 175 x 90, sin tocar
+   sus proporciones -2,957 y 1,941, que es lo que hace que se vea el trozo
+   encuadrado-.
+   360 es el TOPE, y lo pone el TEXTO, no las fotos: cuanto mas ancha la
+   columna de fotos, mas estrecha la de texto y mas alto el parrafo. A 370 los
+   parrafos del Diluenducto y de Equipos transversales ya no caben en la ficha
+   y se les corta el ultimo renglon. Medido lamina por lamina; si algun dia se
+   alarga un texto de contenido.py, revisar.py lo canta como TEXTO CORTADO.
+   Se probo tambien a APILAR las tres fotos en una columna estrecha: llenaba la
+   ficha entera de arriba abajo, pero dejaba la foto de la obra mas baja que
+   sus miniaturas -es casi 3 a 1, en columna angosta sale una tira- y el
+   usuario pidio el 2026-09-07 que la grande siga siendo la grande.
+   Las miniaturas se apoyan ABAJO -align-self:end-, a la misma linea que la
+   caja azul del cliente, y no debajo de la grande. Es lo que reparte el sitio
+   que sobra: las fotos y el texto no llegan a llenar los 355 px de la ficha
+   -no llegan sin achicar la foto de la obra o sin cortar parrafos, ver
+   arriba-, asi que los 145 que quedan se ponen ENTRE las fotos, al lado del
+   parrafo, en vez de dejarlos en un hueco encima del cliente. La ficha queda
+   anclada por las cuatro esquinas. */
 .l-proyectos .tarjeta .hero{grid-area:1 / 1 / 3 / 2;align-self:start;
-  width:340px;height:115px}
-.l-proyectos .tarjeta .minis{grid-area:3 / 1 / 5 / 2;align-self:start;
-  width:340px;padding-top:8px;gap:10px}
-.l-proyectos .tarjeta .minis figure{height:85px}
+  width:360px;height:122px}
+.l-proyectos .tarjeta .minis{grid-area:3 / 1 / 5 / 2;align-self:end;
+  width:360px;padding-top:8px;gap:10px}
+.l-proyectos .tarjeta .minis figure{height:90px}
 .l-proyectos .tarjeta .insignias{grid-area:1 / 2;margin:0 0 8px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
 .l-proyectos .tarjeta h3{grid-area:2 / 2;font-size:23.5px}
@@ -237,12 +265,9 @@
    Los cuerpos suben con la ficha -titulo 23,5 -> 30, subtitulo 15 -> 17,
    parrafo 13,5 -> 15-: a los de la ficha de media hoja, estirados a 665 px de
    ancho, el parrafo se quedaba en cuatro renglones perdidos.
-   El :has de la rejilla es lo que le da a la ficha el alto entero de la hoja
-   -sin el, su fila mide lo que mida el contenido y align-content la centraba-,
-   y con el alto ya en la mano el space-between reparte lo que sobre entre las
-   piezas, sin dejarlo todo en un hueco. */
-.l-proyectos .rejilla:has(> .tarjeta:only-child){align-content:stretch;
-  grid-auto-rows:1fr}
+   El alto entero de la hoja se lo da la rejilla, que pone sus filas a 1fr sea
+   una ficha o sean dos; con el alto ya en la mano, el space-between reparte lo
+   que sobre entre las piezas, sin dejarlo todo en un hueco. */
 .l-proyectos .tarjeta:only-child{grid-template-columns:1fr;grid-template-rows:none;
   align-content:space-between}
 .l-proyectos .tarjeta:only-child > *{grid-area:auto}
