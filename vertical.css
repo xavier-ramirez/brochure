@@ -509,11 +509,16 @@
 /* --------------------------------------------------------- PORTAFOLIO --- */
 /* Los tres grupos -7, 5 y 7 obras- van en tres columnas en la panoramica. De
    pie no caben: a 209 px cada nombre de obra se partiria en tres renglones.
-   Pasan a DOS columnas de 312, y el tercero baja a una segunda fila. Ahi se
-   queda con el ANCHO ENTERO y parte su lista en dos: con los 7 proyectos en
-   una sola columna se salia por abajo -solo entraban tres- porque la fila de
-   arriba ya se habia llevado 400 px con el grupo de Construccion. Repartido en
-   dos, ocupa cuatro renglones y la hoja cierra. */
+   Pasan a DOS columnas de 312, y el tercero baja a una segunda fila, donde se
+   queda con el ANCHO ENTERO y su lista en UNA sola columna: las cinco obras de
+   Ambiente, una debajo de otra, como se leen las de arriba.
+   Esa lista estuvo partida en dos columnas y el usuario lo mando deshacer el
+   2026-09-06 -de un mismo grupo no quiere una obra a la izquierda y la de al
+   lado a la derecha-. Se partio cuando el grupo de abajo era el de SIETE
+   obras, que en una columna se salia de la hoja; con las cinco de Ambiente no
+   hace falta: ocupa 280 px de los 317 que quedan libres bajo la primera fila.
+   Si algun dia el grupo de abajo crece, esos 37 px de margen son lo que hay:
+   una obra mas y hay que apretar cuerpos o volver a partir la lista. */
 /* El top y los huecos se apretaron al subir la letra un punto: con 200 y 24 la
    ultima obra de la tercera lista se salia por debajo del pie. */
 /* Las dos columnas de arriba NO van a mitades: 1,06 la izquierda y 0,94 la
@@ -539,13 +544,10 @@
 /* El ORDEN de los tres grupos cambia: el usuario quiso SERVICIOS Y ALQUILER al
    lado de CONSTRUCCION, que son los dos de siete obras y llenan la fila de
    arriba por igual. AMBIENTE, que trae cinco, baja entero y se lleva el ancho
-   completo partiendo su lista en dos columnas. Se hace con 'order' y no
-   tocando contenido.py: alli el orden es el de la panoramica, donde los tres
-   van en fila y no hace falta moverlos. */
+   completo. Se hace con 'order' y no tocando contenido.py: alli el orden es el
+   de la panoramica, donde los tres van en fila y no hace falta moverlos. */
 .pf-cols .pf-col:nth-child(3){order:2}
 .pf-cols .pf-col:nth-child(2){order:3;grid-column:1 / -1}
-.pf-cols .pf-col:nth-child(2) ol{display:grid;grid-template-columns:repeat(2,1fr);
-  gap:8px 40px}
 /* Los 19 proyectos de las tres listas piden 65 px mas de los que da la hoja, y
    salen de aqui: el NOMBRE baja de 17 a 16,5 px -a 17, en columna angosta, los
    nombres largos como "Completacion mecanica Oleoducto de 42 - PTO-TAEJ" se
