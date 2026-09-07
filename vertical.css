@@ -233,22 +233,73 @@
    encuadre (encuadre_vertical.css), asi que la que no cuadre se recoloca con un
    doble clic aqui sin tocar la panoramica. */
 .l-proyectos .tarjeta .hero{width:auto;height:167px}
-/* SIN las dos miniaturas. No es que sobren: es que no caben. Con la foto de la
-   obra a todo el ancho y el texto debajo, la ficha ya esta llena -167 + 174 +
-   77 son los 418 de los 432 que hay-, y meter una fila mas de fotos obligaria
-   a achicar la de la obra a la mitad, que es justo lo que el usuario no
-   quiere. Se quitan aqui y no en generar.py porque la ficha que va SOLA si las
-   lleva -cuatro, ver mas abajo-: es el mismo marcado para las dos.
-   :not(:only-child) es lo que separa los dos casos. */
-.l-proyectos .tarjeta:not(:only-child) .minis{display:none}
-.l-proyectos .tarjeta .insignias{margin:14px 0 6px}
+/* LAS DOS MINIATURAS VUELVEN, a la derecha del texto y una debajo de la otra.
+   El usuario las pidio asi el 2026-09-07: la foto de la obra se queda como
+   esta -a todo el ancho- y lo unico que cambia es que el texto se RECOGE al
+   lado izquierdo para dejarles sitio al lado.
+   Solo pasa aqui, en las fichas que comparten hoja: la que va sola sigue con
+   sus cuatro miniaturas al ancho entero, y por eso todo esto va con
+   :not(:only-child).
+   Las cuentas, que no dan para mas: bajo la foto quedan 188 px -432 de ficha,
+   167 de foto y 77 de la caja del cliente con su margen-. Ahi tienen que
+   caber, a la vez, el texto en su columna y las dos fotos apiladas en la suya.
+       columna de fotos  160 px de ancho -> 82 de alto cada una (forma 1,941,
+                         la de siempre), 82 + 10 + 82 = 174, y con los 8 de
+                         separacion de la foto de la obra, 182
+       columna de texto  665 - 160 - 20 = 485 px -> 174 de alto el peor de los
+                         dieciocho, y con sus 8 de separacion, 182
+   Los dos a 182 de 188. Ensanchar la columna de fotos las hace mas altas y
+   estrecha el texto, que crece por el otro lado: a 175 px de columna, las
+   fotos ya piden 190 y se salen. 160 es el sitio que hay.
+   La rejilla pasa a DOS columnas y cada pieza vuelve a llevar la suya escrita,
+   porque ya no valen el orden del marcado ni la columna unica: la foto de la
+   obra y la caja del cliente cruzan las dos -grid-area a -1-, el texto ocupa
+   la izquierda y las miniaturas la derecha, abarcando las cuatro filas del
+   texto para quedar apoyadas arriba, a la linea del ano. */
+.l-proyectos .tarjeta:not(:only-child){
+  grid-template-columns:1fr 160px;
+  column-gap:20px;
+}
+.l-proyectos .tarjeta:not(:only-child) .hero{grid-area:1 / 1 / 2 / -1}
+.l-proyectos .tarjeta:not(:only-child) .insignias{grid-area:2 / 1}
+.l-proyectos .tarjeta:not(:only-child) h3{grid-area:3 / 1}
+.l-proyectos .tarjeta:not(:only-child) .sub{grid-area:4 / 1}
+.l-proyectos .tarjeta:not(:only-child) .desc{grid-area:5 / 1}
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente{grid-area:6 / 1 / 7 / -1}
+/* Las dos, UNA DEBAJO DE OTRA: una sola columna en vez de las dos que trae
+   .minis de serie (estilos.css). align-content:start las deja arriba de su
+   hueco -abarcan las cuatro filas del texto, que es mas alto que ellas-, no
+   estiradas ni centradas. */
+.l-proyectos .tarjeta:not(:only-child) .minis{grid-area:2 / 2 / 6 / 3;
+  width:auto;padding-top:0;gap:10px;
+  grid-template-columns:1fr;align-content:start}
+.l-proyectos .tarjeta:not(:only-child) .minis figure{height:82px}
+/* El ano arranca a 4 px de la foto y la caja del cliente lleva 6 de margen -no
+   los 8 y 12 que tenian-: son los 10 px que necesitaban cinco de las dieciocho
+   fichas para que su parrafo entre entero. Ver la nota de .desc, aqui debajo. */
+.l-proyectos .tarjeta .insignias{margin:4px 0 6px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
 .l-proyectos .tarjeta h3{font-size:23.5px}
-.l-proyectos .tarjeta .sub{font-size:15px;margin-top:6px;padding-bottom:6px}
-.l-proyectos .tarjeta .desc{margin-top:10px;
-  font-size:13.5px;line-height:1.55}
+/* El aire entre el subtitulo y el parrafo baja de 16 a 10 px -4 de la raya
+   del subtitulo y 6 del parrafo-. Son los 6 px que le faltaban a cinco de las
+   dieciocho fichas -Veladero, Diluenducto, Estacion de Flujo O-16, Equipos
+   transversales y Chuto con batea-, que con el texto recogido a 481 px se
+   pasaban por dos de la caja del cliente. Ahora la mas cargada acaba en 363 y
+   la caja empieza en 367. */
+.l-proyectos .tarjeta .sub{font-size:15px;margin-top:6px;padding-bottom:4px}
+/* SIN el overflow:hidden que .desc trae de estilos.css. Alli hace falta -en la
+   panoramica la ficha es una caja flexible y el recorte evita que un texto
+   largo se salga-, pero aqui recortaba EN SILENCIO: la fila del parrafo va en
+   1fr y, en las fichas de titulo de dos renglones, se quedaba 8 px mas corta
+   que el texto, que perdia su ultima linea sin que se notara.
+   Con overflow visible y min-height auto la fila no puede medir menos que el
+   texto: si algun dia no cupiera, la ficha se saldria de la hoja y revisar.py
+   lo cantaria, que es un fallo que se ve. */
+.l-proyectos .tarjeta .desc{margin-top:6px;
+  font-size:13.5px;line-height:1.55;
+  overflow:visible;min-height:auto}
 .l-proyectos .tarjeta .caja-cliente{
-  margin-top:12px;height:auto;padding:13px 20px}
+  margin-top:6px;height:auto;padding:13px 20px}
 .l-proyectos .tarjeta .caja-cliente .rot{font-size:13px}
 .l-proyectos .tarjeta .caja-cliente b{font-size:18px}
 
