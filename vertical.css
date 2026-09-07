@@ -240,26 +240,40 @@
    Solo pasa aqui, en las fichas que comparten hoja: la que va sola sigue con
    sus cuatro miniaturas al ancho entero, y por eso todo esto va con
    :not(:only-child).
-   Las cuentas, que no dan para mas: bajo la foto quedan 188 px -432 de ficha,
-   167 de foto y 77 de la caja del cliente con su margen-. Ahi tienen que
-   caber, a la vez, el texto en su columna y las dos fotos apiladas en la suya.
-       columna de fotos  160 px de ancho -> 82 de alto cada una (forma 1,941,
-                         la de siempre), 82 + 10 + 82 = 174, y con los 8 de
-                         separacion de la foto de la obra, 182
-       columna de texto  665 - 160 - 20 = 485 px -> 174 de alto el peor de los
-                         dieciocho, y con sus 8 de separacion, 182
-   Los dos a 182 de 188. Ensanchar la columna de fotos las hace mas altas y
-   estrecha el texto, que crece por el otro lado: a 175 px de columna, las
-   fotos ya piden 190 y se salen. 160 es el sitio que hay.
+   A MEDIAS: el texto se lleva la mitad izquierda de la hoja y las fotos la
+   derecha, 322 px cada una. Lo pidio asi el usuario el 2026-09-07, y no sale
+   gratis: bajo la foto de la obra solo quedan 190 px -432 de ficha, 167 de
+   foto y 71 de la caja del cliente con su margen- y a media hoja de ancho ni
+   el texto ni las fotos entran en 190 con los tamanos que tenian.
+       el texto, a 322 px, pedia 253 de alto con los cuerpos de antes -titulo
+       23,5, subtitulo 15, parrafo 13,5-. Por eso bajan a 18, 12,5 y 11: con
+       esos pide 185 de 190, y son los mas grandes que caben. Medido sobre las
+       dieciocho, que la peor es la de COMOR.
+       las dos fotos apiladas, a 322 px de ancho y con su forma de siempre
+       -1,941-, pedian 166 de alto cada una, o sea 342. Por eso pasan a 88 de
+       alto: 88 + 10 + 88 = 186 de 190. A ese ancho son una franja de 3,7 a 1,
+       parecida a la de la foto de la obra, que va a 4.
+   Lo que no se puede es tener las dos cosas: a media hoja el texto ya no entra
+   con la letra de antes, y las fotos apiladas no entran con su forma de antes.
+   Si algun dia se quiere la letra grande de vuelta, hay que ir a un proyecto
+   por hoja, que es lo unico que da sitio para las dos cosas.
    La rejilla pasa a DOS columnas y cada pieza vuelve a llevar la suya escrita,
    porque ya no valen el orden del marcado ni la columna unica: la foto de la
    obra y la caja del cliente cruzan las dos -grid-area a -1-, el texto ocupa
    la izquierda y las miniaturas la derecha, abarcando las cuatro filas del
    texto para quedar apoyadas arriba, a la linea del ano. */
 .l-proyectos .tarjeta:not(:only-child){
-  grid-template-columns:1fr 160px;
+  grid-template-columns:1fr 1fr;
   column-gap:20px;
 }
+/* Los cuerpos de la ficha de media hoja, los mas grandes que entran a 322 px
+   de ancho (ver las cuentas de arriba). No van en la regla comun porque la
+   ficha que va SOLA no los quiere: alli hay hoja de sobra y la letra es
+   grande. */
+.l-proyectos .tarjeta:not(:only-child) .insignias .anio{font-size:13px}
+.l-proyectos .tarjeta:not(:only-child) h3{font-size:18px}
+.l-proyectos .tarjeta:not(:only-child) .sub{font-size:12.5px}
+.l-proyectos .tarjeta:not(:only-child) .desc{font-size:11px;line-height:1.45}
 .l-proyectos .tarjeta:not(:only-child) .hero{grid-area:1 / 1 / 2 / -1}
 .l-proyectos .tarjeta:not(:only-child) .insignias{grid-area:2 / 1}
 .l-proyectos .tarjeta:not(:only-child) h3{grid-area:3 / 1}
@@ -270,10 +284,16 @@
    .minis de serie (estilos.css). align-content:start las deja arriba de su
    hueco -abarcan las cuatro filas del texto, que es mas alto que ellas-, no
    estiradas ni centradas. */
+/* SIN la cuna diagonal del canto derecho que .minis figure trae de estilos.css
+   -clip-path-: el usuario las quiere rectangulares, y lo pidio el 2026-09-07.
+   Va en la regla comun, asi que tambien las cuatro de la ficha que va sola: son
+   las miniaturas del mismo brochure y no tendria sentido que unas llevaran la
+   cuna y otras no. La foto de la obra SI conserva la suya, que no la nombro. */
+.l-proyectos .tarjeta .minis figure{clip-path:none}
 .l-proyectos .tarjeta:not(:only-child) .minis{grid-area:2 / 2 / 6 / 3;
   width:auto;padding-top:0;gap:10px;
   grid-template-columns:1fr;align-content:start}
-.l-proyectos .tarjeta:not(:only-child) .minis figure{height:82px}
+.l-proyectos .tarjeta:not(:only-child) .minis figure{height:88px}
 /* El ano arranca a 4 px de la foto y la caja del cliente lleva 6 de margen -no
    los 8 y 12 que tenian-: son los 10 px que necesitaban cinco de las dieciocho
    fichas para que su parrafo entre entero. Ver la nota de .desc, aqui debajo. */
