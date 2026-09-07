@@ -251,6 +251,14 @@
 .l-proyectos .tarjeta:only-child h3{font-size:30px}
 .l-proyectos .tarjeta:only-child .sub{font-size:17px;margin-top:10px}
 .l-proyectos .tarjeta:only-child .desc{font-size:15px;line-height:1.6;margin-top:10px}
+/* CUATRO miniaturas, dos y dos: la ficha sola las trae todas -las mismas que
+   ensena el destacado de la panoramica, ver lamina_proyectos en generar.py- y
+   son las que llenan la hoja. Siguen en la rejilla de dos que traen de serie,
+   asi que cada una mide 326 px de ancho por 168 de alto, la misma forma
+   -1,941- y el mismo tamano que cuando eran dos: lo que crece es el bloque, de
+   168 a 348 px, y eso es justo lo que le sobraba a la pagina.
+   En una fila de cuatro tambien caben, pero cada foto se queda en 156 x 81, una
+   tira donde no se ve de que es, y encima la hoja vuelve a sobrarle sitio. */
 .l-proyectos .tarjeta:only-child .minis{width:auto;padding-top:0;gap:12px}
 .l-proyectos .tarjeta:only-child .minis figure{height:168px}
 .l-proyectos .tarjeta:only-child .caja-cliente{margin-top:0}
@@ -539,6 +547,20 @@
    ademas de asomarse por delante del sello de "ACTUALIZADO AL". Va acotado a
    .l-portafolio: las demas bandas de la hoja se quedan como estan. */
 .l-portafolio .banda-txt h2{font-size:39px}
+/* La banda de la foto baja de 190 a 165 px -lo pidio el usuario el 2026-09-06,
+   "reduce un poco el alto del contenedor de la foto"-. La franja sigue sobrada
+   para lo que lleva dentro: el epigrafe y el titular ocupan 69 px y se apoyan a
+   36 del canto de abajo.
+   Los 25 px se los queda el AIRE entre la foto y los rotulos de las columnas.
+   La lista no se mueve -sigue arrancando en 185- a proposito: bajada con la
+   banda, "CONSTRUCCION" y "SERVICIOS Y ALQUILER" quedaban pegados al canto de
+   la foto y el usuario lo mando separar el mismo dia. Antes el rotulo empezaba
+   5 px por encima de donde acaba la banda -era la raya de la cabecera la que
+   marcaba la separacion- y ahora hay 20 px limpios entre las dos cosas.
+   El !important es por lo mismo que en Mision y vision: el alto de la banda lo
+   escribe banda() en el atributo style de la lamina y desde una hoja no hay
+   forma de pisarlo. */
+.l-portafolio .banda{height:165px !important}
 .pf-cols{left:var(--marg-izq);top:185px;width:var(--ancho-util);
   grid-template-columns:1.06fr 0.94fr;gap:20px 40px}
 /* El ORDEN de los tres grupos cambia: el usuario quiso SERVICIOS Y ALQUILER al
@@ -548,6 +570,17 @@
    de la panoramica, donde los tres van en fila y no hace falta moverlos. */
 .pf-cols .pf-col:nth-child(3){order:2}
 .pf-cols .pf-col:nth-child(2){order:3;grid-column:1 / -1}
+/* La CUENTA de Ambiente -el "05"- a la misma distancia del canto izquierdo que
+   los dos "07" de arriba, que es como lo pidio el usuario el 2026-09-06.
+   Cabecera y cuenta van a los dos extremos de su caja (.pf-col header, con
+   space-between en estilos.css); como esta fila se lleva el ancho entero, el
+   05 se iba al canto derecho de la hoja, un palmo mas alla que los de las
+   columnas de arriba. El relleno de la derecha lo trae de vuelta: la columna
+   izquierda mide (665 - 40 de hueco) x 1,06/2 = 331 px, asi que sobran 334.
+   Va en padding y no en un ancho: la RAYA de la cabecera sigue cruzando los
+   665 px, que es lo ancho que es la lista que va debajo. */
+.pf-cols .pf-col:nth-child(2) header{
+  padding-right:calc(var(--ancho-util) - (var(--ancho-util) - 40px) * 0.53)}
 /* Los 19 proyectos de las tres listas piden 65 px mas de los que da la hoja, y
    salen de aqui: el NOMBRE baja de 17 a 16,5 px -a 17, en columna angosta, los
    nombres largos como "Completacion mecanica Oleoducto de 42 - PTO-TAEJ" se

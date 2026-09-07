@@ -512,9 +512,17 @@ def lamina_portafolio():
                         % (espaciada(PORTAFOLIO['rotulo']), fecha_portafolio())), cols)
 
 
-def tarjeta(p):
-    """Tarjeta de proyecto, igual que en la pagina."""
-    minis = ''.join('<figure>%s</figure>' % foto('%s_%d' % (p['id'], i)) for i in (2, 3))
+def tarjeta(p, fotos=(2, 3)):
+    """Tarjeta de proyecto, igual que en la pagina.
+
+    `fotos` dice que miniaturas lleva. Dos cuando la ficha comparte lamina con
+    otra, que es lo normal, y las CUATRO cuando se queda sola en una hoja de
+    pie y tiene sitio (ver lamina_proyectos). Como en lamina_proyecto_solo, se
+    ponen las que de verdad esten en img/: al proyecto que no tenga la cuarta
+    no le sale un hueco, le salen las que haya."""
+    hay = [i for i in fotos
+           if os.path.exists(os.path.join(BASE, 'img', '%s_%d.jpg' % (p['id'], i)))]
+    minis = ''.join('<figure>%s</figure>' % foto('%s_%d' % (p['id'], i)) for i in hay)
     return '''<article class="tarjeta">
       <div class="hero">%s<div class="marca">%s</div></div>
       <div class="insignias"><span class="anio">%s</span>%s</div>
@@ -538,9 +546,15 @@ def lamina_proyectos(*ps):
     Con UNA sola se arma la del proyecto impar en la hoja de pie: alli no cabe
     la lamina a toda plana del destacado -lamina_proyecto_solo- con la que la
     panoramica lo resuelve, y sin esto ese proyecto se quedaba fuera del
-    cuadernillo vertical. La rejilla reparte las filas que le lleguen."""
+    cuadernillo vertical. La rejilla reparte las filas que le lleguen.
+
+    Sola, la ficha se lleva la hoja entera y con ella CUATRO miniaturas en vez
+    de dos -las mismas que ensena el destacado de la panoramica-: es el sitio
+    que gana al no compartir lamina. Con dos fichas siguen siendo dos, que es
+    lo que cabe en media hoja."""
+    fotos = (2, 3, 4, 5) if len(ps) == 1 else (2, 3)
     return ('<section class="lamina l-proyectos"><div class="rejilla">%s</div></section>'
-            % ''.join(tarjeta(p) for p in ps))
+            % ''.join(tarjeta(p, fotos) for p in ps))
 
 
 def lamina_proyecto_solo(p):
