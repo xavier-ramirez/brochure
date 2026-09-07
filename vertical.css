@@ -190,11 +190,10 @@
    titulo, las miniaturas las del subtitulo y el parrafo-, asi que se apoyan
    arriba de su hueco y el sobrante de la ficha cae en la fila del parrafo.
 
-   La PROPORCION de las fotos no se negocia: el encuadre se guarda en tanto por
-   ciento (encuadre.css) y solo ensena el trozo que se encuadro si el marco
-   conserva su forma. Con la columna en 360:
-       foto grande  360 x 122  = 2,957      (la panoramica: 2,958)
-       miniaturas   175 x  90  = 1,941      (la panoramica: 1,944)
+   La FORMA de las fotos es propia de esta hoja -1,6 a 1 las tres- y no la de
+   la panoramica; el porque esta en la nota de .hero, mas abajo:
+       foto grande  360 x 225  = 1,60       (la panoramica: 2,958)
+       miniaturas   175 x 109  = 1,61       (la panoramica: 1,944)
 
    Los cuerpos son los que pidio el usuario, punto y medio por encima de los que
    entraban: ano 13,5, titulo 22,5, subtitulo 14, parrafo 12,5, rotulo CLIENTE
@@ -204,45 +203,42 @@
    Una regla por pieza -su sitio y su cuerpo juntos- y todas acotadas a
    .l-proyectos: asi ninguna alcanza a la lamina del proyecto destacado, que
    comparte los nombres de clase y no sale en esta hoja. */
-/* Las cinco filas van a AUTO y el sobrante se reparte entre ellas
-   -align-content-, en vez de dejar una fila en 1fr que se lo tragaba entero.
-   Con el 1fr, todo el aire caia detras del parrafo: el ano, el titulo, el
-   subtitulo y el texto salian apretados arriba y debajo quedaba un palmo de
-   blanco hasta la caja del cliente. Repartido, el bloque de texto baja hasta
-   la linea de las miniaturas y lo que sobra se lee como aire entre las piezas,
-   que es como esta la ficha que va sola (ver .tarjeta:only-child). */
+/* La ultima fila -la caja del cliente- va a auto y las cuatro del texto se
+   reparten lo demas, con la del parrafo en 1fr. Como la ficha mide 432 px
+   fijos, esas cuatro filas suman SIEMPRE 355, tenga el texto lo que tenga:
+   es lo que sostiene la columna de fotos, que va anclada a ellas. */
 .l-proyectos .tarjeta{
   display:grid;
   grid-template-columns:360px 1fr;
-  grid-template-rows:auto auto auto auto auto;
-  align-content:space-between;
+  grid-template-rows:auto auto auto 1fr auto;
   column-gap:20px;
 }
-/* La columna de fotos sube de 340 a 360 px y con ella las tres: la grande de
-   340 x 115 a 360 x 122 y las dos pequenas de 165 x 85 a 175 x 90, sin tocar
-   sus proporciones -2,957 y 1,941, que es lo que hace que se vea el trozo
-   encuadrado-.
-   360 es el TOPE, y lo pone el TEXTO, no las fotos: cuanto mas ancha la
-   columna de fotos, mas estrecha la de texto y mas alto el parrafo. A 370 los
-   parrafos del Diluenducto y de Equipos transversales ya no caben en la ficha
-   y se les corta el ultimo renglon. Medido lamina por lamina; si algun dia se
-   alarga un texto de contenido.py, revisar.py lo canta como TEXTO CORTADO.
-   Se probo tambien a APILAR las tres fotos en una columna estrecha: llenaba la
-   ficha entera de arriba abajo, pero dejaba la foto de la obra mas baja que
-   sus miniaturas -es casi 3 a 1, en columna angosta sale una tira- y el
-   usuario pidio el 2026-09-07 que la grande siga siendo la grande.
-   Las miniaturas se apoyan ABAJO -align-self:end-, a la misma linea que la
-   caja azul del cliente, y no debajo de la grande. Es lo que reparte el sitio
-   que sobra: las fotos y el texto no llegan a llenar los 355 px de la ficha
-   -no llegan sin achicar la foto de la obra o sin cortar parrafos, ver
-   arriba-, asi que los 145 que quedan se ponen ENTRE las fotos, al lado del
-   parrafo, en vez de dejarlos en un hueco encima del cliente. La ficha queda
-   anclada por las cuatro esquinas. */
-.l-proyectos .tarjeta .hero{grid-area:1 / 1 / 3 / 2;align-self:start;
-  width:360px;height:122px}
-.l-proyectos .tarjeta .minis{grid-area:3 / 1 / 5 / 2;align-self:end;
-  width:360px;padding-top:8px;gap:10px}
-.l-proyectos .tarjeta .minis figure{height:90px}
+/* LA FOTO DE LA OBRA, GRANDE. El usuario la vio chica el 2026-09-07 -"la foto
+   grande debe salir grande"- y aqui es donde crece: 360 x 225 px, casi el
+   doble de alto que los 122 que tenia, con las dos miniaturas debajo a
+   175 x 109 -antes 175 x 90-. Entre las tres se llevan 342 px de los 355 que
+   tiene la ficha, o sea la columna de fotos va del techo al suelo.
+   Para eso las tres CAMBIAN DE FORMA: las tres son ahora 1,6 a 1 -8 a 5-, en
+   vez de la panoramica 2,957 de la grande y el 1,941 de las pequenas. Es la
+   unica manera de que la foto de la obra sea grande en media hoja de pie: a su
+   forma de siempre, 360 px de ancho solo dan 122 de alto, y para que diera 225
+   habria que sacarla a 665, que es la hoja entera. La forma unica ademas hace
+   juego: la grande y las dos pequenas son la misma figura a dos tamanos.
+   Cambiar la forma cambia el TROZO que se ve de cada foto -el encuadre se
+   guarda en tanto por ciento y sigue apuntando al mismo sitio, pero el marco
+   es mas alto, asi que entra menos de los lados-. La hoja de pie tiene su
+   propio encuadre (encuadre_vertical.css), asi que la que no cuadre se recoloca
+   con un doble clic aqui sin tocar la panoramica.
+   Las dos fotos ocupan la MISMA celda -las cuatro filas del texto-, una
+   apoyada arriba y la otra abajo. Asi el alto del texto no las empuja ni ellas
+   recortan al texto: antes la grande vivia en las filas del ano y el titulo, y
+   al subir a 225 px se comia el sitio del parrafo, que salia cortado a media
+   frase. */
+.l-proyectos .tarjeta .hero{grid-area:1 / 1 / 5 / 2;align-self:start;
+  width:360px;height:225px}
+.l-proyectos .tarjeta .minis{grid-area:1 / 1 / 5 / 2;align-self:end;
+  width:360px;padding-top:0;gap:10px}
+.l-proyectos .tarjeta .minis figure{height:109px}
 .l-proyectos .tarjeta .insignias{grid-area:1 / 2;margin:0 0 8px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
 .l-proyectos .tarjeta h3{grid-area:2 / 2;font-size:23.5px}
