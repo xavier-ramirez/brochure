@@ -445,7 +445,11 @@ def _fuente(hoja):
     """La pagina de la hoja -index.html o carta.html- sin los dos scripts de
     pantalla: el editor de fotos y encaje.js, que achica la lamina cuando la
     ventana es angosta. Aqui la lamina tiene que medir sus pixeles exactos
-    -1280 o 1056- o los recortes no cuadran."""
+    -1280 o 1056- o los recortes no cuadran.
+
+    El tercero, presentacion.js, NO hace falta quitarlo y no es un olvido: lo
+    primero que hace es mirar si la URL trae ?presentacion y salirse si no,
+    y aqui la pagina se abre sin ese parametro."""
     f = io.open(os.path.join(BASE, hoja['pagina']), encoding='utf-8').read()
     f = f.replace('<script src="editor.js" defer></script>', '')
     return f.replace('<script src="encaje.js"></script>', '')

@@ -51,23 +51,81 @@ ENCUADRES = {
 PUERTO = 8787
 MAX_BYTES = 40 * 1024 * 1024
 
-# ancho al que se guarda cada foto segun donde va
+# Ancho al que se guarda cada foto segun donde va. Es el DOBLE de lo mas ancho que
+# esa foto llega a pintarse -medido en las dos maquetas, contando el zoom del
+# encuadre-, y ese doble no es un margen de seguridad cualquiera:
+#
+#   · En pantalla: Windows suele estar al 125 o 150 %, asi que el navegador pinta mas
+#     puntos de los que dice el CSS. Una foto guardada justo a su medida se ve blanda
+#     ahi, que es exactamente lo que se noto el 2026-09-07 con empresa_sede.
+#   · En papel: la lamina es de 96 dpi, asi que al doble la foto imprime a 192 dpi.
+#     No es calidad de imprenta -harian falta 3,125x, o sea 4000 px en las grandes-,
+#     pero cuadruplicar el peso de las fotos por eso dejaria un PDF que no se puede
+#     enviar por correo (hoy pesa 13,6 MB con 14 MB de fotos).
+#
+# Los valores de antes eran MENORES que lo pintado en dos huecos: las miniaturas se
+# guardaban a 700 px y la ficha que va sola las pinta a 983, o sea que el navegador
+# tenia que INVENTAR pixeles. Por eso se veian borrosas dentro del brochure y nitidas
+# al abrirlas por fuera.
+#
+# Si algun dia se cambia el tamano de una foto en el CSS, hay que volver a medir esto,
+# y medir las TRES maquetas: vertical.html, index.html y carta.html. Cada hueco se
+# guarda una sola vez en img/, asi que el ancho tiene que servir para la que mas grande
+# la pinte de las tres.
 ANCHOS = [
-    ('_1', 1300),                    # foto grande de proyecto
-    ('_2', 700), ('_3', 700),        # miniaturas
-    ('servicio_', 700),
-    ('portada_', 1300),
-    ('flota_equipo', 2000),
-    ('portafolio_', 2000),
-    ('clientes_', 1500),
+    ('_1', 2600),                    # foto grande de proyecto (pinta hasta 1280)
+    ('_2', 2000), ('_3', 2000),      # miniaturas (pintan hasta 983 en la ficha que va sola)
+    ('servicio_', 900),              # pintan hasta 431
+    ('portada_', 2600),
+    ('flota_equipo', 2600),
+    ('portafolio_', 2600),
+    ('clientes_', 2600),
 ]
+
+# Las fotos de sede y de oficina -empresa_sede, empresa_tendido, oficina_*- NO tienen
+# regla propia y caen aqui. Pintan hasta 1144 px -el maximo esta en carta.html-, asi que
+# su doble son 2288 y se redondea a 2400 para dejar margen.
+# El 2200 que hubo aqui salia de medir solo la vertical y la panoramica: al medir tambien
+# la de carta el maximo subio, y por eso hay que mirar LAS TRES cada vez que se toque una
+# medida del CSS.
+ANCHO_POR_DEFECTO = 2400
 
 
 def ancho_para(nombre):
     for pista, w in ANCHOS:
         if nombre.startswith(pista) or nombre.endswith(pista):
             return w
-    return 1300
+    return ANCHO_POR_DEFECTO
+
+
+def que_llego(cuerpo):
+    """Que es lo que se ha subido, cuando NO es una imagen que Pillow sepa leer.
+
+    Devuelve una frase para el aviso, o None si el archivo no se reconoce como
+    ninguno de los sospechosos habituales.
+
+    Se mira la FIRMA de los primeros bytes, no la extension: el nombre puede
+    mentir y aqui, ademas, el servidor no lo recibe.
+
+    El caso que se dio de verdad -2026-09-08, montando una foto de proyecto- fue
+    un .MOV: las Live Photos del iPhone se descargan como un .MOV al lado del
+    .jpeg y con el MISMO nombre, asi que en el dialogo de Windows aparecen los
+    dos seguidos y es facil pinchar el que no es. El error de Pillow que salia
+    -"cannot identify image file <_io.BytesIO object at 0x...>"- no decia nada
+    de eso; de ahi esta funcion.
+    """
+    cab = cuerpo[:16]
+    if cab[4:8] == b'ftyp':
+        # Contenedor ISO-BMFF: por la marca de dentro se sabe si es foto o video.
+        marca = bytes(cab[8:12])
+        if marca in (b'heic', b'heix', b'heim', b'heis', b'hevc', b'mif1', b'msf1'):
+            return 'una foto HEIC del iPhone: pasala a JPG y subela'
+        return 'un video: sube el .jpeg, no el .MOV de la Live Photo'
+    if cab[:4] == b'%PDF':
+        return 'un PDF'
+    if cab[:2] == b'PK':
+        return 'un ZIP (o un .docx / .xlsx / .pptx)'
+    return None
 
 
 def guardar_anterior(ruta, nombre):
@@ -123,7 +181,9 @@ class Manejador(SimpleHTTPRequestHandler):
         ruta = urlparse(self.path)
         largo = int(self.headers.get('Content-Length') or 0)
         if largo > MAX_BYTES:
-            return self.responder(400, {'ok': False, 'error': 'Archivo demasiado grande'})
+            return self.responder(400, {'ok': False, 'error':
+                'Archivo demasiado grande: %s MB, y el tope son %s'
+                % (largo // (1024 * 1024), MAX_BYTES // (1024 * 1024))})
         cuerpo = self.rfile.read(largo) if largo else b''
         if ruta.path not in EXPORTADORES and not cuerpo:
             return self.responder(400, {'ok': False, 'error': 'No llego nada'})
@@ -172,6 +232,15 @@ class Manejador(SimpleHTTPRequestHandler):
             destino = os.path.join(IMG, nombre + '.jpg')
             if not os.path.exists(destino):
                 return self.responder(404, {'ok': False, 'error': 'Esa foto no existe en img/'})
+            # Lo que llega NO se abre a ciegas: primero se mira si es uno de los
+            # archivos que se cuelan por el dialogo de "elegir foto". Asi el aviso
+            # dice que paso -"es un video"- en vez del volcado de Pillow, que no
+            # se entiende. El navegador hace este mismo filtro antes de subir
+            # (ver editor.js); esto es la red de abajo, por si se sube de otra
+            # forma -curl, o un navegador que no mande el tipo-.
+            aviso = que_llego(cuerpo)
+            if aviso:
+                return self.responder(400, {'ok': False, 'error': 'Eso es ' + aviso})
             try:
                 im = Image.open(io.BytesIO(cuerpo))
                 # las fotos de telefono traen la orientacion en el EXIF; si no se
@@ -183,8 +252,17 @@ class Manejador(SimpleHTTPRequestHandler):
                     im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
                 im.save(destino, 'JPEG', quality=88, optimize=True, progressive=True)
                 return self.responder(200, {'ok': True, 'ancho': im.width, 'alto': im.height})
-            except Exception as err:
-                return self.responder(500, {'ok': False, 'error': 'No es una imagen valida (%s)' % err})
+            except Exception:
+                # 400 y no 500: el archivo es el que esta mal, no el servidor.
+                # El tamano va en el aviso porque distingue dos averias que se
+                # parecen: un archivo que llego entero pero no es una imagen, y
+                # uno que llego a medias. En KB solo si los hay; si no, sale
+                # "0 KB", que se lee como si no hubiera llegado nada.
+                peso = ('%s KB' % (len(cuerpo) // 1024) if len(cuerpo) >= 1024
+                        else '%s bytes' % len(cuerpo))
+                return self.responder(400, {'ok': False, 'error':
+                    'No se pudo leer como imagen (%s). Prueba con un JPG o un PNG'
+                    % peso})
 
         if ruta.path == '/api/borrar-foto':
             # Vacia el marco: la foto sale de img/ y el hueco se queda con su

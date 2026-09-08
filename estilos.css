@@ -770,8 +770,24 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    texto (el mismo caso que .qse-cab). */
 .l-oficinas .ofi-cab{position:relative;z-index:4}
 .l-oficinas h2{color:#fff;font-size:38px;margin-top:12px}
+/* Las cuatro direcciones, separadas por una raya y con 42 px de aire, igual que en la
+   version de pie (ver .l-oficinas .ofi-lista en vertical.css): es la misma lista del
+   mismo brochure y no tendria sentido que una llevara rayas y la otra no.
+   Los 42 no son un numero al azar: con los 28 de antes, y sin rayas, las cuatro
+   quedaban apelotonadas arriba y sobraban 120 px muertos al pie del panel -medido el
+   2026-09-07-. Con la raya (16 de relleno) y estos 42, el bloque ocupa ese hueco y deja
+   30 de respiro abajo.
+   VA AQUI y no en index.html: ese archivo lo escribe generar.py y cualquier retoque
+   suyo se pierde en la siguiente generacion -paso el 2026-09-07-. */
 .l-oficinas .ofi-lista{position:relative;z-index:4;margin-top:38px;
-  display:flex;flex-direction:column;gap:28px}
+  display:flex;flex-direction:column;gap:42px}
+/* La raya es la MISMA de .va-lista .valor -la lista de "Nuestros valores"-, para que
+   las listas del brochure se separen todas igual. */
+.l-oficinas .ofi-lista>article{padding-top:16px;
+  border-top:1px solid rgba(124,139,186,.28)}
+/* La PRIMERA no lleva raya: arriba no tiene de que separarse y una raya suelta ahi se
+   leeria como un subrayado del titulo. Mismo criterio que en la version de pie. */
+.l-oficinas .ofi-lista>article:first-child{border-top:none;padding-top:0}
 /* Que sede es y donde esta, en un solo renglon: el epigrafe y la ciudad en
    fila, apoyados en la misma linea de base.
    Los separa el aire y nada mas -no un punto medio ni una barra-: el rotulo

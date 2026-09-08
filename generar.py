@@ -46,7 +46,7 @@ FOTO_SEDE = 'sede_edificio'
 #: cubierta ni las fichas de Servicios de donde salen. El orden es el de la
 #: lamina, de arriba abajo: quien somos, que hacemos, donde.
 #: Cada franja es (foto, rotulo). El rotulo sale en el MISMO chip gris que el
-#: "Patio de maquinas · Maturin" de Mision y vision -una sola pieza para los
+#: "Patio de maquinas Maturin" de Mision y vision -una sola pieza para los
 #: dos sitios- y dice de que obra es la foto. Con el rotulo vacio la franja
 #: sale limpia, sin figcaption, asi que se puede quitar uno sin tocar nada mas.
 #: Aqui va SOLO el nombre del proyecto: el "Obra:" que lo precede en la lamina
@@ -57,8 +57,12 @@ FOTO_SEDE = 'sede_edificio'
 #: soldadura de la misma obra, con el mismo rotulo repetido- y el usuario la
 #: quito el 2026-09-04. Al quedar una sola foto del Veladero, su nombre se
 #: escribe donde se usa y ya no hace falta la constante que lo compartia.
-FOTOS_EMPRESA = (('empresa_sede',    'Oleoducto 30″ Veladero · Tramo I'),
-                 ('empresa_tendido', 'Oleoducto 30″ × 14 km — Planta FF–Trampa de envío'))
+#: El rotulo va ENTERO aqui, con su "Obra:" cuando toca. Antes esa palabra se
+#: anteponia a todas en lamina_empresa, porque las dos fotos eran obras; el
+#: 2026-09-07 el usuario cambio la segunda por el patio de maquinas y ahi dejo
+#: de valer: un patio no es una obra y habria quedado "Obra: Patio de maquinas".
+FOTOS_EMPRESA = (('empresa_sede',    'Obra: Oleoducto 30″ Veladero · Tramo I'),
+                 ('empresa_tendido', 'Patio de máquinas El Tigre'))
 
 #: La foto de la PORTADA. Solo sale ahi -no la usa ninguna otra lamina-, y esa
 #: es la razon de elegirla y no cualquier otra: el encuadre va por nombre de
@@ -337,9 +341,9 @@ def lamina_empresa():
     FOTOS_EMPRESA y nada mas: la rejilla reparte el alto entre las que haya
     -fueron tres hasta que el usuario quito la del medio-.
 
-    Cada franja lleva su chip con el nombre de la obra, y todas empiezan por
-    "Obra:" -lo pidio el usuario-. Esa palabra se pone aqui, una sola vez para
-    todas, y no en FOTOS_EMPRESA, que guarda solo el nombre del proyecto.
+    Cada franja lleva su chip con el rotulo que le toque, y ese rotulo llega
+    ENTERO desde FOTOS_EMPRESA. El "Obra:" se anteponia aqui a todas mientras
+    las dos fotos eran obras; ya no, porque una es el patio de maquinas.
 
     Los rieles van en cuatro sitios. Dos enmarcan el texto dentro del panel -el
     de siempre pegado al canto izquierdo y otro, .rieles-derecha, al otro
@@ -367,7 +371,7 @@ def lamina_empresa():
                  EMPRESA['entrada_portada'], rieles('rieles-derecha'),
                  ''.join('<figure>%s%s%s</figure>'
                          % (foto(n),
-                            '<figcaption>%s</figcaption>' % chip('Obra: ' + r) if r else '',
+                            '<figcaption>%s</figcaption>' % chip(r) if r else '',
                             rieles('rieles-banda'))
                          for n, r in FOTOS_EMPRESA))
 
@@ -388,7 +392,7 @@ def lamina_nosotros():
                         # laminas- para decir DONDE esta hecha la foto: sin el,
                         # el equipo y la flota podian ser de cualquier sitio.
                         '<div class="banda-lugar">%s</div>'
-                        % chip('Patio de máquinas · Maturín')),
+                        % chip('Patio de máquinas Maturín')),
                  rieles('rieles-panel'), cols)
 
 
@@ -918,9 +922,16 @@ def construir():
                 '%s</body>\n</html>\n'
                 % (titulo, css, extra_css, cuerpo, scripts))
 
+    # presentacion.js va SIN defer y ANTES que editor.js, y ese orden importa:
+    # tiene que dejar puesta su marca -window.__presentacion- antes de que el
+    # editor arranque, porque es lo que hace que el editor se salga. Sin el
+    # parametro ?presentacion en la URL no hace nada, asi que la pagina normal
+    # queda igual que estaba. Solo lo lleva la PANORAMICA: las laminas de las
+    # otras dos hojas son verticales y no llenan una pantalla.
     io.open(os.path.join(BASE, 'index.html'), 'w', encoding='utf-8').write(
         pagina('Brochure — Constructora Vidalsa 27', '\n'.join(laminas), '',
                '<script src="encaje.js"></script>\n'
+               '<script src="presentacion.js"></script>\n'
                '<script src="editor.js" defer></script>\n'))
 
     # Las MISMAS laminas en hoja CARTA DE PIE (816 x 1056): la CUBIERTA,

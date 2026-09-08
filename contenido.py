@@ -77,7 +77,7 @@ OFICINAS = [
     dict(foto='oficina_lecheria',  ciudad='Lechería', tipo='Sede Administrativa Oriente',
          dir='Avenida Intercomunal, entre el Banco Venezolano de Crédito y el '
              'Centro Médico Meditotal, planta baja del Spa Hotel, '
-             'estado Anzoátegui.'),
+             'municipio Diego Bautista Urbaneja, estado Anzoátegui.'),
     dict(foto='oficina_eltigre',   ciudad='El Tigre', tipo='Centro Operativo',
          dir='Patio de máquinas. Avenida La Bomba, adyacente a la Finca '
              'La Valentina, municipio Simón Rodríguez, estado Anzoátegui.'),
@@ -143,7 +143,7 @@ VALORES = dict(
 # se escriben aqui.
 SERVICIOS = [
     ('01', 'Construcción de Ductos Petroleros', [
-        'Soldadura de 3/4″ a 42″ calificada',
+        'Soldadura de 3/4″ a 42″ con procedimiento calificado',
         'Tubería enterrada y superficial',
         'Revestimiento y protección de tuberías',
         'Ingeniería, topografía y excavación',

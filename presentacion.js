@@ -180,9 +180,9 @@
        porque un <span> normal no admite transform, y los espacios se quedan
        fuera de los spans para que la linea siga partiendo donde partia. */
     'html.pres.pres-efectos .pres-palabra{display:inline-block;' +
-    'transition:opacity .58s ease var(--d,0s),' +
-    'transform .58s cubic-bezier(.16,.84,.28,1) var(--d,0s),' +
-    'filter .58s ease var(--d,0s)}' +
+    'transition:opacity .78s ease var(--d,0s),' +
+    'transform .78s cubic-bezier(.16,.84,.28,1) var(--d,0s),' +
+    'filter .78s ease var(--d,0s)}' +
     /* Sube y ademas se enfoca: es lo que separa un titulo que "aparece" de uno
        que "entra". El desenfoque es barato aqui -son siete palabras- y no
        choca con nada: el unico filter del brochure esta en la foto de portada. */
@@ -345,7 +345,11 @@
   var TOPE = 18;
   var PASO = 90;    // milisegundos entre el arranque de una cosa y el de la siguiente
   var DURA = 620;   // lo que dura la entrada de UNA cosa; el mismo .62s del CSS
-  var PASO_PALABRA = 60;  // entre una palabra del titular y la siguiente
+  var PASO_PALABRA = 95;  // entre una palabra del titular y la siguiente
+  /* Las palabras tardan mas que el resto: un titulo que se lee mientras entra
+     pide su tiempo, y a la velocidad de los bloques salia disparado. Va aparte
+     de DURA porque la limpieza tiene que esperar a la mas lenta de las dos. */
+  var DURA_PALABRA = 780;   // el mismo .78s del CSS de .pres-palabra
   var TELON = 260;  // el pase de lamina; hasta que no acaba no entra nada dentro
   /* Cada cuanto vuelve a empezar el efecto de la portada, contado desde que
      termina el anterior. Ni tan seguido que maree ni tan largo que parezca
@@ -636,18 +640,33 @@
     var paso = Math.round(Math.min(PASO,
       Math.max(24, TOPE_ARRANQUES / (cosas.length - 1))));
 
-    var titular = buscarTitular(lamina);
     var ultimo = 0;      // el arranque mas tardio de todos, para saber cuando limpiar
     var retardoDe = new WeakMap();   // que retardo le toco a cada bloque
+
+    /* Los rotulos se parten AQUI, antes de repartir las clases, y no despues:
+       el bucle de abajo necesita saber ya cuales van a entrar palabra por
+       palabra para no mover ademas la caja que los lleva dentro. */
+    var rotulos = [buscarEpigrafe(lamina), buscarTitular(lamina)]
+      .filter(function (el) { return el && partirEnPalabras(el); });
+
+    function llevaRotulo(el) {
+      return rotulos.some(function (r) { return el !== r && el.contains(r); });
+    }
 
     cosas.forEach(function (el, i) {
       var base = i * paso;
       retardoDe.set(el, base);
       el.classList.add('pres-anim', 'pres-oculto');
-      /* La clase se pide ANTES de añadirla, no despues: claseDeEntrada mira el
+      /* La caja que CONTIENE un rotulo que escribe no se mueve, solo se funde.
+         Si se moviera, el texto viajaria dos veces -con su caja y con sus
+         palabras-, cada una con su retardo y su curva, y eso se ve como un
+         titileo. Paso en el encabezado de "Nuestros proyectos", donde la banda
+         entera subia mientras el titulo subia por su cuenta.
+
+         La clase se pide ANTES de añadirla, no despues: claseDeEntrada mira el
          transform calculado, y pres-oculto todavia no ha puesto ninguno -solo
          toca la opacidad-, asi que lo que lee es el del brochure. */
-      var entrada = claseDeEntrada(el);
+      var entrada = llevaRotulo(el) ? '' : claseDeEntrada(el);
       if (entrada) el.classList.add(entrada);
       el.style.setProperty('--d', base + 'ms');
       ultimo = Math.max(ultimo, base);
@@ -664,9 +683,7 @@
        de arriba y el h2 ni siquiera aparece en ella, asi que depender de la
        fila dejaba esas laminas sin efecto. Cada uno arranca cuando arranca el
        bloque que lo contiene, para no adelantarse a su propio fondo. */
-    [buscarEpigrafe(lamina), titular].forEach(function (rotulo) {
-      if (!rotulo || !partirEnPalabras(rotulo)) return;
-
+    rotulos.forEach(function (rotulo) {
       var arranque = retardoDe.has(rotulo) ? retardoDe.get(rotulo) : 0;
       if (!retardoDe.has(rotulo)) {
         cosas.forEach(function (el) {
@@ -720,7 +737,7 @@
           animarDentro(lamina);
         }, REPETIR_PORTADA));
       }
-    }, ultimo + DURA + 150));
+    }, ultimo + Math.max(DURA, DURA_PALABRA) + 150));
   }
 
   /* ---- pasar de lamina -------------------------------------------------

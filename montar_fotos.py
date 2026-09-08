@@ -20,6 +20,10 @@ fotos_para_montar/ no se tocan.
 """
 import datetime, io, os, shutil, sys
 
+# Fuente unica del ancho al que se guarda cada foto (ver ANCHOS / ancho_para alli).
+# Importarlo no arranca el servidor: servidor.py solo sirve tras su guarda __main__.
+import servidor
+
 from PIL import Image, ImageOps
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +38,12 @@ PROYECTOS = [
     ('dragado',    'dragado',    3, 'Dragado lagunas del SIAE COMOR'),
 ]
 
-ANCHOS = {1: 1300, 2: 700, 3: 700, 4: 900, 5: 900}
+# El ancho al que se guarda cada foto NO se decide aqui: lo dice servidor.py
+# (ancho_para), que es por donde pasan tambien las fotos que se sueltan en el editor.
+# Antes habia una tabla propia con otros numeros -1300 la grande y 700 las miniaturas-
+# y montar una foto por aqui la dejaba mas chica que soltarla en la pagina, sin que
+# nada lo avisara. Los nombres que arma este script son <proyecto>_1, _2, _3, que es
+# justo lo que ancho_para sabe leer.
 EXT = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tif', '.tiff')
 
 
@@ -96,7 +105,7 @@ def main():
             papel = 'foto grande' if i == 1 else 'miniatura %d' % (i - 1)
             if de_verdad:
                 w, h = montar(os.path.join(ENTRADA, carpeta, f), destino,
-                              ANCHOS.get(i, 900), nombre)
+                              servidor.ancho_para(nombre), nombre)
                 print('   %-11s <- %-40s  (%dx%d)' % (papel, f, w, h))
                 total += 1
             else:

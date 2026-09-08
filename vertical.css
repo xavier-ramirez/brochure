@@ -136,8 +136,22 @@
    de medidas esta en la nota de .ofi-lista p, en la seccion de la lamina. */
 .l-oficinas .ofi-lista p{font-size:14.5px}
 .srv .num{font-size:13px}
-.pf-col h3{font-size:18px}
-.pf-col .cuenta{font-size:26px}
+/* La CABECERA de cada grupo del Portafolio -el rotulo CONSTRUCCION, SERVICIOS
+   Y ALQUILER o AMBIENTE y, a su derecha, la cuenta de obras: 07, 07 y 05-.
+   Las dos piezas van JUNTAS: son un solo renglon y encoger una sola descuadra
+   el peso de la cabecera. El rotulo va ademas a la misma linea en las tres
+   columnas, asi que tampoco se puede bajar el de una.
+   Este bloque les daba el punto de mas que sube toda la hoja de pie -18 y 26,
+   contra los 17 y 25 de la panoramica- y ahi es donde el usuario los vio
+   grandes el 2026-09-08. Bajaron en tres pasos ese dia: 0,2, otros 0,2 y, como
+   seguia viendolos igual de grandes, este, que ya se nota -el rotulo a 15,5 y
+   la cuenta a 22-. Quedan por DEBAJO de la panoramica, que es lo suyo: la hoja
+   de pie es 0,64 de ancho que ella.
+   Sitio no es problema, al reves: el rotulo mas largo -SERVICIOS Y ALQUILER-
+   suelta 30 px de los que ocupaba y su espaciado no hay que volver a tocarlo
+   (ver la otra mitad de .pf-col h3, en la seccion de la lamina). */
+.pf-col h3{font-size:15.5px}
+.pf-col .cuenta{font-size:22px}
 .cartera span{font-size:10.5px}
 .fl-total>span{font-size:13.5px}
 .fl-sub span{font-size:13.5px}
@@ -150,9 +164,17 @@
    esa hoja lleva una sola ficha y la rejilla la centra sin tocar nada.
    La rejilla pasa de dos columnas a una, toma los margenes de la hoja -que
    aqui no son los 44 iguales de la panoramica- y el aire de arriba y abajo
-   baja de 34 a 22 px: cada px que se le quita al blanco es un px que gana la
-   foto. Quedan 890 de alto para las dos, o sea 432 por ficha contando el
-   hueco de 26 que las separa.
+   baja de 34 a 18 px: cada px que se le quita al blanco es un px que gana la
+   foto. Quedan 898 de alto para las dos, o sea 438 por ficha contando el
+   hueco de 22 que las separa.
+   Ese blanco -y el hueco de 22, que empezo en 26- es de donde salio el aire
+   entre la fila del ano y el titulo que el usuario pidio dos veces el
+   2026-09-08 (ver .l-proyectos .tarjeta .insignias): ocho px, cuatro de cada
+   sitio. Se sacan de aqui y no del texto porque el blanco de la hoja no lo lee
+   nadie y un cuerpo mas chico si se ve; la hoja conserva ademas su encabezado
+   y su pie, que ya la enmarcan.
+   El hueco entre las dos fichas no puede seguir bajando mucho mas: es lo unico
+   que separa la caja azul de una del techo de la foto de la siguiente.
    Las filas van a 1fr: cada ficha se ESTIRA hasta llenar su mitad de la hoja,
    que es como lo quiere el usuario -lo pidio el 2026-09-07-. Estuvieron a
    min-content, midiendo lo suyo -entre 337 y 418- y centradas con
@@ -165,28 +187,28 @@
    las dos fichas se lean como dos bloques iguales aunque sus textos no lo
    sean.
    Esta misma regla es la que le da la hoja entera a la ficha SOLA: una fila de
-   1fr en una rejilla de 890 px mide 890. */
+   1fr en una rejilla de 898 px mide 898. */
 .l-proyectos .rejilla{
   left:var(--marg-izq);width:var(--ancho-util);
-  top:22px;
-  height:calc(var(--alto-diseno) - 44px);
+  top:18px;
+  height:calc(var(--alto-diseno) - 36px);
   grid-template-columns:1fr;
   grid-auto-rows:1fr;
-  gap:26px;
+  gap:22px;
 }
 
-/* Las piezas de la ficha, ENCAJADAS en los 432 px que le tocan a cada una y en
+/* Las piezas de la ficha, ENCAJADAS en los 438 px que le tocan a cada una y en
    los 665 de ancho que dejan los margenes.
 
-   El REPARTO de esos 432, que es de donde salen todas las cifras de aqui
-   abajo:
-       foto de la obra    167   (665 x 167, ver la nota de .hero)
-       bloque de texto    174   (el peor de los diecinueve, el del
-                                 Diluenducto: titulo de dos renglones y el
-                                 parrafo mas largo)
-       caja del cliente    77   (65 de alto y 12 de margen)
+   El REPARTO de esos 438, medido el 2026-09-08 con las dieciocho en pantalla y
+   de donde salen todas las cifras de aqui abajo:
+       foto de la obra    186   (665 x 186, ver la nota de .hero)
+       bloque de texto    211   (del pie de la foto al pie del parrafo, aire
+                                 del ano incluido; el peor de los dieciocho es
+                                 el de Equipos transversales, siete renglones)
+       caja del cliente    41   (35 de alto y 6 de margen)
        ---------------------------
-                          418   de 432, o sea 14 px de respiro
+                          438   de 438, o sea CLAVADO: no hay respiro
 
    Los cuerpos son los que pidio el usuario, punto y medio por encima de los que
    entraban: ano 13,5, titulo 22,5, subtitulo 14, parrafo 12,5, rotulo CLIENTE
@@ -220,19 +242,26 @@
    renglones y parrafo largo-, asi que quedan 167 para la foto. Son 111.055 px
    cuadrados contra los 81.000 que tenia a 360 x 225: un 37% mas de foto,
    ademas de cruzar la pagina de canto a canto.
+   186 px = los 167 de ese reparto mas los 0,5 cm que pidio el usuario el
+   2026-09-08 -0,5 cm son 18,9 px a los 96 dpi de la lamina-. Crece hacia
+   ABAJO, que es lo unico que puede hacer: la foto arranca en el techo de la
+   ficha. Los 19 px se los quita al bloque de texto, y de ahi salen a la vez
+   los 15 que adelgaza la caja del cliente en esta misma hoja (ver su regla,
+   mas abajo): sin eso, las fichas de parrafo largo se montaban encima de la
+   caja azul.
    El alto va FIJO y calculado sobre el peor texto, no en 1fr: con 1fr cada
-   foto medaria lo que le dejara SU texto -167, 188 o 209- y las dos fichas de
+   foto medaria lo que le dejara SU texto -186, 207 o 228- y las dos fichas de
    una misma hoja saldrian con la foto de distinto tamano, que es lo que se ve
    mal. Fijo, las diecinueve son iguales. Si algun dia se alarga un texto de
    contenido.py, revisar.py canta el TEXTO CORTADO y hay que bajar este numero.
-   La foto queda a 665 x 167, casi 4 a 1, y no en la panoramica 2,957 de
-   siempre: a esa forma, 665 px de ancho piden 225 de alto y solo hay 167. Es
+   La foto queda a 665 x 186, 3,6 a 1, y no en la panoramica 2,957 de
+   siempre: a esa forma, 665 px de ancho piden 225 de alto y solo hay 186. Es
    la misma franja apaisada de las bandas de esta hoja -la de Portafolio va a
    816 x 165-, asi que no desentona. Al ser mas apaisada que el marco anterior
    se ve MENOS de arriba y abajo de cada foto; la hoja de pie tiene su propio
    encuadre (encuadre_vertical.css), asi que la que no cuadre se recoloca con un
    doble clic aqui sin tocar la panoramica. */
-.l-proyectos .tarjeta .hero{width:auto;height:167px}
+.l-proyectos .tarjeta .hero{width:auto;height:186px}
 /* LAS DOS MINIATURAS VUELVEN, a la derecha del texto y una debajo de la otra.
    El usuario las pidio asi el 2026-09-07: la foto de la obra se queda como
    esta -a todo el ancho- y lo unico que cambia es que el texto se RECOGE al
@@ -242,18 +271,18 @@
    :not(:only-child).
    A MEDIAS: el texto se lleva la mitad izquierda de la hoja y las fotos la
    derecha, 322 px cada una. Lo pidio asi el usuario el 2026-09-07, y no sale
-   gratis: bajo la foto de la obra quedan 207 px -432 de ficha, 167 de foto,
-   54 de la caja del cliente con su margen y 4 de aire bajo la foto- y a media
-   hoja de ancho ni el texto ni las fotos entran ahi con los tamanos que
-   tenian.
+   gratis: bajo la foto de la obra quedan 211 px -438 de ficha, 186 de foto y
+   41 de la caja del cliente con su margen- y a media hoja de ancho ni el texto
+   ni las fotos entran ahi con los tamanos que tenian.
        el texto, a 322 px, pedia 253 de alto con los cuerpos de antes -titulo
        23,5, subtitulo 15, parrafo 13,5-. Por eso bajan a 19, 13 y 11,5: con
-       esos pide 196 de 207. Medido sobre las dieciocho; la peor es la de
+       esos llena los 211 justos. Medido sobre las dieciocho; la peor es la de
        Equipos transversales.
        las dos fotos apiladas, a 322 px de ancho y con su forma de siempre
-       -1,941-, pedian 166 de alto cada una, o sea 342. Por eso pasan a 88 de
-       alto: 88 + 10 + 88 = 186 de 207. A ese ancho son una franja de 3,7 a 1,
-       parecida a la de la foto de la obra, que va a 4.
+       -1,941-, pedian 166 de alto cada una, o sea 342. Por eso pasan a 105 de
+       alto: 105 + 14 + 105 = 224 de los 252 que hay bajo la foto de la obra.
+       A ese ancho son una franja de 3,1 a 1, parecida a la de la foto de la
+       obra, que va a 3,6.
    Lo que no se puede es tener las dos cosas a su tamano: a media hoja el texto
    no entra con la letra de antes y las fotos apiladas no entran con su forma
    de antes. Si algun dia se quieren las dos, hay que ir a un proyecto por
@@ -270,15 +299,31 @@
 /* Los cuerpos de la ficha de media hoja (ver las cuentas de arriba). No van en
    la regla comun porque la ficha que va SOLA no los quiere: alli hay hoja de
    sobra y la letra es grande.
-   Con estos, el texto mas alto de los dieciocho -el de Equipos transversales-
-   pide 196 de los 207 que hay. Un punto mas -20 / 13,5 / 12- tambien entra,
-   pero deja UN pixel de margen y cualquier retoque de contenido.py lo tumba;
-   por eso se queda en estos, que dejan once. */
+   Los CUERPOS no se tocan al crecer la foto: el sitio que hacia falta salio de
+   la caja del cliente -15 px- y del interlineado y el aire de aqui abajo, que
+   se ven mucho menos que una letra mas chica.
+   El INTERLINEADO del parrafo baja de 1,5 a 1,39 y el aire del ano de 10/12 a
+   6/8 (ese va en .insignias, mas abajo). Medido el 2026-09-08 con las dieciocho
+   en pantalla: con la foto a 186 el peor texto -el de Equipos transversales,
+   siete renglones- se salia 13 px de su media hoja, y esos dos sueltan 17.
+   Ahora las dieciocho cierran EXACTAS en los 432, con la caja azul apoyada en
+   el suelo de su mitad.
+   Ese es el presupuesto y esta agotado: si algun dia se alarga un texto de
+   contenido.py o crece otra pieza, no hay de donde sacarlo sin bajar los
+   cuerpos. revisar.py lo canta. */
 .l-proyectos .tarjeta:not(:only-child) .insignias .anio{font-size:13px}
 .l-proyectos .tarjeta:not(:only-child) h3{font-size:19px}
 .l-proyectos .tarjeta:not(:only-child) .sub{font-size:13px}
-.l-proyectos .tarjeta:not(:only-child) .desc{font-size:11.5px;line-height:1.5}
-.l-proyectos .tarjeta:not(:only-child) .hero{grid-area:1 / 1 / 2 / -1}
+.l-proyectos .tarjeta:not(:only-child) .desc{font-size:11.5px;line-height:1.39}
+/* 1,2 cm mas angosto de lo que da la ficha: 0,7 que pidio el usuario el 2026-09-07 y
+   0,5 mas que pidio despues, el mismo dia. Va en cm y no en px para que se lea la medida
+   que se pidio. Encoge por la DERECHA: el borde izquierdo manda, porque es el que alinea
+   con el ano, el titulo y el parrafo de abajo.
+   OJO: el margin-right de .minis -mas abajo- tiene que valer EXACTAMENTE lo mismo. Las
+   dos cierran a ras por la derecha, y cambiar solo esta las descuadra; paso al aplicar
+   los 0,7 y se vio en pantalla. Si se toca una, se tocan las dos. */
+.l-proyectos .tarjeta:not(:only-child) .hero{grid-area:1 / 1 / 2 / -1;
+  width:calc(100% - 1.2cm)}
 .l-proyectos .tarjeta:not(:only-child) .insignias{grid-area:2 / 1}
 .l-proyectos .tarjeta:not(:only-child) h3{grid-area:3 / 1}
 .l-proyectos .tarjeta:not(:only-child) .sub{grid-area:4 / 1}
@@ -290,36 +335,92 @@
    a 11 y el nombre de 18 a 15-.
    Los 17 px que suelta no se pierden: se los queda el bloque de texto, y por
    eso los cuerpos de aqui arriba pueden ser un punto mas grandes de lo que
-   entraba antes. */
+   entraba antes.
+   MAS BAJA TODAVIA, de 48 a 35: el usuario la pidio menos alta el 2026-09-08,
+   el mismo dia en que la foto de la obra crecio 0,5 cm, y los 13 px que suelta
+   son casi todo lo que la foto le quito al texto.
+   De donde salen los 13: el relleno baja de 8 a 3 arriba y de 8 a 5 abajo -8-,
+   el rotulo CLIENTE de 11 a 10 y el nombre de 15 a 14 -2-, y los dos renglones
+   pasan a line-height 1,1 en vez del 1,2 de serie -3-.
+   El relleno de ABAJO es 5 y no 3 a proposito: a 3 el rabo de la "y" de
+   "Proyectos Mayores FPO" quedaba tocando el canto de la caja -mirado en la
+   captura-. Esos 2 px salen del interlineado del parrafo, que baja de 1,42 a
+   1,39. Mas baja no puede ir la caja sin que las letras se coman el borde. */
 .l-proyectos .tarjeta:not(:only-child) .caja-cliente{grid-area:6 / 1;
-  padding:8px 16px 8px 28px}
-.l-proyectos .tarjeta:not(:only-child) .caja-cliente .rot{font-size:11px}
-.l-proyectos .tarjeta:not(:only-child) .caja-cliente b{font-size:15px}
+  padding:3px 16px 5px 28px}
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente .rot{font-size:10px;line-height:1.1}
+.l-proyectos .tarjeta:not(:only-child) .caja-cliente b{font-size:14px;line-height:1.1}
 /* Las dos, UNA DEBAJO DE OTRA: una sola columna en vez de las dos que trae
-   .minis de serie (estilos.css). align-content:start las deja arriba de su
-   hueco -abarcan las cuatro filas del texto, que es mas alto que ellas-, no
-   estiradas ni centradas. */
-/* SIN la cuna diagonal del canto derecho que .minis figure trae de estilos.css
-   -clip-path-: el usuario las quiere rectangulares, y lo pidio el 2026-09-07.
-   Va en la regla comun, asi que tambien las cuatro de la ficha que va sola: son
-   las miniaturas del mismo brochure y no tendria sentido que unas llevaran la
-   cuna y otras no. La foto de la obra SI conserva la suya, que no la nombro. */
-.l-proyectos .tarjeta .minis figure{clip-path:none}
-.l-proyectos .tarjeta:not(:only-child) .minis{grid-area:2 / 2 / 6 / 3;
-  width:auto;padding-top:0;gap:10px;
-  grid-template-columns:1fr;align-content:start}
-.l-proyectos .tarjeta:not(:only-child) .minis figure{height:88px}
-/* El ano arranca a 4 px de la foto y la caja del cliente lleva 6 de margen -no
-   los 8 y 12 que tenian-: son los 10 px que necesitaban cinco de las dieciocho
-   fichas para que su parrafo entre entero. Ver la nota de .desc, aqui debajo. */
-.l-proyectos .tarjeta .insignias{margin:4px 0 6px}
+   .minis de serie (estilos.css). Como se reparten el alto de la columna lo explica
+   la regla de mas abajo (.minis figure). */
+/* Las miniaturas llevan la MISMA cuna diagonal que la foto de la obra: el corte del
+   canto de abajo a la derecha que .minis figure trae de serie (22 px, frente a los 34
+   de .hero). Llego a quitarse aqui con clip-path:none, y el usuario pidio devolverla el
+   2026-09-07 -"dale el efecto de la foto a la miniatura"-. No hace falta escribirla:
+   basta con NO anularla, y asi la vertical se ve como la panoramica, que nunca la tuvo
+   anulada. Si algun dia hay que quitarla, se quita en las dos o se descuadran. */
+/* MAS PEQUENAS, sin perder las dos alineaciones que pidio el usuario el 2026-09-07:
+     · el canto DERECHO a ras de la foto de la obra  -> justify-self:end pega la columna
+       al canto de la ficha y el margin-right de 1,2 cm la trae hasta donde acaba la
+       foto, que lleva ese mismo recorte. Sin ese margen sobresalian -medido-, porque el
+       canto de la ficha esta 1,2 cm mas a la derecha que el de la foto. Este numero y el
+       de .hero son el MISMO: si cambia uno, cambia el otro;
+     · el canto de ABAJO a ras de la caja azul       -> align-content:end.
+   Se achicaron de las dos medidas a la vez -2,1 cm menos de ancho- para que la
+   proporcion no se fuera a la tira de 3,6:1 en la que las maquinas salian cortadas, que
+   es de donde se venia. El alto lo fija la regla de mas abajo. */
+.l-proyectos .tarjeta:not(:only-child) .minis{grid-area:2 / 2 / 7 / 3;
+  width:calc(100% - 2.1cm);justify-self:end;margin-right:1.2cm;padding-top:0;gap:14px;
+  grid-template-columns:1fr;align-content:end}
+/* 108 px de alto, APOYADAS ABAJO (align-content:end en la regla de arriba). Son dos
+   peticiones del usuario del 2026-09-07 que hay que cumplir a la vez:
+     · "que el borde inferior se alinee con el final del contenedor azul de clientes"
+     · "reduce el tamano de las miniaturas"
+   Se cumplen las dos porque la columna llega hasta el pie de la caja -su grid-area
+   termina en la linea 7- pero las fotos NO la llenan: se apoyan en el fondo. Asi la
+   ultima cierra a ras de la caja azul aunque midan menos que el hueco.
+   Por eso el alto vuelve a ser fijo y no un reparto (1fr): con 1fr llenaban la columna
+   entera y median 124, que es lo que el usuario vio grande. El sobrante queda arriba,
+   entre el ano y la primera foto. */
+/* 105 px = los 86 que tenian mas los 0,5 cm que pidio el usuario el 2026-09-08 -0,5 cm
+   son 18,9 px a los 96 dpi de la lamina-. Crecen HACIA ARRIBA, no hacia abajo: la
+   columna las apoya en su fondo (align-content:end), asi que el canto de abajo sigue a
+   ras de la caja azul y lo que se come el alto nuevo es el hueco libre de arriba. */
+.l-proyectos .tarjeta:not(:only-child) .minis figure{height:105px}
+/* AIRE del bloque ano / titulo / subtitulo. Estuvo en 4 y 6 px -apretadisimo, se leia
+   como un solo bloque pegado- porque se creia que ese margen se lo quitaba al parrafo.
+   Medido el 2026-09-07 con las diecinueve fichas en pantalla, no era asi: la fila del
+   parrafo es 1fr y absorbe la holgura, y a la ficha MAS APRETADA le sobraban 19 px
+   entre el final de su texto y la caja del cliente.
+   Estuvieron en 10 y 12, que dejaban 8 px de holgura en esa ficha. Bajaron a 6 y 8 el
+   2026-09-08, cuando la foto de la obra crecio 0,5 cm: la ficha del peor texto se salia
+   13 px y esos ocho, con el interlineado del parrafo (1,5 -> 1,39), son los que la
+   devolvieron a la hoja.
+   El de ABAJO -el hueco entre la fila del ano y el titulo- vuelve a subir el mismo dia,
+   en dos veces: el usuario lo vio apretado contra la panoramica -"que se vea como la
+   separacion que hay en la version horizontal"- y luego pidio "un poco mas". Acaba en 16.
+   El primer paso fue a 12, que es la separacion de la panoramica traida a esta hoja: alli
+   mide 18, pero con el titulo a 30 px, y aqui el titulo va a 19. Copiada tal cual se veria
+   MAS suelta que el original, no igual; lo que se copia es la PROPORCION, 0,6 del cuerpo
+   del titulo -0,6 x 19 = 11,4-. Sale lo mismo por el otro lado: la hoja de pie es 0,6375
+   de ancho que la panoramica, y 18 x 0,6375 = 11,5. Los 16 de ahora ya son un poco mas
+   que eso, que es justo lo que se pidio.
+   Los 8 px NO salen del texto -no habia de donde, ver la nota de los cuerpos-: salen del
+   blanco de la hoja, cuatro del aire de arriba y abajo -de 22 a 18- y cuatro del hueco
+   entre las dos fichas -de 26 a 22-. Cada ficha pasa asi de 432 a 438 (ver la rejilla).
+   Medido con las dieciocho en pantalla: con este reparto cierran todas y aun cabria
+   llegar a 18 apurando el hueco entre fichas hasta 18. Lo que NO hay es sitio gratis: el
+   que quiera mas aire sale de otro sitio, y hay que volver a medirlo, no estimarlo -la
+   fila 1fr hace que el desborde NO se vea como una ficha que se sale de la hoja, sino
+   como el parrafo montandose encima de la caja del cliente-. */
+.l-proyectos .tarjeta .insignias{margin:6px 0 16px}
 .l-proyectos .tarjeta .insignias .anio{font-size:14.5px}
 /* Los CUERPOS de letra no estan aqui: cada ficha tiene el suyo -19/13/11,5 la
    de media hoja y 30/17/15 la que va sola- y una talla comun no la veria
-   nadie. Aqui solo lo que comparten: el aire entre el subtitulo y el parrafo,
-   10 px en total -4 de la raya del subtitulo y 6 del parrafo-, que son los que
-   hacen entrar el parrafo de las fichas de titulo largo. */
-.l-proyectos .tarjeta .sub{margin-top:6px;padding-bottom:4px}
+   nadie. Aqui solo lo que comparten: el aire alrededor del subtitulo, 9 px por
+   arriba y 8 hasta su raya -mas los 6 con que arranca el parrafo-. Sale del mismo
+   presupuesto medido que las insignias, aqui arriba. */
+.l-proyectos .tarjeta .sub{margin-top:9px;padding-bottom:8px}
 /* SIN el overflow:hidden que .desc trae de estilos.css. Alli hace falta -en la
    panoramica la ficha es una caja flexible y el recorte evita que un texto
    largo se salga-, pero aqui recortaba EN SILENCIO: la fila del parrafo va en
@@ -327,9 +428,16 @@
    que el texto, que perdia su ultima linea sin que se notara.
    Con overflow visible y min-height auto la fila no puede medir menos que el
    texto: si algun dia no cupiera, la ficha se saldria de la hoja y revisar.py
-   lo cantaria, que es un fallo que se ve. */
+   lo cantaria, que es un fallo que se ve.
+   JUSTIFICADO, y solo de pie: lo pidio el usuario el 2026-09-08 para los
+   diecinueve parrafos de esta hoja. Con hyphens:auto, igual que la Mision, la
+   Vision y los valores: con lang="es" en el <html> el navegador parte las
+   palabras largas al final del renglon y reparte el sobrante en varios en vez
+   de abrir los huecos de uno solo, que a 322 px de columna se notaria. En la
+   panoramica el parrafo sigue en bandera; alli no se pidio. */
 .l-proyectos .tarjeta .desc{margin-top:6px;
-  overflow:visible;min-height:auto}
+  overflow:visible;min-height:auto;
+  text-align:justify;hyphens:auto}
 /* El relleno de la IZQUIERDA es 28 y no 20, y no es capricho: la caja lleva
    una cuna diagonal en su esquina de abajo a la izquierda -clip-path en
    estilos.css, 22 px- y el nombre del cliente, que va en el renglon de abajo,
@@ -348,22 +456,24 @@
    usuario pidio el 2026-09-06 que ocupara la pagina entera.
    Se lee igual que las de media hoja -de arriba abajo y a todo el ancho, esa
    parte ya viene de la regla de arriba- y lo que cambia es el TAMANO de cada
-   pieza, porque aqui hay 890 px de alto en vez de 432. Todo crece: la foto de
-   la obra a 665 x 225, las miniaturas vuelven -CUATRO, ver mas abajo- y los
+   pieza, porque aqui hay 898 px de alto en vez de 436. Todo crece: la foto de
+   la obra a 665 x 244, las miniaturas vuelven -CUATRO, ver mas abajo- y los
    cuerpos suben -titulo 23,5 -> 30, subtitulo 15 -> 17, parrafo 13,5 -> 15-,
    que a los de media hoja, estirados a 665 px de ancho, el parrafo se quedaba
    en cuatro renglones perdidos.
-   La foto de la obra SI conserva aqui su forma de siempre -2,957, la misma que
-   en la panoramica: 665 de ancho piden 225 de alto y los hay-, y las cuatro
-   miniaturas la suya, 1,941. En las fichas de media hoja no se puede, porque
-   alli la foto tiene que caber en 167 px de alto.
+   244 = los 225 de siempre mas los 0,5 cm que el usuario pidio el 2026-09-08
+   para la foto de CADA proyecto; aqui caben sin apretar a nadie porque a esta
+   hoja le sobraban 34 px, que es lo que repartia el space-between. La foto
+   pierde con ellos la forma panoramica de 2,957 que conservaba -pasa a 2,7-,
+   y a cambio las diecinueve crecen lo mismo. Las cuatro miniaturas SI se
+   quedan con la suya, 1,941.
    Las filas van a auto -grid-template-rows:none deshace las seis de la regla
    de arriba, que son para el reparto apretado de media hoja- y el sobrante de
    la pagina se reparte entre las piezas con space-between, sin dejarlo todo en
    un hueco. */
 .l-proyectos .tarjeta:only-child{grid-template-rows:none;
   align-content:space-between}
-.l-proyectos .tarjeta:only-child .hero{height:225px}
+.l-proyectos .tarjeta:only-child .hero{height:244px}
 .l-proyectos .tarjeta:only-child .insignias{margin:0}
 .l-proyectos .tarjeta:only-child h3{font-size:30px}
 .l-proyectos .tarjeta:only-child .sub{font-size:17px;margin-top:10px}
@@ -609,9 +719,29 @@
   grid-template-columns:repeat(2,1fr);gap:28px 40px}
 /* El titulo de cada servicio pierde la altura fija de dos renglones -en la
    panoramica la lleva para que las cuatro reglas queden a la misma linea-:
-   aqui, con dos columnas, los cuatro titulos ya entran en uno. */
-.srv h3{font-size:20px;height:auto}
-.srv .regla{margin:10px 0 12px}
+   aqui, con dos columnas, los cuatro titulos ya entran en uno.
+   Y ES ESO lo que deja la raya larga: al caber el titulo en un renglon, la
+   columna le sobra por la derecha. Medido el 2026-09-08: la raya cruza los 311
+   px de la columna y al titulo mas corto -"Suministro y Procura"- le sobran
+   158, o sea la mitad de la raya colgando en el vacio. El usuario la vio asi y
+   pidio que midiera lo que mide el titulo.
+   La raya deja de ser el div .regla y pasa a pintarse como FONDO del propio
+   h3 -misma pieza: los mismos 2 px y el mismo degradado azul/gris de
+   estilos.css, solo que el 34% de azul es ahora el 34% del titulo-. Asi mide
+   lo que mide el texto sin que nadie tenga que medirlo: width:max-content
+   encoge la caja al titulo y el max-width la frena en la columna, por si algun
+   dia se alarga un nombre y vuelve a los dos renglones.
+   El padding y el margen reponen el aire que ponia .regla en esta hoja -10 px
+   por arriba y 12 por abajo-, para que la lista siga donde estaba.
+   El div se queda en el HTML porque lo usan la panoramica y la carta, donde
+   los titulos SI van en dos renglones, la raya sobra poco y las cuatro
+   alineadas son parte del diseno; aqui se apaga, como .barras. */
+.srv h3{font-size:20px;height:auto;
+  width:max-content;max-width:100%;
+  padding-bottom:10px;margin-bottom:12px;
+  background:linear-gradient(90deg,var(--azul) 0 34%,rgba(124,139,186,.32) 34%)
+             left bottom / 100% 2px no-repeat}
+.srv .regla{display:none}
 .srv ul{gap:7px}
 .srv li{font-size:13.5px;padding-left:19px}
 /* La tira baja de CINCO fotos a CUATRO: la quinta -servicio_5_maquinaria- se
@@ -692,12 +822,17 @@
    Cabecera y cuenta van a los dos extremos de su caja (.pf-col header, con
    space-between en estilos.css); como esta fila se lleva el ancho entero, el
    05 se iba al canto derecho de la hoja, un palmo mas alla que los de las
-   columnas de arriba. El relleno de la derecha lo trae de vuelta: la columna
-   izquierda mide (665 - 40 de hueco) x 1,06/2 = 331 px, asi que sobran 334.
-   Va en padding y no en un ancho: la RAYA de la cabecera sigue cruzando los
-   665 px, que es lo ancho que es la lista que va debajo. */
+   columnas de arriba. La cabecera se ESTRECHA hasta lo que mide la columna
+   izquierda de arriba -(665 - 40 de hueco) x 1,06/2 = 331 px- y el 05, que va
+   pegado a su canto derecho, cae en la misma vertical que los dos 07.
+   Va en WIDTH y no en padding, que es como estuvo hasta el 2026-09-08. Con
+   padding la caja seguia midiendo los 665 de la hoja y con ella su
+   border-bottom, asi que la raya cruzaba la pagina entera y se iba 334 px mas
+   alla del numero. El usuario la vio asi y pidio que llegara hasta el 05, que
+   ademas es como quedan las dos de arriba. Lo que NO sigue a la cabecera es la
+   lista de obras: esa se queda con los 665, que es lo que necesita. */
 .pf-cols .pf-col:nth-child(2) header{
-  padding-right:calc(var(--ancho-util) - (var(--ancho-util) - 40px) * 0.53)}
+  width:calc((var(--ancho-util) - 40px) * 0.53)}
 /* Los 19 proyectos de las tres listas piden 65 px mas de los que da la hoja, y
    salen de aqui: el NOMBRE baja de 17 a 16,5 px -a 17, en columna angosta, los
    nombres largos como "Completacion mecanica Oleoducto de 42 - PTO-TAEJ" se
@@ -726,10 +861,14 @@
    Lo que cede es el ESPACIADO y no el cuerpo: los tres rotulos se quedan en
    los 18 px que les da el bloque de cuerpos de arriba -esta es la otra mitad
    de .pf-col h3: el cuerpo alla, con los demas, y lo que no es cuerpo aqui-,
-   porque bajar uno obliga a bajar los tres -van a la misma linea- y la lamina
-   esta calculada sobre ese punto de mas. A .22em el mas largo
-   mide 263 y le sobran 27; se queda ahi y no mas apretado para no alejarlo de
-   los epigrafes de las otras laminas, que van a .3em. */
+   porque bajar uno obliga a bajar los tres: van a la misma linea. Se queda en
+   .22em y no mas apretado para no alejarlo de los epigrafes de las otras
+   laminas, que van a .3em.
+   Medido el 2026-09-08 con el cuerpo ya en 17,6: el mas largo -SERVICIOS Y
+   ALQUILER- ocupa 257 px de los 270 que hay hasta su cuenta, o sea trece de
+   sobra, y los tres caben en un renglon. A 17,8 ocupaba 260 y a 18, que es de
+   donde se venia, 263. Si se vuelve a subir el cuerpo, hay que mirar OTRA VEZ
+   este numero: el que se parte en dos es siempre ese. */
 .pf-col h3{letter-spacing:.22em}
 
 /* --------------------------------------------------------- FLOTA PROPIA --- */
@@ -1028,27 +1167,20 @@
    mas de la columna del panel, el centrado de este la coloca a ella y al titulo
    a la vez, sin numeros escritos a mano. El alto lo pone el contenido.
    El hueco entre columnas -28- se le quita al ancho del texto y no se pone como
-   gap, que aqui no hay rejilla comun con las fotos. */
+   gap, que aqui no hay rejilla comun con las fotos.
+   El gap de 42 NO se repite aqui: lo pone estilos.css para las dos maquetas y es el
+   mismo numero. Escribirlo dos veces solo servia para que un dia dejaran de coincidir. */
 .l-oficinas .ofi-lista{margin-top:var(--ofi-aire-titulo);
   width:calc(var(--ofi-corte) - var(--marg-izq) - 28px);
-  display:grid;grid-template-rows:repeat(4,min-content);gap:42px}
-/* Cada direccion mide lo suyo y lleva una raya encima. El align-self:start no
-   es de adorno aunque la fila ya sea min-content: la fila la estira el hermano
-   mas alto si alguna vez vuelve a haber uno, y sin el bloque quedaria centrado.
-   La raya es la MISMA de .va-lista .valor -la lista de "Nuestros valores", que
-   tambien va apilada sobre navy-: un pelo de 1 px en el azul palido a .28. No
-   es una pieza nueva, es la que este brochure ya usa para separar los puntos de
-   una lista, y es la que hace que cuatro bloques pegados se sigan leyendo como
-   cuatro y no como un parrafo largo. */
-.l-oficinas .ofi-lista>article{align-self:start;padding-top:16px;
-  border-top:1px solid rgba(124,139,186,.28)}
-/* La PRIMERA no lleva raya: arriba no tiene de que separarse -no hay otra
-   direccion, solo el aire que la separa del titulo- y una raya suelta ahi se
-   leeria como un subrayado de la cabecera. Es lo mismo que hace
-   .va-lista .valor:first-child en estilos.css.
-   El padding-top:0 es para PISAR el de las otras tres: la separacion de esta
-   con el titulo la pone ahora el centrado, no un relleno propio. */
-.l-oficinas .ofi-lista>article:first-child{border-top:none;padding-top:0}
+  display:grid;grid-template-rows:repeat(4,min-content)}
+/* Lo UNICO que esta maqueta le cambia a cada direccion. La raya de encima y su
+   relleno los pone estilos.css para las dos -y la primera se queda sin raya alli
+   mismo-, asi que aqui no se repiten: estaban escritos con los mismos valores en los
+   dos sitios y eso solo sirve para que un dia dejen de coincidir.
+   El align-self:start si es de aqui, y no es de adorno aunque la fila ya sea
+   min-content: la fila la estira el hermano mas alto si alguna vez vuelve a haber
+   uno, y sin el el bloque quedaria centrado. */
+.l-oficinas .ofi-lista>article{align-self:start}
 /* Las cuatro direcciones justificadas, a peticion del usuario, y con
    hyphens:auto como .qs-texto y como la Mision y la Vision: con lang="es" en
    el <html> el navegador parte las palabras largas al final del renglon en vez
