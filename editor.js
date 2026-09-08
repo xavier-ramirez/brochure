@@ -18,6 +18,15 @@
 (function () {
   'use strict';
 
+  /* En MODO PRESENTACION el editor no pinta nada: alli las laminas se pasan a
+     pantalla completa con un clic, y el doble clic para cambiar la foto, el
+     arrastre y la rueda estorbarian. presentacion.js -que corre antes que este
+     archivo, sin defer- deja puesta la marca. Ojo con la salida temprana: el
+     efecto de aparicion de las laminas -la clase 'dentro'- se pone unas lineas
+     mas abajo, asi que alli las laminas se quedan sin el; de ensenarlas se
+     encarga el CSS del propio modo presentacion. */
+  if (window.__presentacion) return;
+
   var conServidor = location.protocol === 'http:' || location.protocol === 'https:';
   /* Quien manda es la hoja de estilo: cada HTML enlaza la suya. */
   var esCarta    = !!document.querySelector('link[rel="stylesheet"][href="carta.css"]');
@@ -173,6 +182,19 @@
       '<button type="button" id="ed-pdf" class="ed-primario">Descargar PDF</button>' +
       '<span class="ed-estado" id="ed-estado"></span>'
     : '<b>Editor de fotos</b>' +
+      /* La misma pagina, ensenada de una lamina en una y a pantalla completa,
+         como un PowerPoint (ver presentacion.js). Solo esta aqui: la hoja
+         carta y la de pie son verticales y no llenan una pantalla. Va en otra
+         pestana para no perder lo que se este editando en esta. */
+      '<a href="index.html?presentacion" target="_blank" rel="noopener">' +
+      'Ver como presentacion</a>' +
+      /* La misma presentacion, pero con las animaciones de entrada puestas:
+         la lamina se funde y lo de dentro va apareciendo escalonado. Son dos
+         enlaces y no uno con una casilla porque son dos maneras de ensenar el
+         brochure y el usuario quiere entrar directo a la que toque; una vez
+         dentro, el boton "Efectos" de la barra las intercambia. */
+      '<a href="index.html?presentacion&amp;efectos" target="_blank" rel="noopener">' +
+      'Presentacion con efectos</a>' +
       /* No genera nada: solo abre carta.html, que es este mismo brochure
          encajado en hoja carta apaisada. Va como enlace y no como boton para
          poder abrirlo en otra pestana y dejar esta como esta. */
@@ -204,7 +226,19 @@
        la fila, sus 110 px de ancho minimo correrian el centro hacia la
        izquierda, y ademas el centro se moveria al aparecer y desaparecer. */
     '#ed-barra.ed-carta{justify-content:center}' +
-    '#ed-barra.ed-carta .ed-estado{position:absolute;right:18px;min-width:0}' +
+    /* El aviso, en su PROPIO RENGLON debajo de los botones, y no anclado a la
+       derecha como estaba. Anclado se montaba ENCIMA de los botones en cuanto
+       pasaba de unas quince letras -medido el 2026-09-08 con la barra a 768 px:
+       del canto derecho al ultimo boton hay 95 px- y ya habia avisos asi de
+       largos, como "Foto eliminada · copia en img/_anteriores".
+       Sigue sin descentrar los botones, que es para lo que se puso el absolute:
+       ocupa la fila entera, asi que no cuenta como una pieza mas de la suya.
+       El :empty es lo que paga eso: sin texto, el span DESAPARECE -y con el se
+       va el hueco de 16 px de la rejilla-, asi que la barra en reposo mide
+       exactamente lo que media. Solo crece mientras hay algo que leer. */
+    '#ed-barra.ed-carta .ed-estado{position:static;order:9;width:100%;' +
+    'min-width:0;text-align:center}' +
+    '#ed-barra.ed-carta .ed-estado:empty{display:none}' +
     '#ed-barra button,#ed-barra a{font:600 11px/1 "Barlow",sans-serif;letter-spacing:.14em;' +
     'text-transform:uppercase;text-decoration:none;display:inline-block;' +
     'background:#4966AD;color:#fff;border:0;padding:9px 16px;cursor:pointer;' +
@@ -270,11 +304,13 @@
   var btnPptx = document.getElementById('ed-pptx');
 
   var reloj = null;
+  /* Los errores se quedan MAS RATO que los "Foto cambiada": son frases que hay
+     que leer -y a veces hacer algo con ellas- y a los 2,6 s no daba tiempo. */
   function aviso(txt, mal) {
     elEstado.textContent = txt;
     elEstado.className = 'ed-estado' + (mal ? ' mal' : '');
     clearTimeout(reloj);
-    reloj = setTimeout(function () { elEstado.textContent = ''; }, 2600);
+    reloj = setTimeout(function () { elEstado.textContent = ''; }, mal ? 8000 : 2600);
   }
 
   /* ---- descargar lo que genera el servidor ----------------------------
@@ -489,7 +525,13 @@
   /* ---- cambiar la imagen ---------------------------------------------- */
   var entrada = document.createElement('input');
   entrada.type = 'file';
-  entrada.accept = 'image/*';
+  /* La lista va ESCRITA y no 'image/*'. Con el comodin, el dialogo de Windows
+     ensena tambien los .MOV de las Live Photos del iPhone -que se descargan al
+     lado del .jpeg y con el mismo nombre- y los .HEIC, y ninguno de los dos se
+     puede montar: el 2026-09-08 se subio un .MOV sin querer. Con la lista, el
+     dialogo los deja fuera. Se puede seguir forzando desde "Todos los
+     archivos", y para eso esta el filtro del change de mas abajo. */
+  entrada.accept = 'image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp';
   entrada.style.display = 'none';
   document.body.appendChild(entrada);
   var destino = null;
@@ -504,9 +546,28 @@
     entrada.click();
   }
 
+  /* Que NO se puede montar, dicho antes de subirlo. Se mira el tipo que da el
+     navegador, que en Windows sale de la extension. No es por rigor: un .MOV
+     del telefono pesa varios MB y sin esto se suben enteros para que el
+     servidor conteste que no. El servidor repite la comprobacion por su cuenta,
+     mirando los bytes (ver que_llego en servidor.py). */
+  function porQueNoSirve(archivo) {
+    var t = (archivo.type || '').toLowerCase();
+    var n = (archivo.name || '').toLowerCase();
+    if (t.indexOf('video/') === 0 || /\.(mov|mp4|m4v|avi|mkv|webm)$/.test(n))
+      return 'es un video: sube el .jpeg, no el .MOV de la Live Photo';
+    if (t.indexOf('heic') >= 0 || t.indexOf('heif') >= 0 || /\.(heic|heif)$/.test(n))
+      return 'es HEIC del iPhone: pasala a JPG';
+    if (t && t.indexOf('image/') !== 0)
+      return 'no es una imagen (' + t + ')';
+    return '';
+  }
+
   entrada.addEventListener('change', function () {
     var archivo = entrada.files && entrada.files[0];
     if (!archivo || !destino) return;
+    var pega = porQueNoSirve(archivo);
+    if (pega) { aviso('"' + archivo.name + '" ' + pega, true); return; }
     var nombre = destino;
     aviso('Subiendo...');
     fetch('/api/foto?nombre=' + encodeURIComponent(nombre), {
