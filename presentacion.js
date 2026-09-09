@@ -113,30 +113,20 @@
      Las laminas pasan a estar una ENCIMA de otra -position:fixed y centradas-
      en vez de apiladas hacia abajo, y se ve la que toque. --k es la escala,
      que se recalcula con la ventana (ver encajar()). */
-  /* ---- la pila de fotos ----
-     Van ARRIBA del todo y no con las demas medidas: se leen mas abajo desde la
+  /* ---- las dos rejillas de fotos apiladas ----
+     Va ARRIBA del todo y no con las demas medidas: se lee mas abajo desde la
      hoja de estilos que se arma aqui mismo, y una var declarada despues
      valdria undefined en ese momento.
 
-     Las dos rejillas de fotos -"Nuestra empresa" con dos y "Nuestras oficinas"
-     con cuatro- pasan a enseñar UNA PILA DE CARTAS: la foto que toca al
-     frente, entera y a tamaño, y las dos vecinas asomando detras -una por
-     arriba y otra por abajo-, mas chicas y apagadas. Cada pocos segundos la
-     pila avanza y la de abajo pasa al frente. El usuario lo enseño con una
-     captura el 2026-09-09.
-     Los cantos se quedan RECTOS, no redondeados como en la captura: en este
-     brochure no hay una sola esquina blanda y esa es su firma.
-     Antes fueron dos cosas distintas: un carrusel que repartia el alto dando
-     mas franja a la que mandaba -se quito-, y despues las fotos quietas del
-     todo -tambien-. De aquello queda que sus fotos NO entran en la fila de la
-     lamina y que la hoja de estilos les apaga la deriva: el pase de la pila es
-     el unico efecto que tienen, que es justo lo que se pidio. */
-  /* Cada cuanto pasa a la siguiente. Estuvo en 5200 y el usuario lo pidio "un
-     poquitito mas rapido" el 2026-09-09: con 3800 la pila gira sin que de
-     tiempo a olvidarse de que gira, y el pase sigue durando lo mismo. */
-  var PILA_TURNO = 3800;
-  var PILA_PASE = 720;     // lo que tarda el cambio; el mismo .72s del CSS
-  var PILAS = '.qse-foto, .ofi-fotos';
+     "Nuestra empresa" -dos fotos- y "Nuestras oficinas" -cuatro- enseñan sus
+     fotos EN COLUMNA, repartiendose el alto, igual con efectos que sin ellos.
+     El usuario probo un carrusel de cartas apiladas y lo quito el 2026-09-09:
+     "me gusta como se veian las fotos sin efecto". Con el se fueron su reloj,
+     sus puntos, las clases de la pila y el recorte de la caja.
+     Lo unico que queda de aquello es que sus fotos NO entran en la fila de la
+     lamina y que la hoja de estilos les apaga la deriva: son franjas pegadas
+     unas a otras, y verlas moverse cada una por su cuenta rompia el bloque. */
+  var REJILLAS_FOTO = '.qse-foto, .ofi-fotos';
 
   var css = document.createElement('style');
   css.textContent =
@@ -245,115 +235,13 @@
        solo vuelve a abrir flujo normal para que los espacios cuenten. */
     'html.pres .pres-tramo{display:inline}' +
 
-    /* ---- la pila de cartas ----
-       Las figuras dejan de repartirse el alto y se APILAN todas en la misma
-       celda -grid-area 1/1-, una encima de otra. Desde ahi, cada una se coloca
-       segun su turno: la que manda al frente y a su tamaño, la anterior
-       asomando por arriba y la siguiente por abajo, las dos mas chicas,
-       apagadas y por detras. Las demas esperan invisibles en el centro.
-
-       LA CARTA ES APAISADA, no del alto de la caja. La caja mide 730 x 720
-       -practicamente cuadrada- y las fotos NO lo son: las de la empresa son
-       16:9 y las de las oficinas van de 1,33 a 3,00. Con la carta cuadrada y
-       object-fit:cover, la foto se recortaba por los LADOS -las de 16:9
-       perdian el 43% del ancho- y ensenaba todo el alto. Lo canto el usuario
-       el 2026-09-09.
-       Ahora cada rejilla le da a su carta la forma de SUS fotos:
-         .qse-foto   16:9, que es exactamente la de sus dos fotos: no recorta
-                     nada.
-         .ofi-fotos  3:2, un termino medio. Ahi las cuatro son distintas -1,33
-                     de Caracas, 0,56 de Lecheria que es VERTICAL, 3,00 de El
-                     Tigre y 1,61 de Maturin-, asi que ninguna forma les sirve
-                     a todas; 3:2 es la que menos les quita y recorta por
-                     arriba y abajo, que duele menos que por los lados.
-       align-self:center centra la carta en la celda, que ahora le sobra alto.
-
-       LA DEL FRENTE ES LA GRANDE. Suena obvio y hubo que corregirlo: leyendo
-       la captura de referencia se pusieron las vecinas mas anchas que ella
-       -frente al 86%, vecinas al 95%- y el resultado era que la que mandaba se
-       veia MENOR que las de fuera de foco. Lo canto el usuario el 2026-09-09.
-       Ahora el frente va al 95% y las vecinas al 84%: la que toca es la mayor
-       de las tres, y las otras se leen detras por tamaño, no solo por estar
-       apagadas.
-       El 95 y no el 98 que tuvo: el usuario pidio quitarle medio centimetro
-       (2026-09-09). En esta lamina el centimetro son 37,8 px -1280 px para
-       13,333 pulgadas-, asi que medio son 19: la carta baja de 715 a 696 de
-       ancho, que es .953 redondeado a .95.
-
-       Y SE APARTAN 120 PX, no un porcentaje. Antes quedaban amontonadas justo
-       detras de la del frente -"todo como agrupado atras", 2026-09-09- y
-       arriba y abajo sobraba sitio sin usar. Con 120 px cada vecina asoma unos
-       90 y sigue entera dentro del contenedor, que recorta lo que se sale: en
-       la rejilla de 16:9 le quedan 67 px hasta el filo y en la de 3:2, 35.
-       EN PIXELES Y NO EN PORCENTAJE a proposito: el porcentaje se mide sobre
-       el alto de la carta, y las dos rejillas tienen cartas de alto distinto
-       -411 y 487-, asi que un mismo numero apartaba mas en una que en otra y
-       en la de 3:2 se salia. En pixeles las dos asoman lo mismo. Escalan
-       igual, que toda la lamina va dentro de un transform.
-       Si se sube el .95 o el .84 hay que bajar los 120, o las vecinas se salen
-       por arriba y por abajo.
-
-       Cada figura se lleva su rotulo dentro, en su figcaption, asi que el
-       nombre de la obra o de la oficina viaja con su foto sin hacer nada.
-       El selector lleva las tres clases de html.pres.pres-efectos para pesar
-       mas que el .qse-foto de estilos.css, que es quien reparte las filas. */
-    'html.pres.pres-efectos .pres-pila{position:relative;overflow:hidden;' +
-    'grid-template-rows:1fr;grid-template-columns:1fr}' +
-    /* CANTOS REDONDEADOS, y solo aqui. En el brochure no hay una sola esquina
-       blanda -es su firma- pero el usuario los pidio para el carrusel el
-       2026-09-09, y ahi tienen sentido: es lo que hace que la pila se lea como
-       un taco de fotos y no como tres rectangulos pegados. Va en el modo
-       presentacion, asi que el PDF y el PowerPoint siguen con sus cantos
-       rectos. Recorta solo porque .qse-foto figure y .l-oficinas figure ya
-       traen overflow:hidden de estilos.css. */
-    /* SIN LOS RIELES DE LA FOTO. Cada figura lleva dentro un riel diagonal
-       pegado a su canto derecho -.rieles-banda- que en la maqueta de siempre
-       marca el filo de la COLUMNA de fotos: las dos figuras se reparten el
-       alto y entre las dos lo cubren de arriba abajo. En la pila eso deja de
-       tener sentido: la carta es apaisada y va centrada, asi que el riel se
-       quedaba en su franja del medio y arriba y abajo no llegaba nada. Lo
-       canto el usuario el 2026-09-09.
-       Se quita en vez de estirarlo porque aqui la carta es una foto suelta con
-       los cantos redondeados, y un riel pegado a su borde -y cortado por la
-       curva- se lee como un resto, no como el filo de una columna. Los rieles
-       del panel (.rieles-panel y .rieles-derecha) no se tocan: esos van en la
-       lamina y siguen cruzandola entera. */
-    'html.pres.pres-efectos .pres-pila > figure .rieles-banda{display:none}' +
-    /* Las fotos de mas, las que SOLO salen en el carrusel: aqui recuperan su
-       caja. Van con display:none de fabrica (ver .solo-efectos en estilos.css)
-       para no aparecer en el PDF, el PowerPoint ni las hojas impresas, y solo
-       vuelven a existir dentro de una pila. */
-    'html.pres.pres-efectos .pres-pila > figure.solo-efectos{display:block}' +
-    'html.pres.pres-efectos .pres-pila > figure{grid-area:1 / 1;' +
-    'align-self:center;border-radius:20px;' +
-    'transform:scale(.72);opacity:0;z-index:1;' +
-    'transition:transform ' + (PILA_PASE / 1000) + 's cubic-bezier(.4,.02,.2,1),' +
-    'opacity ' + (PILA_PASE / 1000) + 's ease,filter ' + (PILA_PASE / 1000) + 's ease}' +
-    /* la forma de la carta, la de las fotos de cada rejilla */
-    'html.pres.pres-efectos .qse-foto.pres-pila > figure{aspect-ratio:16 / 9}' +
-    'html.pres.pres-efectos .ofi-fotos.pres-pila > figure{aspect-ratio:3 / 2}' +
-    /* la que manda: al frente y sin apagar */
-    'html.pres.pres-efectos .pres-pila > figure.pres-p-va{' +
-    'transform:scale(.95);opacity:1;z-index:3;filter:none}' +
-    /* las dos vecinas: detras, mas anchas y apagadas */
-    'html.pres.pres-efectos .pres-pila > figure.pres-p-antes{' +
-    'transform:translateY(-120px) scale(.84);opacity:1;z-index:2;' +
-    'filter:saturate(.3) brightness(.42)}' +
-    'html.pres.pres-efectos .pres-pila > figure.pres-p-luego{' +
-    'transform:translateY(120px) scale(.84);opacity:1;z-index:2;' +
-    'filter:saturate(.3) brightness(.42)}' +
-
-    /* Los puntos: cuantas fotos hay y por cual va. Cuadrados, como todo en
-       este brochure -no hay una sola esquina blanda-, y sin capturar el raton,
-       que el clic en cualquier sitio pasa de lamina. */
-    'html.pres .pres-puntos{position:absolute;z-index:6;left:0;right:0;' +
-    'bottom:16px;display:flex;justify-content:center;gap:7px;' +
-    'pointer-events:none}' +
-    'html.pres .pres-puntos i{display:block;width:7px;height:7px;' +
-    'background:rgba(255,255,255,.42);' +
-    'transition:background .4s ease,transform .4s ease}' +
-    'html.pres .pres-puntos i.pres-punto-va{background:#fff;' +
-    'transform:scale(1.3)}' +
+    /* Las fotos de mas, las que SOLO salen en la presentacion con efectos:
+       aqui recuperan su caja. Van con display:none de fabrica (ver
+       .solo-efectos en estilos.css) para no aparecer en el PDF, el PowerPoint
+       ni las hojas impresas, y solo vuelven a existir con los efectos puestos.
+       Al volver a la rejilla de siempre, una foto de mas es una franja mas: la
+       rejilla reparte el alto entre las que haya (grid-auto-rows:1fr). */
+    'html.pres.pres-efectos .solo-efectos{display:block}' +
 
     /* ---- las fotos, con deriva lenta ----
        Van recortadas por su marco -object-fit:cover- y encuadradas a mano:
@@ -400,9 +288,9 @@
        deja de ser una deriva y empieza a ser un zoom, que es otra cosa. */
     'html.pres.pres-efectos .lamina.pres-va.pres-sinparar img[data-foto]{' +
     'animation:pres-deriva 6s ease-in-out infinite alternate}' +
-    /* MENOS las de las dos rejillas que hacen pila (ver PILAS): alli el
-       movimiento es el pase de la pila, y las dos cosas juntas se leerian como
-       que la foto no se esta quieta. De la fila de entrada ya salen excluidas; esta
+    /* MENOS las de las dos rejillas de franjas (ver REJILLAS_FOTO): son fotos
+       pegadas unas a otras y verlas derivar cada una por su cuenta rompe el
+       bloque. De la fila de entrada ya salen excluidas; esta
        regla es la que ademas les apaga la deriva.
        Ojo con el selector: lleva .lamina.pres-va aunque no haga falta para
        localizar nada. Es para PESAR mas que las reglas de arriba; sin eso la
@@ -787,11 +675,6 @@
      anterior vivos, y esos animarian o limpiarian una lamina que ya no se ve.
      Por eso todo reloj de animacion pasa por aqui y se para de golpe. */
   var relojesAnim = [];
-  /* El de la pila va aparte por lo mismo: se rearma solo cada PILA_TURNO sin
-     volver a pasar por animarDentro, que es quien vacia relojesAnim. Y la caja
-     se guarda para poder desmontarla al salir. */
-  var relojPila = null;
-  var cajaPila = null;
   /* El de reescribir el titular va aparte por lo mismo que los otros dos: se
      rearma solo sin volver a pasar por animarDentro, que es quien vacia
      relojesAnim. */
@@ -806,70 +689,8 @@
        lamina este puesta. Se le devuelven las clases a las figuras y se le
        quitan los puntos: la lamina tiene que quedar como estaba, que de ella
        salen el PDF y el PowerPoint. */
-    clearTimeout(relojPila);
-    relojPila = null;
-    clearTimeout(relojRotulo);
-    relojRotulo = null;
-    if (cajaPila) {
-      var puntos = cajaPila.querySelector('.pres-puntos');
-      if (puntos) puntos.remove();
-      [].slice.call(cajaPila.children).forEach(function (fig) {
-        fig.classList.remove('pres-p-va', 'pres-p-antes', 'pres-p-luego');
-      });
-      cajaPila.classList.remove('pres-pila');
-      cajaPila = null;
-    }
   }
 
-  /* LA PILA DE CARTAS. Aqui solo se dice QUE PAPEL hace cada figura en cada
-     turno -la del frente, la de arriba, la de abajo o ninguno-; de colocarlas
-     se encarga el CSS. Con dos fotos, la vecina hace de las dos: se le da el
-     papel de "la de abajo", que es hacia donde avanza la pila, y no se pone
-     ninguna arriba -si no, la misma figura tendria dos sitios a la vez-.
-     Con menos de dos no se monta nada: no hay pila que pasar. */
-  function montarPila(lamina) {
-    var caja = lamina.querySelector(PILAS);
-    if (!caja) return;
-    var fotos = [].slice.call(caja.children).filter(function (el) {
-      return el.tagName === 'FIGURE';
-    });
-    if (fotos.length < 2) return;
-
-    caja.classList.add('pres-pila');
-    cajaPila = caja;
-
-    var puntos = document.createElement('div');
-    puntos.className = 'pres-puntos';
-    var marcas = fotos.map(function () {
-      var i = document.createElement('i');
-      puntos.appendChild(i);
-      return i;
-    });
-    caja.appendChild(puntos);
-
-    var n = fotos.length, turno = 0;
-
-    function pintar() {
-      var antes = (turno - 1 + n) % n;
-      var luego = (turno + 1) % n;
-      fotos.forEach(function (f, i) {
-        f.classList.toggle('pres-p-va', i === turno);
-        /* con n = 2, antes y luego son la misma: manda luego */
-        f.classList.toggle('pres-p-luego', i === luego && i !== turno);
-        f.classList.toggle('pres-p-antes', i === antes && i !== turno && i !== luego);
-      });
-      marcas.forEach(function (m, i) { m.classList.toggle('pres-punto-va', i === turno); });
-    }
-    pintar();
-
-    (function pasar() {
-      relojPila = setTimeout(function () {
-        turno = (turno + 1) % n;
-        pintar();
-        pasar();
-      }, PILA_TURNO);
-    })();
-  }
 
 
 
@@ -982,13 +803,13 @@
   function animarDentro(lamina) {
     pararAnim();
 
-    /* Las fotos de las dos rejillas que hacen pila salen de la fila: su
-       efecto es el pase de la pila (ver PILAS). Lo del otro lado -epigrafe,
+    /* Las fotos de las dos rejillas de franjas salen de la fila (ver
+       REJILLAS_FOTO). Lo del otro lado -epigrafe,
        titulo, textos- entra como siempre. */
-    var pila = lamina.querySelector(PILAS);
+    var rejilla = lamina.querySelector(REJILLAS_FOTO);
     var sinParar = noPara(lamina);
     var cosas = cosasDe(lamina).filter(function (el) {
-      if (pila && pila.contains(el)) return false;
+      if (rejilla && rejilla.contains(el)) return false;
       /* Y donde la foto no para, la foto no entra: entrar le cambiaria la
          animacion al limpiar y ahi daria el salto (ver SIN_PARAR). */
       if (sinParar && el.matches('img[data-foto]')) return false;
@@ -1105,7 +926,6 @@
        ultima cosa arranca en (n-1)*paso y tarda DURA; el margen es por si el
        navegador va justo. */
 
-    montarPila(lamina);
 
     relojesAnim.push(setTimeout(function () {
       limpiarAnim(lamina);
