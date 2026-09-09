@@ -302,6 +302,19 @@
        presentacion, asi que el PDF y el PowerPoint siguen con sus cantos
        rectos. Recorta solo porque .qse-foto figure y .l-oficinas figure ya
        traen overflow:hidden de estilos.css. */
+    /* SIN LOS RIELES DE LA FOTO. Cada figura lleva dentro un riel diagonal
+       pegado a su canto derecho -.rieles-banda- que en la maqueta de siempre
+       marca el filo de la COLUMNA de fotos: las dos figuras se reparten el
+       alto y entre las dos lo cubren de arriba abajo. En la pila eso deja de
+       tener sentido: la carta es apaisada y va centrada, asi que el riel se
+       quedaba en su franja del medio y arriba y abajo no llegaba nada. Lo
+       canto el usuario el 2026-09-09.
+       Se quita en vez de estirarlo porque aqui la carta es una foto suelta con
+       los cantos redondeados, y un riel pegado a su borde -y cortado por la
+       curva- se lee como un resto, no como el filo de una columna. Los rieles
+       del panel (.rieles-panel y .rieles-derecha) no se tocan: esos van en la
+       lamina y siguen cruzandola entera. */
+    'html.pres.pres-efectos .pres-pila > figure .rieles-banda{display:none}' +
     /* Las fotos de mas, las que SOLO salen en el carrusel: aqui recuperan su
        caja. Van con display:none de fabrica (ver .solo-efectos en estilos.css)
        para no aparecer en el PDF, el PowerPoint ni las hojas impresas, y solo
@@ -766,6 +779,10 @@
      se guarda para poder desmontarla al salir. */
   var relojPila = null;
   var cajaPila = null;
+  /* El de reescribir el titular va aparte por lo mismo que los otros dos: se
+     rearma solo sin volver a pasar por animarDentro, que es quien vacia
+     relojesAnim. */
+  var relojRotulo = null;
 
   function pararAnim() {
     relojesAnim.forEach(clearTimeout);
@@ -778,6 +795,8 @@
        salen el PDF y el PowerPoint. */
     clearTimeout(relojPila);
     relojPila = null;
+    clearTimeout(relojRotulo);
+    relojRotulo = null;
     if (cajaPila) {
       var puntos = cajaPila.querySelector('.pres-puntos');
       if (puntos) puntos.remove();
@@ -880,6 +899,23 @@
   var SIN_PARAR = ['l-cubierta', 'l-nosotros', 'l-valores', 'l-portafolio',
                    'l-clientes', 'l-flota', 'l-cierre'];
 
+  /* EL TITULAR QUE SE VUELVE A ESCRIBIR. La portada repetia su entrada entera
+     cada cinco segundos y eso titilaba -toda la lamina se rehacia de golpe-,
+     asi que se quito. Pero al usuario le gustaba ver el texto escribirse otra
+     vez, y eso se puede tener SIN el parpadeo: se reescriben solo los dos
+     rotulos -el epigrafe y el titular- y no se toca nada mas. La foto, el
+     logo y los paneles se quedan donde estan; lo unico que se mueve son las
+     palabras. Pedido el 2026-09-09.
+     Va solo en la portada: es la lamina que se queda puesta mientras llega la
+     gente. El cierre NO entra aqui a proposito -su texto son el telefono y el
+     correo, y reescribirlos se los borra a quien los este copiando-. */
+  var REESCRIBEN = ['l-cubierta'];
+  var REESCRIBIR_CADA = 9000;
+
+  function reescribeTitular(lamina) {
+    return REESCRIBEN.some(function (c) { return lamina.classList.contains(c); });
+  }
+
   function noPara(lamina) {
     return SIN_PARAR.some(function (c) { return lamina.classList.contains(c); });
   }
@@ -893,6 +929,42 @@
   laminas.forEach(function (l) {
     if (noPara(l)) l.classList.add('pres-sinparar');
   });
+
+  /* Vuelve a escribir los dos rotulos de la lamina -epigrafe y titular- y los
+     deja como estaban. Nada mas se toca: por eso no titila.
+     El devolverTitular del final NO es opcional: escribir parte el rotulo en
+     spans de palabra, y de esta misma lamina salen el PDF y el PowerPoint. Si
+     se pasa de lamina a medias, pararAnim corta este reloj y el limpiarAnim de
+     ir() los devuelve igual, que barre por la clase pres-titular.
+     Se rearma sola mientras la lamina siga puesta y los efectos encendidos. */
+  function reescribirRotulos(lamina) {
+    relojRotulo = setTimeout(function () {
+      if (!hayEfectos() || laminas[actual] !== lamina) return;
+      var rotulos = [buscarEpigrafe(lamina), buscarTitular(lamina)]
+        .filter(function (el) { return el && partirEnPalabras(el); });
+      var fin = 0;
+      rotulos.forEach(function (rotulo) {
+        var deLado = rotulo.classList.contains('pres-lado');
+        rotulo.classList.add('pres-titular');
+        var palabras = [].slice.call(rotulo.querySelectorAll('.pres-palabra'));
+        palabras.forEach(function (p, j) {
+          if (deLado) p.classList.add('pres-lado');
+          p.style.animationDelay = (j * PASO_PALABRA) + 'ms';
+        });
+        fin = Math.max(fin, (palabras.length - 1) * PASO_PALABRA);
+      });
+      /* Se limpian y se vuelve a empezar la cuenta: asi el hueco entre una
+         escritura y la siguiente es siempre el mismo, dure lo que dure el
+         texto. */
+      relojRotulo = setTimeout(function () {
+        rotulos.forEach(function (el) {
+          el.classList.remove('pres-titular');
+          devolverTitular(el);
+        });
+        reescribirRotulos(lamina);
+      }, fin + DURA_PALABRA + 150);
+    }, REESCRIBIR_CADA);
+  }
 
   function animarDentro(lamina) {
     pararAnim();
@@ -1024,6 +1096,9 @@
 
     relojesAnim.push(setTimeout(function () {
       limpiarAnim(lamina);
+      if (hayEfectos() && laminas[actual] === lamina && reescribeTitular(lamina)) {
+        reescribirRotulos(lamina);
+      }
     }, ultimo + Math.max(DURA, DURA_PALABRA) + 150));
   }
 
