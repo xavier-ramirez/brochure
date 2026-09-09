@@ -143,7 +143,7 @@ VALORES = dict(
 # se escriben aqui.
 SERVICIOS = [
     ('01', 'Construcción de Ductos Petroleros', [
-        'Soldadura de 3/4″ a 42″ con procedimiento calificado',
+        'Soldadura de 3/4″ a 42″ con PQR',
         'Tubería enterrada y superficial',
         'Revestimiento y protección de tuberías',
         'Ingeniería, topografía y excavación',
