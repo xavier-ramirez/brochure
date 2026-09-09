@@ -273,11 +273,21 @@
        un taco de hojas donde la de encima es un pelin menor y las de abajo
        asoman por los cuatro costados. Estuvieron al reves -frente .9, vecinas
        .78- y se leia como si las de atras estuvieran lejos, no debajo.
-       Ahora el frente va al 86% y las vecinas al 95%, corridas un 14%: cada
-       vecina sobresale unos 33 px por cada lado y asoma unos 89 px por arriba
-       o por abajo, y aun le quedan mas de 60 hasta el filo del contenedor, que
-       recorta lo que se sale. Si se sube el .86 hay que bajar el 14% o las
-       vecinas desaparecen detras.
+       El frente va al 86% y las vecinas al 95%: cada vecina sobresale unos 33
+       px por cada lado.
+
+       Y SE APARTAN 120 PX, no un 14%. Con el 14% quedaban amontonadas justo
+       detras de la del frente -"todo como agrupado atras", 2026-09-09- y
+       arriba y abajo sobraba sitio sin usar. Con 120 px cada vecina asoma unos
+       138 y sigue entera dentro del contenedor, que recorta lo que se sale: en
+       la rejilla de 16:9 le quedan 45 px hasta el filo y en la de 3:2, nueve.
+       EN PIXELES Y NO EN PORCENTAJE a proposito: el porcentaje se mide sobre
+       el alto de la carta, y las dos rejillas tienen cartas de alto distinto
+       -411 y 487-, asi que un mismo numero apartaba mas en una que en otra y
+       en la de 3:2 se salia. En pixeles las dos asoman lo mismo. Escalan
+       igual, que toda la lamina va dentro de un transform.
+       Si se sube el .86 o el .95 hay que bajar los 120, o las vecinas se salen
+       por arriba y por abajo.
 
        Cada figura se lleva su rotulo dentro, en su figcaption, asi que el
        nombre de la obra o de la oficina viaja con su foto sin hacer nada.
@@ -310,10 +320,10 @@
     'transform:scale(.86);opacity:1;z-index:3;filter:none}' +
     /* las dos vecinas: detras, mas anchas y apagadas */
     'html.pres.pres-efectos .pres-pila > figure.pres-p-antes{' +
-    'transform:translateY(-14%) scale(.95);opacity:1;z-index:2;' +
+    'transform:translateY(-120px) scale(.95);opacity:1;z-index:2;' +
     'filter:saturate(.3) brightness(.42)}' +
     'html.pres.pres-efectos .pres-pila > figure.pres-p-luego{' +
-    'transform:translateY(14%) scale(.95);opacity:1;z-index:2;' +
+    'transform:translateY(120px) scale(.95);opacity:1;z-index:2;' +
     'filter:saturate(.3) brightness(.42)}' +
 
     /* Los puntos: cuantas fotos hay y por cual va. Cuadrados, como todo en
