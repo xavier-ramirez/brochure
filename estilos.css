@@ -12,6 +12,10 @@
   --navy-medio:#2A3C78;
   --azul:#4966AD;
   --azul-suave:#7C8BBA;
+  /* El mas claro de la escala. Esta para los rotulos pequeños SOBRE navy:
+     --azul-suave se lee bien en un texto corrido, pero en 10,5 px con
+     letter-spacing de .32em sobre el fondo oscuro se perdia. */
+  --azul-palido:#AEBCE0;
   --hielo:#EBEEF6;
   --rojo-pdvsa:#E02128;   /* el rojo de los logotipos de los clientes */
   --gris:#5F6980;          /* datos secundarios */
@@ -915,7 +919,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    pusiera aqui, esa regla tendria que deshacerlo */
 .tarjeta h3,.l-destacado h3{color:var(--navy);flex:none}
 .tarjeta h3{font-size:30px}
-.tarjeta .sub,.l-destacado .sub{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
+/* Los dos textos de la ficha -el sitio y la descripcion- van medio punto por
+   encima de donde nacieron: a la medida de antes costaban de leer
+   proyectados. El h3 no sube, que ya es grande de sobra. */
+.tarjeta .sub,.l-destacado .sub{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16.5px;
   color:var(--azul);margin-top:9px;padding-bottom:9px;position:relative;line-height:1.22;flex:none}
 .tarjeta .sub::after,.l-destacado .sub::after{content:"";position:absolute;left:0;bottom:0;
   width:78px;height:2px;background:rgba(73,102,173,.4)}
@@ -926,7 +933,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
    con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los
    mismos huecos. Ver la nota de .ct p. */
-.desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:#000;
+.desc{margin-top:13px;font-size:13px;line-height:1.72;color:#000;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .minis figure{height:142px;overflow:hidden;background:var(--hielo);
@@ -934,7 +941,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .minis img{width:100%;height:100%;transition:transform .6s ease}
 .caja-cliente{flex:none;margin-top:16px;height:66px;background:var(--navy);color:#fff;
   padding:13px 22px;clip-path:polygon(0 0,100% 0,100% 100%,22px 100%)}
-.caja-cliente .rot{display:block;font-size:10.5px;font-weight:600;letter-spacing:.32em;color:var(--azul-suave)}
+.caja-cliente .rot{display:block;font-size:10.5px;font-weight:600;letter-spacing:.32em;color:var(--azul-palido)}
 .caja-cliente b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;margin-top:1px}
 
 /* proyecto impar: lamina completa */
@@ -946,7 +953,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-destacado .izq{display:flex;flex-direction:column}
 .l-destacado h3{font-size:38px}
 .l-destacado .caja-cliente{margin-top:auto;width:400px}
-.l-destacado .desc{font-size:13.5px}
+.l-destacado .desc{font-size:14px}
 .l-destacado .der{display:block}
 /* las cuatro del mismo tamano exacto y con el mismo corte.
    Las filas van en pixeles, no en 1fr: con height:100% dentro de un bloque de
