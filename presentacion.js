@@ -464,14 +464,18 @@
     '<button type="button" class="pres-flecha" id="pres-luego" title="Siguiente">&#9654;</button>' +
     '<button type="button" id="pres-efectos"></button>' +
     '<button type="button" id="pres-pantalla">Pantalla completa</button>' +
-    '<button type="button" id="pres-suelta">Descargar presentacion</button>' +
+    /* El boton de descargar NO se pone en el archivo suelto: alli no hay
+       servidor que lo atienda y, sobre todo, ese archivo YA ES la descarga.
+       Un boton que no puede funcionar es peor que no tenerlo. */
+    (suelta ? '' :
+      '<button type="button" id="pres-suelta">Descargar presentacion</button>') +
     '<button type="button" id="pres-salir">Salir</button>' +
     '<span class="pres-aviso" id="pres-aviso"></span>';
   document.body.appendChild(barra);
 
   var elCuenta = document.getElementById('pres-cuenta');
   var elAviso  = document.getElementById('pres-aviso');
-  var btnSuelta = document.getElementById('pres-suelta');
+  var btnSuelta = document.getElementById('pres-suelta');   /* no existe en el suelto */
 
   var relojAviso = null;
   function aviso(txt, mal) {
@@ -1176,7 +1180,7 @@
      PowerPoint no sabe hacer la pila de fotos ni los bucles, y traducir lo
      demas lo dejaria parecido pero no igual (ver exportar_html.py).
      Mismo baile que el boton del PowerPoint, que es el que ya funcionaba. */
-  btnSuelta.addEventListener('click', function () {
+  if (btnSuelta) btnSuelta.addEventListener('click', function () {
     if (!conServidor) { aviso('Abre la pagina con: python servidor.py', true); return; }
     btnSuelta.disabled = true;
     var texto = btnSuelta.textContent;
