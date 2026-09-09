@@ -105,6 +105,22 @@
      Las laminas pasan a estar una ENCIMA de otra -position:fixed y centradas-
      en vez de apiladas hacia abajo, y se ve la que toque. --k es la escala,
      que se recalcula con la ventana (ver encajar()). */
+  /* ---- el carrusel de fotos apiladas ----
+     Estas tres van ARRIBA del todo y no con las demas medidas: CARRUSEL se
+     lee mas abajo desde la hoja de estilos que se arma aqui mismo, y una var
+     declarada despues valdria undefined en ese momento. */
+  /* Cada cuanto pasa el turno de una foto a la siguiente. Largo a proposito:
+     es para mirar la foto, no para marear. */
+  var CARRUSEL = 5200;
+  /* Cuantas partes se lleva la que manda frente a una de cada una de las
+     demas. Con 3,4: de dos fotos la grande ocupa el 77%; de cuatro, el 52%
+     frente al 15% de las otras. */
+  var FOCO = 3.4;
+  /* Las rejillas que se turnan. Son estas dos y no cualquier grupo de figuras:
+     en las laminas de proyectos cada foto es una obra distinta y agrandar una
+     a costa de las demas no querria decir nada. */
+  var CARRUSELES = '.qse-foto, .ofi-fotos';
+
   var css = document.createElement('style');
   css.textContent =
     'html.pres{--encaje:1;overflow:hidden;scrollbar-gutter:auto;background:#0A1330}' +
@@ -210,8 +226,47 @@
        poco de una rejilla que el navegador sabe interpolar; no se toca el
        transform de las imagenes -es el de su encuadre- ni la deriva que ya
        corre encima. */
-    'html.pres.pres-efectos .pres-carrusel{' +
-    'transition:grid-template-rows 1.15s cubic-bezier(.4,0,.2,1)}' +
+    'html.pres.pres-efectos .pres-carrusel{position:relative;' +
+    'transition:grid-template-rows 1.25s cubic-bezier(.33,0,.15,1)}' +
+
+    /* Las que NO mandan se apagan: bajan de luz y de color y se quedan como
+       el contexto de la que se esta mirando. Es lo que hace que la grande se
+       lea como grande y no como "una franja mas pero mayor". El filtro va en
+       la figura entera para que se apague tambien su rotulo. */
+    'html.pres.pres-efectos .pres-carrusel > *{' +
+    'transition:filter 1.25s ease,opacity 1.25s ease;' +
+    'filter:saturate(.45) brightness(.52);opacity:.72}' +
+    'html.pres.pres-efectos .pres-carrusel > .pres-foco{' +
+    'filter:none;opacity:1}' +
+
+    /* La deriva lenta se queda SOLO en la que manda. Encima de las franjas
+       chicas no se apreciaba y era ruido; sobre la grande es lo que la hace
+       parecer viva mientras se mira. */
+    'html.pres.pres-efectos .pres-carrusel figure img[data-foto]{animation:none}' +
+    'html.pres.pres-efectos .pres-carrusel > .pres-foco img[data-foto]{' +
+    'animation:pres-deriva 6.5s cubic-bezier(.22,.61,.36,1) both}' +
+
+    /* ---- los tramos de arriba, uno por foto ----
+       Dicen cuantas hay, cual se esta viendo y cuanto le queda. Es lo que
+       convierte "dos fotos que cambian de tamaño" en un carrusel que se
+       entiende sin explicarlo. Se crean desde el JS y se van al desmontar:
+       en la lamina impresa no existen. */
+    /* Sobre una foto de cielo el blanco sobre blanco no se ve, asi que los
+       tramos van sobre una placa navy con el mismo canto recto del brochure
+       -nada redondeado, que aqui no hay una sola esquina blanda-. */
+    'html.pres .pres-indices{position:absolute;z-index:6;top:0;right:0;' +
+    'display:flex;gap:5px;pointer-events:none;' +
+    'padding:11px 14px;background:linear-gradient(200deg,' +
+    'rgba(10,19,48,.82) 0%,rgba(10,19,48,.82) 62%,rgba(10,19,48,0) 100%)}' +
+    'html.pres .pres-indices i{display:block;width:30px;height:3px;' +
+    'background:rgba(255,255,255,.3);overflow:hidden}' +
+    'html.pres .pres-indices i s{display:block;width:100%;height:100%;' +
+    'background:#fff;transform:scaleX(0);transform-origin:left center}' +
+    /* El que corre se llena en el tiempo que dura el turno; los ya pasados se
+       quedan llenos, que es como se lee "vas por la tercera de cuatro". */
+    'html.pres .pres-indices i.pres-hecho s{transform:scaleX(1)}' +
+    'html.pres .pres-indices i.pres-corre s{transform:scaleX(1);' +
+    'transition:transform ' + (CARRUSEL / 1000) + 's linear}' +
 
     /* ---- las fotos, con deriva lenta ----
        Las fotos del brochure van recortadas por su marco -object-fit:cover- y
@@ -356,17 +411,6 @@
      congelada: la deriva de la foto dura 8s, asi que con esto la portada
      respira un momento y arranca otra vez. */
   var REPETIR_PORTADA = 9000;
-  /* Cada cuanto pasa el turno de una foto a la siguiente en el carrusel. Largo
-     a proposito: es para mirar la foto, no para marear. */
-  var CARRUSEL = 5200;
-  /* Cuantas partes se lleva la foto que manda frente a una parte de cada una de
-     las demas. Con 2,4: de dos fotos, la grande ocupa el 70%; de cuatro, el 44%
-     frente al 18% de las otras. */
-  var FOCO = 2.4;
-  /* Las rejillas de fotos apiladas que se turnan. Son estas dos y no cualquier
-     grupo de figuras: en las laminas de proyectos las fotos son fichas de
-     obras distintas y agrandar una a costa de las demas no querria decir nada. */
-  var CARRUSELES = '.qse-foto, .ofi-fotos';
   /* Tope de cuando ARRANCA la ultima, no de cuando termina: la lamina acaba de
      armarse TOPE_ARRANQUES + DURA despues. Si con PASO fijo la ultima se
      arrancaria mas tarde que esto, el paso se acorta hasta que quepa. */
@@ -589,29 +633,70 @@
     clearTimeout(relojCarrusel);
     relojCarrusel = null;
     if (cajaCarrusel) {
+      var indices = cajaCarrusel.querySelector('.pres-indices');
+      if (indices) indices.remove();
+      [].slice.call(cajaCarrusel.children).forEach(function (foto) {
+        foto.classList.remove('pres-foco');
+      });
       cajaCarrusel.classList.remove('pres-carrusel');
       cajaCarrusel.style.removeProperty('grid-template-rows');
       cajaCarrusel = null;
     }
   }
 
-  /* Reparte el alto de la rejilla dando FOCO partes a una franja y una a cada
-     una de las demas, y va pasando el turno. */
-  function montarCarrusel(lamina) {
+  /* La rejilla de fotos apiladas de esta lamina, si la tiene y si vale la pena
+     turnarla. Un solo sitio lo decide, que lo preguntan dos. */
+  function cajaDeCarrusel(lamina) {
     var caja = lamina.querySelector(CARRUSELES);
+    return (caja && caja.children.length > 1) ? caja : null;
+  }
+
+  /* Reparte el alto dando FOCO partes a la que manda y una a cada una de las
+     demas, apaga las que no mandan y va pasando el turno. Los tramos de arriba
+     -uno por foto- cuentan por donde va. */
+  function montarCarrusel(lamina) {
+    var caja = cajaDeCarrusel(lamina);
     if (!caja) return;
-    var cuantas = caja.children.length;
-    if (cuantas < 2) return;
+    var fotos = [].slice.call(caja.children);
 
     caja.classList.add('pres-carrusel');
     cajaCarrusel = caja;
 
+    var indices = document.createElement('div');
+    indices.className = 'pres-indices';
+    var tramos = fotos.map(function () {
+      var t = document.createElement('i');
+      t.appendChild(document.createElement('s'));
+      indices.appendChild(t);
+      return t;
+    });
+    caja.appendChild(indices);
+
     var turno = 0;
     (function pasar() {
-      var partes = [];
-      for (var i = 0; i < cuantas; i++) partes.push(i === turno ? FOCO + 'fr' : '1fr');
+      var partes = fotos.map(function (foto, i) {
+        foto.classList.toggle('pres-foco', i === turno);
+        return i === turno ? FOCO + 'fr' : '1fr';
+      });
       caja.style.gridTemplateRows = partes.join(' ');
-      turno = (turno + 1) % cuantas;
+
+      /* Los tramos: el de la foto que entra se llena en lo que dura el turno,
+         los de antes se quedan llenos y los de despues vacios. Al dar la vuelta
+         se vacian todos, que es lo que dice "empezamos otra ronda". */
+      /* El indice se guarda AQUI, en una variable de este turno. Si el
+         fotograma de abajo leyera 'turno' lo leeria ya sumado -pasa antes de
+         que corra- y encenderia el tramo de la foto siguiente. */
+      var actual = turno;
+      tramos.forEach(function (t, i) {
+        t.className = i < actual ? 'pres-hecho' : '';
+      });
+      /* El fotograma de por medio es el de siempre: sin el, poner la clase y
+         quitarla en el mismo golpe no deja nada que interpolar. */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { tramos[actual].className = 'pres-corre'; });
+      });
+
+      turno = (turno + 1) % fotos.length;
       relojCarrusel = setTimeout(pasar, CARRUSEL);
     })();
   }
@@ -630,7 +715,16 @@
 
   function animarDentro(lamina) {
     pararAnim();
-    var cosas = cosasDe(lamina);
+
+    /* Donde hay carrusel, las fotos NO entran una a una: se quedan puestas
+       desde el primer fotograma y el carrusel es todo el movimiento de ese
+       lado. Antes se enfocaban y se fundian ademas de turnarse, y eran dos
+       efectos peleandose por la misma mitad de la lamina. Aqui se sacan de la
+       fila; lo del otro lado -epigrafe, titulo, textos- entra como siempre. */
+    var caja = cajaDeCarrusel(lamina);
+    var cosas = cosasDe(lamina).filter(function (el) {
+      return !caja || !caja.contains(el);
+    });
     if (!cosas.length) return;
 
     /* Cuando hay muchas cosas el paso se acorta para que la ultima no arranque
@@ -723,9 +817,10 @@
        siempre y una captura o una impresion no la pilla a medio animar. La
        ultima cosa arranca en (n-1)*paso y tarda DURA; el margen es por si el
        navegador va justo. */
+    montarCarrusel(lamina);
+
     relojesAnim.push(setTimeout(function () {
       limpiarAnim(lamina);
-      montarCarrusel(lamina);
       /* La PORTADA se repite. Es la lamina que se queda puesta mientras llega
          la gente a la reunion, y una portada quieta parece una pantalla
          colgada; las demas no, que ahi el que manda es quien esta hablando.
