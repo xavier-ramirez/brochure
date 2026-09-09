@@ -19,6 +19,10 @@
   --navy-medio:#2A3C78;
   --azul:#4966AD;
   --azul-suave:#7C8BBA;
+  /* El mas claro de la escala. Esta para los rotulos pequeños SOBRE navy:
+     --azul-suave se lee bien en un texto corrido, pero en 10,5 px con
+     letter-spacing de .32em sobre el fondo oscuro se perdia. */
+  --azul-palido:#AEBCE0;
   --hielo:#EBEEF6;
   --rojo-pdvsa:#E02128;   /* el rojo de los logotipos de los clientes */
   --gris:#5F6980;          /* datos secundarios */
@@ -95,7 +99,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 /* ---------------------------------------------------- piezas de marca --- */
 .epigrafe{
-  font-size:13.5px;font-weight:600;letter-spacing:.32em;color:var(--navy-medio);
+  font-size:14px;font-weight:600;letter-spacing:.32em;color:var(--navy-medio);
   display:flex;align-items:center;gap:16px;
 }
 .epigrafe::before{content:"";width:38px;height:3px;background:currentColor;flex:none;transform:skewX(-22deg)}
@@ -117,10 +121,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 .chip{display:inline-flex;align-items:center;justify-content:center;
   background:rgba(18,33,73,.94);color:#fff;transform:skewX(-22deg);padding:7px 26px 7px 32px}
+/* El chip tampoco sube: es el rotulo de categoria -CONSTRUCCION, AMBIENTE-
+   y ya se lee de sobra. Con .3em de espaciado, medio punto mas lo alarga
+   bastante mas de lo que se gana. */
 .chip b{transform:skewX(22deg);font-weight:600;font-size:11px;letter-spacing:.3em}
 
-.estado{font-size:10.5px;font-weight:600;letter-spacing:.14em;padding:2px 10px;transform:skewX(-16deg)}
-.estado b{display:block;transform:skewX(16deg);font-weight:600}
+.estado{font-size:11px;font-weight:600;letter-spacing:.14em;padding:2px 10px;transform:skewX(-16deg)}
+/* nowrap: es una etiqueta, no un parrafo. "Sede Administrativa Oriente" es
+   la mas larga y se partia en dos lineas dentro de su propio chip, que se
+   veia como un error de maquetacion. Si no cabe al lado de la ciudad, el
+   flex-wrap del rotulo la baja entera a la linea siguiente, que es lo
+   correcto. */
+.estado b{display:block;transform:skewX(16deg);font-weight:600;white-space:nowrap}
 .estado.marcha{background:rgba(73,102,173,.16);color:#3A5599}
 .estado.lista{background:rgba(18,33,73,.09);color:#5C6580}
 
@@ -194,7 +206,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    abria rios entre palabras. (En otras columnas si sale parejo, ver la nota
    de .pilar p: depende de si el navegador encuentra donde partir palabras
    con el texto que traiga cada una). */
-.entrada{font-size:15px;line-height:1.85;color:#fff;width:468px}
+.entrada{font-size:15.5px;line-height:1.85;color:#fff;width:468px}
 /* row-reverse: en blanco la escala moria en el claro; sobre el azul muere
    en el oscuro, que es el mismo gesto al reves. Los colores no se tocan.
    Al invertir la fila, el principio pasa a ser la derecha, asi que hace
@@ -248,7 +260,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   left:-70px;right:-110px;top:-30px;bottom:-40px;
   background:radial-gradient(72% 130% at 24% 58%,rgba(9,17,42,.80) 0%,
              rgba(9,17,42,.52) 46%,rgba(9,17,42,0) 76%)}
-.banda-txt h2{color:#fff;font-size:54px;margin-top:12px;text-shadow:0 2px 30px rgba(6,12,30,.55)}
+.banda-txt h2{color:#fff;font-size:54.5px;margin-top:12px;text-shadow:0 2px 30px rgba(6,12,30,.55)}
 .banda-fecha{position:absolute;right:var(--lado);bottom:44px;z-index:4;text-align:right;pointer-events:none}
 /* El rotulo de LUGAR de una banda -hoy "Patio de maquinas · Maturin" en Mision
    y vision-. Se coloca como .banda-fecha, en la esquina de enfrente del
@@ -261,10 +273,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    mas de la lamina. */
 .banda-lugar .chip,.qse-foto figcaption .chip,
 .l-oficinas figcaption .chip{background:rgba(95,105,128,.92)}
-.banda-fecha span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.3em;
+.banda-fecha span{display:block;font-size:11px;font-weight:600;letter-spacing:.3em;
   color:#fff}
 .banda-fecha b{display:block;margin-top:3px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:22px;color:#fff;text-shadow:0 2px 20px rgba(6,12,30,.6)}
+  font-weight:700;font-size:22.5px;color:#fff;text-shadow:0 2px 20px rgba(6,12,30,.6)}
 
 /* ==================================================  0. CUBIERTA  =====
    La hoja que va ANTES de la portada. Hay cuatro propuestas escritas con el
@@ -286,7 +298,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    pagina, con su rotulo encima para saber cual es cual, y se apagan en cuanto
    la hoja va a papel -el PDF y el PowerPoint-. */
 .rotulo-prueba{width:var(--ancho-lamina);margin:40px auto 10px;
-  font-family:"Barlow",sans-serif;font-weight:600;font-size:13px;
+  font-family:"Barlow",sans-serif;font-weight:600;font-size:13.5px;
   letter-spacing:.28em;text-transform:uppercase}
 /* el rotulo va en una etiqueta azul, para que no se confunda con la pagina */
 .rotulo-prueba span{display:inline-block;background:var(--azul);color:#fff;
@@ -331,14 +343,14 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cb-fila{position:absolute;left:var(--lado);top:52px;display:flex;align-items:center;gap:46px}
 .cb-fila span.par{display:flex;align-items:center;gap:14px}
 .cb-fila .num{background:var(--navy-medio);color:#fff}
-.cb-fila b.rot{font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;
+.cb-fila b.rot{font-family:"Barlow",sans-serif;font-weight:600;font-size:13px;
   letter-spacing:.3em;color:var(--navy)}
 .cb-sello{position:absolute;left:var(--lado);right:var(--lado);bottom:44px;
   display:flex;justify-content:space-between;align-items:flex-end;
   /* un escalon mas abajo en la escala: el azul suave (#7C8BBA) se apagaba
      contra el pie claro y la raya casi no se leia */
   border-top:3px solid var(--azul);padding-top:20px}
-.cb-sello span{font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--azul)}
+.cb-sello span{font-size:15.5px;font-weight:600;letter-spacing:.3em;color:var(--azul)}
 
 /* --- C: la misma trama, pero el pie en navy y todo en blanco --------- */
 .cb-azul .panel{background:var(--navy)}
@@ -413,10 +425,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    que al principio -13 px el rotulo, 36 el ano, antes 11 y 30-: el usuario
    lo volvio a pedir mas adelante. */
 .cbp-sello{text-align:center;line-height:1}
-.cbp-sello span{display:block;font-size:13px;font-weight:600;letter-spacing:.3em}
+.cbp-sello span{display:block;font-size:13.5px;font-weight:600;letter-spacing:.3em}
 .cbp-sello b{display:block;margin-top:8px;
   font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;
-  font-size:36px;letter-spacing:.08em}
+  font-size:36.5px;letter-spacing:.08em}
 
 
 /* --- G: 'texto' -----------------------------------------------------
@@ -467,7 +479,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    de seccion, asi que aguanta el cuerpo. 17 px es el tope: con el espaciado
    de .32em la linea mide 465 px medidos, y el hueco util de la columna es de
    485; a 18 ya no cabria en un renglon. */
-.cb-partida .cbp-titulo .epigrafe{font-size:17px}
+.cb-partida .cbp-titulo .epigrafe{font-size:17.5px}
 .cb-partida .cbp-titulo{position:absolute;left:0;bottom:0;width:100%;height:52%;
   box-sizing:border-box;padding:0 52px;
   display:flex;flex-direction:column;align-items:flex-start;
@@ -481,7 +493,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    lado, deja 484. El titular trae su propio <br> -contenido.py-, asi que la
    linea larga es "Construyendo la infraestructura": a 54 px medía unos 700
    px y se partia sola en un sitio feo; a 38 entra en su renglon. */
-.cb-partida .cbp-titulo h2{color:#fff;font-size:38px;line-height:1.1;
+.cb-partida .cbp-titulo h2{color:#fff;font-size:38.5px;line-height:1.1;
   margin-top:12px}
 /* Solo el logotipo: el sello se fue a la foto, asi que aqui no hay que
    repartir dos piezas y la marca se queda sola en el centro del blanco. */
@@ -539,10 +551,10 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    asi que el ano gana peso sin volver a comerse la portada.
    El <i> son las dos primeras cifras -lo parte sello_brochure()-; el resto
    hereda el color de la <b>. */
-.cb-partida .cbp-foto .cbp-sello b{font-size:81px;line-height:.94;margin:0;
+.cb-partida .cbp-foto .cbp-sello b{font-size:81.5px;line-height:.94;margin:0;
   letter-spacing:.01em;color:var(--azul)}
 .cb-partida .cbp-foto .cbp-sello b i{font-style:normal;color:#fff}
-.cb-partida .cbp-foto .cbp-sello span{color:#fff;font-size:15.5px}
+.cb-partida .cbp-foto .cbp-sello span{color:#fff;font-size:16px}
 /* El pie de esa foto es lo mas claro que tiene -acera y cesped-, asi que el
    sello no se sostiene solo: este degradado cierra el ultimo tercio sin tocar
    el edificio, que es lo que hay que ver. */
@@ -661,7 +673,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    riel sigue en absoluto -su regla de siempre- asi que el flex de arriba no
    lo mueve de sitio, solo centra estas dos piezas. */
 .qse-cab{position:relative;z-index:4}
-.l-empresa h2{color:#fff;font-size:38px;margin-top:12px}
+.l-empresa h2{color:#fff;font-size:38.5px;margin-top:12px}
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
 /* Justificado, y en la panoramica es el UNICO: el usuario lo pidio
@@ -673,7 +685,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    las palabras largas al final de linea y reparte el sobrante en varios
    renglones en vez de estirar los espacios de uno solo. */
 .qs-texto{position:relative;z-index:4;margin-top:28px;
-  color:#fff;font-weight:300;font-size:14.2px;line-height:1.78;
+  color:#fff;font-weight:300;font-size:14.7px;line-height:1.78;
   text-align:justify;hyphens:auto}
 /* El nombre de la empresa, en negrita -lo pidio el usuario-. 600 y no el 700
    que trae <b> de serie: de Barlow solo estan instaladas las variantes 300 a
@@ -696,8 +708,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:72px}
 .pilar-cab{display:flex;align-items:center;gap:15px;margin-bottom:18px}
 .num{background:var(--navy-medio);color:#fff;transform:skewX(-22deg);padding:4px 15px}
-.num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14px}
-.pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.3em}
+.num b{display:block;transform:skewX(22deg);font-weight:600;font-size:14.5px}
+.pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:13px;letter-spacing:.3em}
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
 /* Sin justificar, por lo mismo que .ct p: aqui los dos pilares van uno al lado
@@ -706,7 +718,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    y la Mision se leia a saltos. En la panoramica solo se justifica .qs-texto,
    que se lleva una columna ancha. De pie estos dos parrafos SI van
    justificados, porque alli se apilan (ver .l-nosotros .pilar p, vertical.css). */
-.pilar p{color:#fff;font-weight:300;font-size:14px;line-height:1.82}
+.pilar p{color:#fff;font-weight:300;font-size:14.5px;line-height:1.82}
 
 /* =====================================================  2b. VALORES  ===
    Foto a toda la altura en el lado izquierdo -.va-foto-, panel navy a la
@@ -728,8 +740,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    la palida, pasaba por encima del epigrafe y del titulo. */
 .va-cab{position:absolute;left:var(--lado-medio);top:56px;z-index:4;
   width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio))}
-.l-valores h2{color:#fff;font-size:38px;margin-top:12px}
-.l-valores .va-cab p{margin-top:14px;font-size:14.5px;line-height:1.6;font-weight:300;
+.l-valores h2{color:#fff;font-size:38.5px;margin-top:12px}
+.l-valores .va-cab p{margin-top:14px;font-size:15px;line-height:1.6;font-weight:300;
   color:#fff}
 .va-lista{position:absolute;left:var(--lado-medio);top:222px;z-index:4;
   width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio));
@@ -738,9 +750,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   padding:14px 0;border-top:1px solid rgba(124,139,186,.28)}
 .va-lista .valor:first-child{border-top:none;padding-top:0}
 .va-lista .v-texto h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;
-  font-size:14.5px;letter-spacing:.2em}
+  font-size:15px;letter-spacing:.2em}
 .va-lista .v-texto p{margin-top:6px;color:#fff;font-weight:300;
-  font-size:13.5px;line-height:1.6}
+  font-size:14px;line-height:1.6}
 
 /* ====================================================  2c. OFICINAS  ===== */
 /* Donde estamos: las tres oficinas.
@@ -776,7 +788,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* z-index:4, por encima del riel diagonal: sin esto la barra palida cruza el
    texto (el mismo caso que .qse-cab). */
 .l-oficinas .ofi-cab{position:relative;z-index:4}
-.l-oficinas h2{color:#fff;font-size:38px;margin-top:12px}
+.l-oficinas h2{color:#fff;font-size:38.5px;margin-top:12px}
 /* Las cuatro direcciones, separadas por una raya y con 42 px de aire, igual que en la
    version de pie (ver .l-oficinas .ofi-lista en vertical.css): es la misma lista del
    mismo brochure y no tendria sentido que una llevara rayas y la otra no.
@@ -814,12 +826,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    sobre el navy del panel. */
 .estado.sede{background:rgba(95,105,128,.92)}
 .estado.sede b{color:#fff}
-.l-oficinas .ofi-lista h3{color:#fff;font-size:22px;line-height:1.12}
-.l-oficinas .ofi-lista p{font-size:12.5px;line-height:1.6;color:#fff;margin-top:8px}
+.l-oficinas .ofi-lista h3{color:#fff;font-size:22.5px;line-height:1.12}
+.l-oficinas .ofi-lista p{font-size:13px;line-height:1.6;color:#fff;margin-top:8px}
 
 /* ==================================================  3. SERVICIOS  ===== */
 .cabecera{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado))}
-.cabecera h2{font-size:52px;margin-top:12px;color:var(--navy)}
+.cabecera h2{font-size:52.5px;margin-top:12px;color:var(--navy)}
 /* z-index:4 -por encima del riel diagonal (z-index:3): la primera columna
    arranca en --lado-medio, 16 px antes de donde acaba el riel, y sin esto
    la barra palida cruzaba el "01" y el titulo del primer servicio. */
@@ -827,12 +839,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   width:calc(var(--ancho-lamina) - 2 * var(--lado-medio));
   display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
 .srv .num{background:none;transform:none;padding:0;color:#fff;
-  font-weight:600;font-size:12px;letter-spacing:.26em}
-.srv h3{color:#fff;font-size:23px;margin-top:7px;height:2.1em}
+  font-weight:600;font-size:12.5px;letter-spacing:.26em}
+.srv h3{color:#fff;font-size:23.5px;margin-top:7px;height:2.1em}
 .srv .regla{height:2px;margin:12px 0 14px;
   background:linear-gradient(90deg,var(--azul) 0 34%,rgba(124,139,186,.32) 34%)}
 .srv ul{list-style:none;display:flex;flex-direction:column;gap:9px}
-.srv li{position:relative;padding-left:22px;font-size:14px;font-weight:300;line-height:1.4;color:#fff}
+.srv li{position:relative;padding-left:22px;font-size:14.5px;font-weight:300;line-height:1.4;color:#fff}
 .srv li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:7px;background:var(--azul);
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 /* El fondo es BLANCO, el de la hoja. Las fotos van cortadas en diagonal, asi
@@ -881,13 +893,13 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    no da para mas sin quitarle sitio al numero que va a su derecha.
    Es la unica excepcion al cuerpo de los rotulos; si se cambia el resto,
    este va aparte. */
-.pf-col h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:17px;letter-spacing:.3em;color:var(--navy)}
-.pf-col .cuenta{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:25px;color:var(--azul-suave);line-height:1}
+.pf-col h3{font-family:"Barlow",sans-serif;font-weight:600;font-size:17.5px;letter-spacing:.3em;color:var(--navy)}
+.pf-col .cuenta{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:25.5px;color:var(--azul-suave);line-height:1}
 .pf-col ol{list-style:none;display:flex;flex-direction:column;gap:12px}
 .pf-col li{position:relative;padding-left:23px}
 .pf-col li::before{content:"";position:absolute;left:0;top:7px;width:13px;height:8px;background:var(--navy);
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
-.pf-col .nom{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;
+.pf-col .nom{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17.5px;
   line-height:1.16;color:var(--navy)}
 /* El nombre del cliente y la pildora de estado van en la misma linea, y no se
    veian del mismo tamano aunque la pildora fuera MAS chica: 10,5 px contra los
@@ -897,7 +909,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    x-. El cuerpo sube a 12 y el peso a 500 para que los dos pesen igual en el
    renglon; la pildora no se toca, que es la que marca el estado. */
 .pf-col .pie{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  font-size:12px;font-weight:500;color:var(--gris);margin-top:3px}
+  font-size:12.5px;font-weight:500;color:var(--gris);margin-top:3px}
 
 /* ==========================================  5-13. PROYECTOS (web)  ==== */
 .rejilla{position:absolute;left:var(--lado-rejilla);top:34px;width:calc(var(--ancho-lamina) - 2 * var(--lado-rejilla));height:652px;
@@ -912,12 +924,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    necesita despegarse para leerse como lo que es -el nombre del proyecto- y no
    como el pie del ano y el estado. */
 .insignias{display:flex;align-items:center;gap:16px;margin:16px 0 18px;flex:none}
-.insignias .anio{font-size:12px;font-weight:600;letter-spacing:.26em;color:var(--azul-suave)}
+.insignias .anio{font-size:12.5px;font-weight:600;letter-spacing:.26em;color:var(--azul-suave)}
 /* el cuerpo va aparte porque el del destacado es otro -mas abajo-: si se
    pusiera aqui, esa regla tendria que deshacerlo */
 .tarjeta h3,.l-destacado h3{color:var(--navy);flex:none}
+/* Los titulos de proyecto se quedan como estaban: son los mas grandes de
+   la ficha y el usuario los ve bien; el medio punto que subio todo lo
+   demas aqui no hace falta. */
 .tarjeta h3{font-size:30px}
-.tarjeta .sub,.l-destacado .sub{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:16px;
+/* Los dos textos de la ficha -el sitio y la descripcion- van medio punto por
+   encima de donde nacieron: a la medida de antes costaban de leer
+   proyectados. El h3 no sube, que ya es grande de sobra. */
+.tarjeta .sub,.l-destacado .sub{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;
   color:var(--azul);margin-top:9px;padding-bottom:9px;position:relative;line-height:1.22;flex:none}
 .tarjeta .sub::after,.l-destacado .sub::after{content:"";position:absolute;left:0;bottom:0;
   width:78px;height:2px;background:rgba(73,102,173,.4)}
@@ -928,7 +946,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
    con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los
    mismos huecos. Ver la nota de .ct p. */
-.desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:#000;
+.desc{margin-top:13px;font-size:13.5px;line-height:1.72;color:#000;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .minis figure{height:142px;overflow:hidden;background:var(--hielo);
@@ -936,8 +954,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .minis img{width:100%;height:100%;transition:transform .6s ease}
 .caja-cliente{flex:none;margin-top:16px;height:66px;background:var(--navy);color:#fff;
   padding:13px 22px;clip-path:polygon(0 0,100% 0,100% 100%,22px 100%)}
-.caja-cliente .rot{display:block;font-size:10.5px;font-weight:600;letter-spacing:.32em;color:var(--azul-suave)}
-.caja-cliente b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;margin-top:1px}
+.caja-cliente .rot{display:block;font-size:11px;font-weight:600;letter-spacing:.32em;color:var(--azul-palido)}
+.caja-cliente b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24.5px;margin-top:1px}
 
 /* proyecto impar: lamina completa */
 .l-destacado .hero{position:absolute;left:0;top:0;width:var(--ancho-lamina);height:270px;overflow:hidden}
@@ -948,7 +966,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .l-destacado .izq{display:flex;flex-direction:column}
 .l-destacado h3{font-size:38px}
 .l-destacado .caja-cliente{margin-top:auto;width:400px}
-.l-destacado .desc{font-size:13.5px}
+.l-destacado .desc{font-size:14.5px}
 .l-destacado .der{display:block}
 /* las cuatro del mismo tamano exacto y con el mismo corte.
    Las filas van en pixeles, no en 1fr: con height:100% dentro de un bloque de
@@ -964,7 +982,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .cl-cols{position:absolute;left:var(--lado);top:44px;width:calc(var(--ancho-lamina) - 2 * var(--lado));
   display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .gerencias{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
-.gerencias li{position:relative;padding-left:24px;font-size:15.5px;font-weight:400;color:#fff}
+.gerencias li{position:relative;padding-left:24px;font-size:16px;font-weight:400;color:#fff}
 .gerencias li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:8px;
   background:var(--azul);clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
 /* tarjetas de cliente: fondo claro para que el rojo del logotipo respire */
@@ -973,12 +991,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   display:flex;align-items:center;gap:24px;padding:0 24px}
 /* mismo ancho en los tres: asi el simbolo de PDVSA queda del mismo tamano */
 .cartera img{width:248px;height:auto;flex:none}
-.cartera span{font-size:9.5px;font-weight:600;letter-spacing:.22em;color:var(--gris);line-height:1.6}
+.cartera span{font-size:10px;font-weight:600;letter-spacing:.22em;color:var(--gris);line-height:1.6}
 
 
 /* =====================================================  FLOTA PROPIA  == */
 .fl-cab{position:absolute;left:var(--lado);top:44px;width:540px}
-.l-flota h2{color:#fff;font-size:42px;margin-top:12px}
+.l-flota h2{color:#fff;font-size:42.5px;margin-top:12px}
 /* EN BANDERA, no justificado -lo pidio el usuario-. Es el mismo caso que la
    entrada de la portada: la columna mide 540 px y el texto va a 14,5, asi que
    caben pocas palabras por linea; al justificar, el navegador tiene que
@@ -986,16 +1004,16 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Con el borde derecho suelto el interpalabra queda parejo en las tres lineas.
    Se va tambien hyphens:auto: estaba para ayudar al justificado, y en bandera
    solo serviria para partir palabras sin necesidad. */
-.l-flota .fl-cab p{margin-top:16px;font-size:14.5px;line-height:1.78;font-weight:300;
+.l-flota .fl-cab p{margin-top:16px;font-size:15px;line-height:1.78;font-weight:300;
   color:#fff}
 .fl-total{position:absolute;right:var(--lado);top:44px;width:396px}
 .fl-total>b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:74px;line-height:.9;color:#fff;letter-spacing:-.01em}
-.fl-total>span{display:block;margin-top:5px;font-size:12.5px;font-weight:600;
+  font-weight:700;font-size:74.5px;line-height:.9;color:#fff;letter-spacing:-.01em}
+.fl-total>span{display:block;margin-top:5px;font-size:13px;font-weight:600;
   letter-spacing:.3em;text-transform:uppercase;color:#fff}
 .fl-sub{display:flex;gap:26px;margin-top:16px;padding-top:14px;
   border-top:1px solid rgba(124,139,186,.32)}
-.fl-sub span{font-size:12.5px;font-weight:500;color:#fff}
+.fl-sub span{font-size:13px;font-weight:500;color:#fff}
 
 /* los dos bloques: primero la pesada, debajo la liviana.
    Sin rotulos: los separa el espacio entre grupos. */
@@ -1005,8 +1023,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   gap:12px 20px}
 .fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}
 .fl-bloque b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:31px;line-height:1;color:#fff}
-.fl-bloque span{display:block;margin-top:4px;font-size:12.5px;font-weight:400;
+  font-weight:700;font-size:31.5px;line-height:1;color:#fff}
+.fl-bloque span{display:block;margin-top:4px;font-size:13px;font-weight:400;
   line-height:1.35;color:#fff}
 
 /* Se quitaron los rotulos de bloque: lo que separa la flota pesada de la
@@ -1043,7 +1061,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    industria petrolera" ya no entraba en su renglon (519 px contra 466
    disponibles) y el titular se partia en TRES lineas en vez de las dos del
    <br>. A 47 la linea mas larga pide 460, entra con 6 px de sobra. */
-.l-cierre h2,.l-portada h1{font-size:47px;margin-top:22px;color:var(--navy)}
+.l-cierre h2,.l-portada h1{font-size:47.5px;margin-top:22px;color:var(--navy)}
 /* sin overflow:hidden, si no los rieles diagonales se cortan a media altura
    al inclinarse hacia la izquierda (la figura ya recorta la foto por su cuenta) */
 /* El corte en diagonal de la foto deja ver el fondo de la lamina: contra el
@@ -1084,7 +1102,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   grid-auto-flow:column;grid-auto-columns:1fr;gap:34px}
 .l-cierre .contacto{grid-template-columns:380px 210px 430px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
-  font-size:11px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
+  font-size:11.5px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
 .ct h4 svg{width:15px;height:15px;flex:none;stroke:var(--azul-suave);fill:none;stroke-width:1.9}
 /* En blanco, no en el azul palido de antes: lo pidio el usuario. Son los
    datos con los que te localizan -la direccion, la sede, los telefonos- y en
@@ -1095,7 +1113,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    derecho el navegador abria huecos enormes entre palabras -"Calle   Paris
    entre   New   York   y   Caroni"-. El canto irregular se nota mucho menos
    que esos rios, y son datos de contacto, no un parrafo de lectura. */
-.ct p{font-size:14px;font-weight:300;line-height:1.8;color:#fff}
+.ct p{font-size:14.5px;font-weight:300;line-height:1.8;color:#fff}
 /* Telefono y correo, juntos en un bloque -.ct-directo, lo arma lamina_cierre()
    con CONTACTO_DIRECTO- que de cara a la rejilla de arriba es una columna mas,
    igual que las dos sedes. Aqui, en la panoramica, sale uno al lado del otro
@@ -1110,7 +1128,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .sello{position:absolute;left:var(--lado);right:var(--lado);bottom:34px;padding-top:18px;
   border-top:1px solid rgba(124,139,186,.28);
   display:flex;align-items:baseline;justify-content:flex-end;
-  font-size:11px;font-weight:600;letter-spacing:.3em;color:#fff}
+  font-size:11.5px;font-weight:600;letter-spacing:.3em;color:#fff}
 
 /* ======================================  efectos, solo en pantalla  ==== */
 @media screen{
@@ -1192,7 +1210,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   <div class="cabecera"><div class="epigrafe ">QUÉ HACEMOS</div><h2>Nuestros servicios</h2></div>
   <div class="panel">
     <div class="rieles-panel"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
-    <div class="cols4"><article class="srv"><div class="num">01</div><h3>Construcción de Ductos Petroleros</h3><div class="regla"></div><ul><li>Soldadura de 3/4″ a 42″ con PQR</li><li>Tubería enterrada y superficial</li><li>Revestimiento y protección de tuberías</li><li>Ingeniería, topografía y excavación</li><li>Prueba hidrostática y flushing</li></ul></article><article class="srv"><div class="num">02</div><h3>Servicios de Alquiler de Equipos</h3><div class="regla"></div><ul><li>Maquinaria pesada y liviana</li><li>Izamiento e instalación de equipos</li><li>Chuto/batea y lowboy con escoltas</li><li>Vacuum y brazo hidráulico</li><li>Cortafuegos y estaciones de válvulas</li></ul></article><article class="srv"><div class="num">03</div><h3>Ambiente y Saneamiento</h3><div class="regla"></div><ul><li>Saneamiento de áreas por afectaciones con derrame de crudo</li><li>Trasegado con vacuum</li><li>Tratamiento y disposición de suelo</li><li>Saneamiento de lagunas a través del dragado de sólidos</li></ul></article><article class="srv"><div class="num">04</div><h3>Suministro y Procura</h3><div class="regla"></div><ul><li>Válvulas bridadas de compuerta y globo</li><li>Bridas, codos, te y reducciones</li><li>Weldolets, niples y tapones</li><li>Empacaduras y espárragos</li><li>Mangas y revestimientos</li></ul></article></div>
+    <div class="cols4"><article class="srv"><div class="num">01</div><h3>Construcción de Ductos Petroleros</h3><div class="regla"></div><ul><li>Soldadura calificada de 3/4″ a 42″</li><li>Tubería enterrada y superficial</li><li>Revestimiento y protección de tuberías</li><li>Ingeniería, topografía y excavación</li><li>Prueba hidrostática y flushing</li></ul></article><article class="srv"><div class="num">02</div><h3>Servicios de Alquiler de Equipos</h3><div class="regla"></div><ul><li>Maquinaria pesada y liviana</li><li>Izamiento e instalación de equipos</li><li>Chuto/batea y lowboy con escoltas</li><li>Vacuum y brazo hidráulico</li><li>Cortafuegos y estaciones de válvulas</li></ul></article><article class="srv"><div class="num">03</div><h3>Ambiente y Saneamiento</h3><div class="regla"></div><ul><li>Saneamiento de áreas por afectaciones con derrame de crudo</li><li>Trasegado con vacuum</li><li>Tratamiento y disposición de suelo</li><li>Saneamiento de lagunas a través del dragado de sólidos</li></ul></article><article class="srv"><div class="num">04</div><h3>Suministro y Procura</h3><div class="regla"></div><ul><li>Válvulas bridadas de compuerta y globo</li><li>Bridas, codos, te y reducciones</li><li>Weldolets, niples y tapones</li><li>Empacaduras y espárragos</li><li>Mangas y revestimientos</li></ul></article></div>
   </div>
   <div class="tira"><figure><img src="img/servicio_1_zanja.jpg" data-foto="servicio_1_zanja" alt=""></figure><figure><img src="img/servicio_2_tendido.jpg" data-foto="servicio_2_tendido" alt=""></figure><figure><img src="img/servicio_3_soldadura.jpg" data-foto="servicio_3_soldadura" alt=""></figure><figure><img src="img/servicio_4_valvula.jpg" data-foto="servicio_4_valvula" alt=""></figure><figure><img src="img/servicio_5_maquinaria.jpg" data-foto="servicio_5_maquinaria" alt=""></figure></div>
 </div><div class="pie-hoja"><div class="hoja-rieles"><i style="left:0px;width:5px;background:#C3CAD9"></i><i style="left:14px;width:9px;background:#2A3C78"></i><i style="left:32px;width:4px;background:#8FA0CB"></i></div><span class="hoja-etiqueta">NUESTROS SERVICIOS</span><span class="hoja-raya"></span><b>05</b></div></section>
@@ -1202,7 +1220,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
     <span class="velo"></span>
     <div class="rieles-banda"><i style="left:0;width:9px;background:#4966AD"></i><i style="left:24px;width:5px;background:rgba(124,139,186,.5)"></i></div>
     <div class="banda-txt"><div class="epigrafe claro">PORTAFOLIO</div><h2>Nuestros proyectos</h2></div>
-    <div class="banda-fecha"><span>ACTUALIZADO AL</span><b>8 de septiembre de 2026</b></div>
+    <div class="banda-fecha"><span>ACTUALIZADO AL</span><b>9 de septiembre de 2026</b></div>
   </div>
   <div class="pf-cols"><div class="pf-col"><header><h3>CONSTRUCCIÓN</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Oleoducto 30″ × 17 km — Planta PDD – COPEM</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Completación mecánica Oleoducto de 42″ — PTO–TAEJ</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Oleoducto 30″ × 14 km — Planta FF–Trampa de envío</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Diluenducto 20″ × 11,20 km — Palmichal–PTO</span><span class="pie">Proyectos Mayores FPO <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Macolla 15 — vialidad y plataforma</span><span class="pie">PETROMONAGAS <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Tubería 12″ agua salada × 29,6 km — COPEM – El Salto</span><span class="pie">Proyectos Mayores FPO <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Oleoducto 30″ Veladero · Tramo I (5,9 km)</span><span class="pie">Coordinación Operacional Faja (COF) <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div><div class="pf-col"><header><h3>AMBIENTE</h3><span class="cuenta">05</span></header><ol><li><span class="nom">COMOR — Saneamiento de suelo contaminado</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Dragado SIAE COMOR — lagunas A, B, C y D</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Estación de Flujo O-16</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Saneamiento Laguna de Curataquiche</span><span class="pie">Logística Operacional DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Movilización y trasegado de crudo — COMOR</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div><div class="pf-col"><header><h3>SERVICIOS Y ALQUILER</h3><span class="cuenta">07</span></header><ol><li><span class="nom">Mantenimiento de equipos de bombeo — FPO</span><span class="pie">Gestión de Materiales DAL <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Alquiler de maquinaria — SINOVENSA Morichal</span><span class="pie">PETROLERA SINOVENSA <span class="estado lista"><b>CULMINADO</b></span></span></li><li><span class="nom">Estaciones de válvulas — FPO HC</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Equipos transversales</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Chuto con batea</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Cortafuegos en corredores de tuberías</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li><li><span class="nom">Alquiler de equipos — XP Extrapesado Morichal</span><span class="pie">Logística Operacional DAL <span class="estado marcha"><b>EN EJECUCIÓN</b></span></span></li></ol></div></div>
 </div><div class="pie-hoja"><div class="hoja-rieles"><i style="left:0px;width:5px;background:#C3CAD9"></i><i style="left:14px;width:9px;background:#2A3C78"></i><i style="left:32px;width:4px;background:#8FA0CB"></i></div><span class="hoja-etiqueta">PORTAFOLIO</span><span class="hoja-raya"></span><b>06</b></div></section>
