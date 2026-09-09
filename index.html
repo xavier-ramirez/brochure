@@ -238,7 +238,11 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    hojas impresas -carta apaisada y carta de pie- no podian recolocarlo sin
    recurrir a !important. Aqui son cuatro lineas que cualquiera de las tres
    hojas puede pisar. Los valores son los de siempre, no se toco ninguno. */
-.l-nosotros  .panel{top:470px;height:250px}
+/* Sube UN PIXEL y mide uno mas: la banda de la foto acaba en 470 y el panel
+   empezaba justo ahi, y entre los dos asomaba el blanco de la lamina como una
+   raya horizontal. Ver la nota de .qse-foto. El alto de la banda va en el
+   style= del marcado (generar.py), asi que el solape se pone desde aqui. */
+.l-nosotros  .panel{top:469px;height:251px}
 .l-servicios .panel{top:160px;height:281px}
 .l-flota     .panel{top:0;height:546px}
 .l-clientes  .panel{top:300px;height:420px}
@@ -594,6 +598,16 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    de paso, que el texto crezca hacia abajo en vez de a lo largo -en una
    columna mas estrecha el mismo parrafo ocupa mas renglones-. Va en tanto por
    ciento, asi que vale igual en la panoramica y en la hoja carta. */
+/* LAS FOTOS QUE SOLO SALEN EN EL CARRUSEL. Se pueden añadir fotos de mas a
+   "Nuestra empresa" y a "Nuestras oficinas" -listas FOTOS_EMPRESA_PILA y
+   FOTOS_OFICINAS_PILA en generar.py- sin tocar nada de lo que ya hay: aqui se
+   esconden, y solo el modo presentacion con efectos les devuelve la caja
+   cuando monta la pila (ver .pres-pila > figure.solo-efectos en
+   presentacion.js).
+   Con display:none no generan caja, asi que las rejillas de siempre siguen
+   repartiendo el alto entre las de siempre y el PDF, el PowerPoint, la hoja
+   carta y la de pie salen exactamente igual que antes. */
+.solo-efectos{display:none}
 .qse-panel{position:absolute;left:0;top:0;
   width:calc(var(--ancho-lamina) * .43);height:var(--alto-diseno);
   background:var(--navy);overflow:hidden;box-sizing:border-box;
@@ -607,8 +621,20 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Grid y no tres cajas colocadas a mano para que las tres midan siempre lo
    mismo aunque un dia se quite o se anada una foto: la lista manda
    (FOTOS_EMPRESA en generar.py) y la maqueta se adapta. */
-.qse-foto{position:absolute;left:calc(var(--ancho-lamina) * .43);top:0;
-  width:calc(var(--ancho-lamina) * .57);height:var(--alto-diseno);
+/* UN PIXEL DE SOLAPE, y no es un capricho. Estas cajas oscuras se tocan justo
+   -el panel acaba donde empieza la columna de fotos-, y la lamina va escalada
+   por --k, que casi nunca da un numero redondo. Cuando la union cae en medio
+   pixel, entre las dos asoma el BLANCO del fondo de .lamina como una raya de
+   un pixel: vertical aqui, horizontal en Mision y vision. Lo canto el usuario
+   el 2026-09-09; se ve en los dos modos, con efectos y sin ellos, solo que con
+   efectos la foto se encoge y la raya se queda sola sobre el navy y salta mas.
+   Estirando la columna un pixel hacia el panel no queda hueco que rellenar. Es
+   el mismo remedio que ya lleva .pie-navy, que tuvo este mismo fallo.
+   El pixel de mas queda TAPADO por el panel o tapando su filo, segun cual
+   pinte encima; en los dos casos lo que se pierde es un pixel de foto contra
+   un canto, invisible. */
+.qse-foto{position:absolute;left:calc(var(--ancho-lamina) * .43 - 1px);top:0;
+  width:calc(var(--ancho-lamina) * .57 + 1px);height:var(--alto-diseno);
   overflow:hidden;background:var(--navy);
   display:grid;grid-auto-rows:1fr;gap:0}
 /* El riel del collage, en su extremo derecho -el usuario lo pidio, el mismo
@@ -770,8 +796,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    sede es, con su rayita sesgada, y debajo la ciudad. Si a una oficina le
    falta todavia el nombre de la sede, se queda sin epigrafe y el bloque
    aguanta igual. */
-.l-oficinas .ofi-fotos{position:absolute;left:calc(var(--ancho-lamina) * .43);top:0;
-  width:calc(var(--ancho-lamina) * .57);height:var(--alto-diseno);
+/* El mismo pixel de solape que .qse-foto, y por lo mismo: ver su nota. */
+.l-oficinas .ofi-fotos{position:absolute;left:calc(var(--ancho-lamina) * .43 - 1px);top:0;
+  width:calc(var(--ancho-lamina) * .57 + 1px);height:var(--alto-diseno);
   overflow:hidden;background:var(--navy);
   display:grid;grid-auto-rows:1fr;gap:0}
 .l-oficinas figure{position:relative;overflow:hidden;margin:0;min-height:0;
@@ -1030,8 +1057,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .fl-bloque ul{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);
   gap:12px 20px}
 .fl-bloque li{border-top:3px solid var(--azul);padding-top:10px}
+/* La cifra a 31: medio punto menos que los 31,5 que tuvo, a peticion del
+   usuario el 2026-09-09. Vale para la panoramica y para la hoja carta, que
+   comparten cuerpos de letra por diseño y no repiten esta regla. La vertical
+   no: esa lleva su propia escala -25,5- en vertical.css, y no se toco. */
 .fl-bloque b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
-  font-weight:700;font-size:31.5px;line-height:1;color:#fff}
+  font-weight:700;font-size:31px;line-height:1;color:#fff}
 .fl-bloque span{display:block;margin-top:4px;font-size:13px;font-weight:400;
   line-height:1.35;color:#fff}
 
@@ -1098,17 +1129,61 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    blanco de fondo de la lamina como una raya de 1 px de ancho de lado a lado.
    Con el solape no queda hueco que rellenar. El alto compensa: 466 + 254 = 720. */
 .pie-navy{position:absolute;left:0;top:466px;width:var(--ancho-lamina);height:254px;background:var(--navy-hondo);overflow:hidden}
-/* Las columnas se repartian solas segun cuantos bloques trajera CONTACTO en
-   contenido.py -asi era con repeat(4,1fr) fijo, que dejaba un hueco al quitar
-   una-, pero a partes iguales el tercio de telefono+correo (340 px) se
-   quedaba corto: el telefono solo, medido, pide 248 y con el correo al lado
-   mas el hueco entre los dos son 416. Se fijan los tres anchos en vez de
-   repartir iguales -el mismo recurso que ya usa carta.css para su hoja
-   angosta-: sede operativa suelta ancho, que su renglon es corto de sobra.
-   380 + 210 + 430 = 1020 = 1088 (el ancho util) menos los dos huecos de 34. */
-.contacto{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado));display:grid;
-  grid-auto-flow:column;grid-auto-columns:1fr;gap:34px}
-.l-cierre .contacto{grid-template-columns:380px 210px 430px}
+/* Las columnas se repartieron solas -repeat(4,1fr)- y despues a mano en una
+   fila de tres. Las dos cosas se quedaron cortas por lo mismo: a los bloques
+   no les basta un reparto, cada uno pide el ancho de SU texto. Las medidas de
+   aquellas dos epocas no se repiten aqui para no dejar dos cifras distintas
+   del mismo dato; las buenas son las de abajo, tomadas con el texto y el
+   cuerpo de letra de ahora.
+
+   AQUI, EN LA PANORAMICA, VAN LAS TRES PIEZAS EN FILA, y el par telefono+
+   correo apilado dentro de la tercera:
+        SEDE CORPORATIVA    SEDE ADMINISTRATIVA ORIENTE   TELEFONO
+        Calle Paris ...     Lecheria, estado Anzoategui.  CORREO
+   Lo pidio el usuario el 2026-09-09 -"coloca telefono y correo al lado de sede
+   administrativa oriente"- y solo para esta maqueta; las dos hojas impresas
+   apilan las sedes, ver hoja.css.
+
+   Cada columna mide LO QUE OCUPA SU TEXTO, ni un pixel mas. No es un capricho
+   de precision: es lo unico que deja los DOS HUECOS IGUALES. Lo canto el
+   usuario el 2026-09-09 -"uno se ve mas separado que otro"- y estaba medido:
+   con la columna de la direccion en 470 y su texto ocupando 343, esos 127 px
+   muertos se sumaban al hueco de al lado y quedaban 166 contra 57. El hueco lo
+   reparte space-between entre las columnas, y si una columna es mas ancha que
+   su texto, ese sobrante SE VE como hueco aunque la rejilla diga otra cosa.
+
+   Medido en la pagina con el testigo colgado DENTRO de la lamina, que es donde
+   le llega la escala -medido fuera las cifras salen infladas 1,44 veces-:
+        pieza                       rotulo+icono   dato   ocupa   columna
+        SEDE CORPORATIVA                 182        658    343      345
+        SEDE ADMINISTRATIVA ORIENTE      282        180    282      285
+        TELEFONO / CORREO                108        223    223      226
+   La direccion es la unica que no cabe entera -pide 658- y por eso va en DOS
+   renglones, que es como la quiso el usuario; "ocupa" es el mas ancho de los
+   dos, no la suma. Las demas entran en un renglon.
+   345 + 285 + 226 = 856 de 1088; los 232 que sobran los reparte space-between
+   en dos huecos IGUALES de 116.
+   El column-gap va a CERO porque el hueco lo pone space-between; con los dos,
+   se sumarian. El row-gap, 22, aqui no hace nada -esta fila es una sola- pero
+   se declara igual porque esta regla la comparten las hojas impresas, que si
+   van en dos filas: la vertical se lo queda tal cual y la carta lo baja a 14
+   (ver hoja.css y las dos hojas). El hueco de DENTRO del par no es este, es el
+   gap de .ct-directo, aqui abajo.
+
+   .contacto solo pone GEOMETRIA -donde va y cuanto mide-. El flujo no lo
+   declara nadie: por filas es lo que hace una rejilla de serie, y es lo que
+   hace falta para que las dos .ct caigan una debajo de otra. Aqui hubo un
+   grid-auto-flow:column con grid-auto-columns:1fr y gap:34px, de cuando cada
+   bloque era una columna; con dos columnas escritas y las piezas colocadas a
+   mano no llegaban a aplicarse nunca -comprobado en las tres maquetas leyendo
+   el estilo calculado- y se quitaron para no leer un reparto que ya no ocurre.
+   .contacto no sale fuera de .l-cierre: es una lamina y una sola por
+   documento. */
+.contacto{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado));display:grid}
+/* Tres columnas y ninguna pieza que colocar a mano: van en el orden del
+   marcado. El par telefono+correo se apila por dentro (.ct-directo, abajo). */
+.l-cierre .contacto{grid-template-columns:345px 285px 226px;
+  justify-content:space-between;column-gap:0;row-gap:22px}
 .ct h4{display:flex;align-items:center;gap:10px;font-family:"Barlow",sans-serif;font-weight:600;
   font-size:11.5px;letter-spacing:.3em;color:#fff;margin-bottom:12px}
 .ct h4 svg{width:15px;height:15px;flex:none;stroke:var(--azul-suave);fill:none;stroke-width:1.9}
@@ -1120,17 +1195,29 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    columnas largas: en estas caben unos 40 caracteres, y para cuadrar el canto
    derecho el navegador abria huecos enormes entre palabras -"Calle   Paris
    entre   New   York   y   Caroni"-. El canto irregular se nota mucho menos
-   que esos rios, y son datos de contacto, no un parrafo de lectura. */
-.ct p{font-size:14.5px;font-weight:300;line-height:1.8;color:#fff}
+   que esos rios, y son datos de contacto, no un parrafo de lectura.
+
+   text-wrap:balance REPARTE LOS RENGLONES A PARTES PARECIDAS en vez de llenar
+   el primero y dejar caer lo que sobre. Sin el, la direccion de Caracas se
+   partia en un renglon lleno hasta "Edo." y un segundo con "Miranda Caracas."
+   sola: dos lineas, si, pero una larga y un rabito. Lo pidio el usuario el
+   2026-09-09 para la panoramica; la hoja carta ya lo tenia por su cuenta y
+   aqui deja de repetirse. En el telefono y el correo no hace nada: van con
+   white-space:nowrap y de una sola linea. */
+.ct p{font-size:14.5px;font-weight:300;line-height:1.8;color:#fff;text-wrap:balance}
 /* Telefono y correo, juntos en un bloque -.ct-directo, lo arma lamina_cierre()
-   con CONTACTO_DIRECTO- que de cara a la rejilla de arriba es una columna mas,
-   igual que las dos sedes. Aqui, en la panoramica, sale uno al lado del otro
-   -flex en fila-; carta.css lo pone en columna para apilarlos, que es donde de
-   verdad hace falta el ahorro de ancho (ver la nota de esa regla).
-   Cada uno mide lo que pide su texto -flex:0 1 auto, no una mitad fija-: a
-   partes iguales el telefono, con sus 248 px medidos, no cabia en la mitad de
-   un tercio (170) y se partia en dos lineas. */
-.ct-directo{display:flex;gap:22px}
+   con CONTACTO_DIRECTO- que de cara a la rejilla de arriba es la columna
+   derecha entera. APILADOS, uno debajo del otro, y en las TRES maquetas: lo
+   pidio el usuario el 2026-09-09, primero para la carta y la vertical y
+   despues para la panoramica. Antes salian aqui uno al lado del otro y cada
+   hoja impresa repetia por su cuenta el flex-direction para apilarlos; ahora
+   se dice una sola vez y ninguna de las dos lo repite -carta.css solo cambia
+   el hueco, que el suyo es 14-.
+   Apilados la columna derecha pide 400 y no 430: en fila la medida era la
+   suma de los dos mas el hueco, y ahora es la del mas ancho, el telefono, que
+   pide 389 y va sin partir (white-space:nowrap, aqui abajo).
+   Cada uno mide lo que pide su texto -flex:0 1 auto, no una mitad fija-. */
+.ct-directo{display:flex;flex-direction:column;gap:22px}
 .ct-directo .ct{flex:0 1 auto}
 .ct-directo .ct p{white-space:nowrap}
 .sello{position:absolute;left:var(--lado);right:var(--lado);bottom:34px;padding-top:18px;

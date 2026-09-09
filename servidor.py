@@ -19,6 +19,7 @@ from PIL import Image, ImageOps
 
 import exportar_pdf
 import exportar_pptx
+import exportar_html
 
 # Aqui se piden los archivos que baja la barra del editor. Cada ruta dice
 # quien la atiende, con que argumentos y como se llama el archivo que sale;
@@ -30,6 +31,9 @@ EXPORTADORES = {
     '/api/pdf-carta':  (exportar_pdf,  {'carta': True}, exportar_pdf.NOMBRE_CARTA),
     '/api/pptx':       (exportar_pptx, {},              exportar_pptx.NOMBRE),
     '/api/pptx-carta': (exportar_pptx, {'carta': True}, exportar_pptx.NOMBRE_CARTA),
+    # La presentacion en un solo archivo: no tiene version de carta -las hojas
+    # impresas no tienen modo presentacion- asi que va sola.
+    '/api/html':       (exportar_html, {},              exportar_html.NOMBRE),
 }
 
 BASE = os.path.dirname(os.path.abspath(__file__))

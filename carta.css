@@ -195,50 +195,69 @@
 :is(.l-cierre,.l-portada) .cr-izq{width:552px}
 :is(.l-cierre,.l-portada) .cr-der{left:551px;width:505px}
 /* Las cuatro columnas de contacto iban a partes iguales, y en la hoja angosta
-   eso deja 205 px a cada una: el telefono -que necesita 216- se partia en dos
-   y la direccion se deshacia en seis lineas.
+   eso deja 205 px a cada una: el telefono, que pide 215, se partia en dos y la
+   direccion se deshacia en seis lineas.
 
-   Aqui pasan a ser TRES columnas: las dos sedes, y en la tercera el correo con
-   el telefono debajo. Los dos son datos de contacto directo y ocupan poco, asi
-   que apilados no estorban y el ancho que sueltan se lo lleva la direccion
-   corporativa, que es con diferencia el texto mas largo del pie.
+   Aqui pasan a ser DOS columnas y no cuatro ni tres:
+        izquierda   las dos sedes, una debajo de la otra
+        derecha     el telefono y el correo, uno debajo del otro
+   Apilar las dos sedes lo pidio el usuario el 2026-09-09, y de paso deshace el
+   apretujon que hubo que hacer antes. Con tres columnas en fila, el rotulo
+   "SEDE ADMINISTRATIVA ORIENTE" -que pide 380 px con su icono al tracking de
+   siempre- no cabia en ningun reparto posible de los 925 utiles, y para que
+   entrara en un renglon hubo que bajarles el tracking a los cuatro rotulos de
+   .3em a .18em. Apiladas, la columna izquierda mide 540 y el rotulo entra
+   sobrado, ASI QUE EL TRACKING VUELVE AL .3em DE SIEMPRE: esa regla ya no esta
+   y los rotulos de esta hoja se leen como los de la panoramica.
 
-   Cada columna mide LO QUE NECESITA SU TEXTO, medido, no repartido a ojo:
-        direccion         717 px de una linea, y entra en DOS desde 372 -> 380
-        sede operativa    175                                           -> 180
-        telefono          216 de una sola vez                           -> 220
-   Con un pixel menos el telefono se parte en dos (probado con 215).
+   APILARLAS NO SE DICE AQUI: la colocacion -auto-flow row, las dos .ct a la
+   primera columna y .ct-directo ocupando la segunda entera- va una sola vez en
+   estilos.css y vale para las tres maquetas. Esta hoja solo cambia los dos
+   anchos y los dos huecos, que son los suyos.
 
-   Y el hueco que sobra lo reparte space-between, que es lo que deja la
-   SEPARACION IGUAL entre los tres. Antes la direccion se llevaba 456 px en 1fr
-   y su texto solo ocupaba 370: esos ~86 px de sobra se sumaban a su hueco, asi
-   que del primero al segundo bloque habia el doble de aire que del segundo al
-   tercero. Ajustando cada columna a su texto, lo que sobra (924 - 780 = 144) se
-   parte en dos huecos iguales de 72 y los tres bloques respiran lo mismo.
-   Por eso el gap va a CERO: el hueco no lo pone gap, lo pone space-between; con
-   los dos, se sumarian. Telefono y correo viajan en UN solo bloque -.ct-directo,
-   ver CONTACTO_DIRECTO en contenido.py- que aqui abajo se apila en columna, asi
-   que a la rejilla de arriba le siguen llegando tres columnas y no hace falta
-   tocar este reparto.
+   Medido en la pagina con el testigo colgado DENTRO de la lamina, que es donde
+   le llega la escala -medido fuera las cifras salen infladas 1,44 veces-:
+        pieza                          rotulo+icono   dato
+        SEDE CORPORATIVA                    175        636
+        SEDE ADMINISTRATIVA ORIENTE         271        174
+        TELEFONO                            104        215
+        CORREO                               85        127
+   El rotulo de oriente, 271, era el que no cabia en los 180 que tuvo su
+   columna cuando los anchos se sacaron midiendo solo los parrafos: por eso
+   caia en tres renglones. La direccion pone el suelo de la columna izquierda,
+   318, que es la mitad de sus 636; por debajo se va a tres renglones.
+
+   480 + 320 = 800 de los 925, y los 125 que sobran los pone space-between
+   entre las dos columnas. Era 540 / 320 con 65 de hueco y el usuario lo vio
+   como un solo bloque pegado en vez de dos: pidio separarlas mas el
+   2026-09-09, y esos 60 px salen de la columna izquierda, que iba sobrada
+   -sus dos textos siguen ocupando los mismos renglones-.
+   Por eso el column-gap va a CERO: el hueco no lo pone gap, lo pone
+   space-between; con los dos, se sumarian. El row-gap SI se pone, 14, que es
+   el mismo con el que .ct-directo separa el telefono del correo en esta hoja:
+   asi las dos columnas llevan la misma separacion entre sus dos bloques.
    Los saltos de la direccion los decide este ancho y no el texto: va sin <br>. */
-.l-cierre .contacto{grid-template-columns:380px 180px 220px;
-  justify-content:space-between;gap:0}
+.l-cierre .contacto{grid-template-columns:480px 320px;row-gap:14px}
 /* Reparte las dos lineas de la direccion a lo largo en vez de llenar la primera
    y dejar caer lo que sobre. Sin esto cortaba en "Urb. Las / Mercedes", que
    parte el nombre de la urbanizacion; equilibradas, el corte se va a la coma de
    "#177,", que es donde lo haria uno a mano.
    En los otros dos bloques no hace nada: sus renglones ya vienen dados.
    El tamano, 0,5 px menos que en la panoramica: lo pidio el usuario para esta
-   hoja, en el rotulo y en el dato de las cuatro columnas -sedes, telefono y
-   correo-. Solo aqui: la panoramica se queda con los 11 / 14 px de siempre. */
-.l-cierre .contacto .ct h4{font-size:11px}
-.l-cierre .contacto .ct p{text-wrap:balance;font-size:14px}
-/* Telefono y correo, apilados: en la hoja angosta la tercera columna mide 220
-   px, y ahi lado a lado -como en la panoramica- cada uno se queda con poco
-   mas de 100 y el telefono se parte en dos lineas. En columna, cada uno se
-   queda los 220 enteros: es exactamente el ancho que ya tenia el bloque
-   "Contacto" de antes de separarlos, asi que sigue cabiendo igual de bien. */
-.ct-directo{flex-direction:column;gap:14px}
+   hoja, en el rotulo y en el dato de los cuatro bloques -las dos sedes, el
+   telefono y el correo-. Solo aqui: la panoramica se queda con los 11 / 14 px
+   de siempre. */
+/* nowrap: el rotulo ya tiene columna de sobra para su renglon, y sin esto el
+   texto de un h4 -que es display:flex- sigue siendo un item que puede partirse.
+   Es el seguro de que no vuelva a caer en tres lineas si se retoca un ancho. */
+.l-cierre .contacto .ct h4{font-size:11px;white-space:nowrap}
+.l-cierre .contacto .ct p{font-size:14px}
+/* Telefono y correo se apilan en las dos hojas impresas -lo dice hoja.css- y
+   tambien en la panoramica, donde el par comparte la tercera columna;
+   aqui solo cambia el HUECO entre los dos, 14 en vez de 22, que es el mismo
+   row-gap con el que se separan las dos sedes en la columna de al lado: asi
+   las dos columnas de esta hoja respiran igual. */
+.ct-directo{gap:14px}
 
 /* servicios: en columnas mas angostas varias vinetas pasan a dos lineas y el
    panel azul se comia la ultima de dos columnas, asi que aqui es mas alto que

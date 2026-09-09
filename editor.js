@@ -183,16 +183,15 @@
       '<span class="ed-estado" id="ed-estado"></span>'
     : '<b>Editor de fotos</b>' +
       /* La misma pagina, ensenada de una lamina en una y a pantalla completa,
-         como un PowerPoint (ver presentacion.js). Solo esta aqui: la hoja
-         carta y la de pie son verticales y no llenan una pantalla. Va en otra
-         pestana para no perder lo que se este editando en esta. */
-      '<a href="index.html?presentacion" target="_blank" rel="noopener">' +
-      'Ver como presentacion</a>' +
-      /* La misma presentacion, pero con las animaciones de entrada puestas:
-         la lamina se funde y lo de dentro va apareciendo escalonado. Son dos
-         enlaces y no uno con una casilla porque son dos maneras de ensenar el
-         brochure y el usuario quiere entrar directo a la que toque; una vez
-         dentro, el boton "Efectos" de la barra las intercambia. */
+         como un PowerPoint (ver presentacion.js), con las animaciones de
+         entrada puestas: la lamina se funde y lo de dentro va apareciendo
+         escalonado. Solo esta aqui: la hoja carta y la de pie son verticales
+         y no llenan una pantalla. Va en otra pestana para no perder lo que se
+         este editando en esta.
+         UNA sola puerta, y es la de los efectos: la presentacion limpia
+         -index.html?presentacion, sin &efectos- sigue existiendo entera, pero
+         se llega a ella desde dentro con el boton "Efectos" de la barra o con
+         la tecla E, que apagan las animaciones en caliente. */
       '<a href="index.html?presentacion&amp;efectos" target="_blank" rel="noopener">' +
       'Presentacion con efectos</a>' +
       /* No genera nada: solo abre carta.html, que es este mismo brochure

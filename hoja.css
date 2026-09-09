@@ -110,3 +110,21 @@
    pie -a 13.5px, su tamano de siempre, se comia media franja-. */
 .hoja-etiqueta{font-size:9.5px;font-weight:600;letter-spacing:.18em;
   color:var(--navy-medio);flex:none;white-space:nowrap;text-transform:uppercase}
+
+/* EL PIE DE CONTACTO DE LAS DOS HOJAS IMPRESAS: las sedes apiladas y el par
+   telefono+correo tambien, ocupando entera la columna de la derecha.
+        SEDE CORPORATIVA          TELEFONO
+        SEDE ADMIN. ORIENTE       CORREO
+   Va aqui y no en cada hoja porque carta.css y vertical.css hacian lo mismo
+   cada una por su lado, y hoja.css es justo lo que cargan las dos y no carga
+   la panoramica. Cada hoja sigue poniendo SUS anchos y SUS huecos, que esos
+   si son distintos.
+   Por que no vale el reparto de la panoramica: alli las tres piezas van en
+   fila y esa fila ocupa 856 px de los 1088 que da la lamina. Estas dos hojas
+   tienen 925, asi que a la fila le quedarian 69 px de aire -contra los 232 de
+   alla- y los tres bloques se leerian pegados. Apiladas, cada columna manda en
+   su ancho y hay hueco de sobra.
+   El par se apila por dentro ya desde estilos.css; aqui solo se dice que ocupa
+   la segunda columna en sus dos filas. */
+.l-cierre .contacto > .ct{grid-column:1}
+.l-cierre .contacto > .ct-directo{grid-column:2;grid-row:1 / span 2}

@@ -458,14 +458,50 @@
    pierde con ellos la forma panoramica de 2,957 que conservaba -pasa a 2,7-,
    y a cambio las diecinueve crecen lo mismo. Las cuatro miniaturas SI se
    quedan con la suya, 1,941.
-   Las filas van a auto -grid-template-rows:none deshace las seis de la regla
-   de arriba, que son para el reparto apretado de media hoja- y el sobrante de
-   la pagina se reparte entre las piezas con space-between, sin dejarlo todo en
-   un hueco. */
-.l-proyectos .tarjeta:only-child{grid-template-rows:none;
-  align-content:space-between}
+   EL SOBRANTE DE LA PAGINA -68 px- VA A LOS HUECOS ENTRE BLOQUES, NO A TODOS.
+   Antes se repartia con align-content:space-between, que da la misma tajada a
+   los seis huecos por igual. El efecto era el que canto el usuario el
+   2026-09-09: los dos huecos mas GRANDES de la ficha acababan siendo los de
+   dentro del bloque de texto -titulo a subtitulo y subtitulo a parrafo, 26 px
+   cada uno, contra los 10 y 6 de las otras nueve hojas de proyectos-, o sea el
+   titulo despegado de su propio texto. Al pasar la hoja saltaba a la vista
+   porque es la unica ficha que va sola.
+   Ahora los huecos de dentro del texto son los de siempre y el sobrante se
+   reparte SOLO entre las dos costuras de abajo:
+        foto+insignias+titulo+subtitulo+parrafo | miniaturas | cliente
+   Medido: 6 / 16 / 11 / 10 / 36 / 37, contra los 16 / 16 / 26 / 26 / 16 / 16
+   de antes. Sigue sin quedar todo el aire en un solo hueco -que era lo que se
+   buscaba con space-between- pero ya no se paga con el bloque de texto.
+
+   LA FECHA Y EL ESTADO VAN PEGADOS A LA FOTO, a sus 6 px de siempre, y no en
+   una costura: lo pidio el usuario el 2026-09-09 -"esta muy separado, sube
+   todo en la pagina si es necesario"-. Y es lo correcto ademas de lo pedido:
+   el ano y el estado son el pie de esa foto, no un bloque aparte, asi que
+   separarlos de ella los dejaba flotando. Al quitarles la costura, todo lo de
+   arriba sube y su parte se suma a las dos costuras de abajo, que pasan de 26
+   a 36.
+
+   VA EN FLEX, NO EN GRID, y es la unica ficha que lo hace. El reparto se pide
+   con dos margin-top:auto, que en una columna flex se parten el hueco libre
+   en partes IGUALES. Con grid no sale: probado con tres filas en 1fr, y el fr
+   no reparte el sobrante, iguala el TAMANO de las filas -cada una tiene de
+   suelo su contenido, y como las miniaturas miden 348 y la foto 244, las dos
+   se comian su parte y los 68 px acababan enteros en el hueco del parrafo (67
+   medidos), que es justo el defecto que se venia a arreglar.
+   La ficha va en una sola columna, asi que de grid no usaba nada: las de dos
+   por pagina si -colocan las piezas por grid-area- y esas se quedan como
+   estan. */
+.l-proyectos .tarjeta:only-child{display:flex;flex-direction:column}
+.l-proyectos .tarjeta:only-child > *{flex:0 0 auto}
+.l-proyectos .tarjeta:only-child .minis,
+.l-proyectos .tarjeta:only-child .caja-cliente{margin-top:auto}
 .l-proyectos .tarjeta:only-child .hero{height:244px}
-.l-proyectos .tarjeta:only-child .insignias{margin:0}
+/* AQUI NO HAY REGLA, Y ES A PROPOSITO: ni .insignias ni .caja-cliente llevan
+   ya el margin-top:0 que tuvieron. Ese cero existia para que el space-between
+   repartiera TODO el aire de la ficha; sin space-between, lo unico que hacia
+   era pegar el ano al titulo y la caja del cliente a las miniaturas. Con los
+   margenes de siempre -6 y 16- respiran igual que en las otras nueve hojas.
+   Queda escrito para que no vuelvan a ponerse. */
 /* LAS MEDIDAS DE LAS FICHAS DE PROYECTO, todas juntas y una sola vez.
    Valen igual para las paginas de dos fichas y para la que va sola
    -Curataquiche-: esa venia con su propia escala, casi al doble, y saltaba a
@@ -494,7 +530,6 @@
    tira donde no se ve de que es, y encima la hoja vuelve a sobrarle sitio. */
 .l-proyectos .tarjeta:only-child .minis{width:auto;padding-top:0;gap:12px}
 .l-proyectos .tarjeta:only-child .minis figure{height:168px}
-.l-proyectos .tarjeta:only-child .caja-cliente{margin-top:0}
 
 /* SIN las cuatro cunas azules -.barras-. Salen en dos sitios de esta hoja, la
    cubierta y el cierre, y el usuario las pidio fuera de las dos el 2026-09-04.
@@ -655,8 +690,10 @@
    tampoco vuelven: el usuario los repartio en columnas para que el navy
    encogiera y se viera mas foto, y la banda sigue midiendo lo mismo -dos
    bloques de alto a cada lado-.
-   No es la fila de tres de la panoramica -380 + 210 + 430-, que aqui no cabe.
-   El reparto sale de lo que pide CADA columna:
+   Las dos columnas son las mismas que la panoramica y la carta -sedes a la
+   izquierda, telefono y correo a la derecha-; lo que cambia son los anchos,
+   que aqui los pide una hoja de pie. El reparto sale de lo que pide CADA
+   columna:
      - la derecha, 250 px, que es lo que ocupa el telefono entero: va sin
        partir (white-space:nowrap en estilos.css) y es el dato mas ancho de las
        dos filas;
@@ -665,22 +702,20 @@
    Ese 1fr es tambien lo que coloca el salto de la direccion donde lo quiso el
    usuario, despues de "Urb." (ver DIR_CARACAS en contenido.py): a 359 px la
    linea cerraba en "#177," y "Urb." bajaba con el resto. */
+/* Solo el hueco de COLUMNA, 40. El de fila se queda con los 22 de estilos.css
+   -son los mismos- y escribirlo otra vez con el gap entero era repetir un
+   valor. Y de columna hace falta 40 porque aqui va a pisar el column-gap:0 de
+   alla: alli el hueco lo reparte space-between, y aqui no hay nada que
+   repartir -la columna izquierda es 1fr y se come el sobrante-, asi que si no
+   lo pone el gap no lo pone nadie. */
 .l-cierre .contacto{
   left:var(--marg-izq);width:var(--ancho-util);top:30px;
-  grid-auto-flow:row;grid-template-columns:1fr 250px;gap:22px 40px}
-/* Las dos sedes son las dos .ct sueltas de .contacto -telefono y correo van
-   envueltos en .ct-directo- asi que basta con mandarlas a la primera columna:
-   caen una debajo de la otra sin numerar filas. Eso es lo que pide el
-   grid-auto-flow:row de arriba, que pisa el 'column' de estilos.css: alli los
-   bloques SON las columnas y aqui son las filas de una de ellas. */
-.l-cierre .contacto > .ct{grid-column:1}
-/* El par telefono+correo ocupa la segunda columna ENTERA, las dos filas, y por
-   dentro se apila: solo se le da la direccion, porque el flex y el hueco de 22
-   ya se los pone estilos.css. Es lo mismo que hace carta.css, que tampoco
-   repite el display. En flex y no en rejilla: aqui no hay nada que alinear con
-   la columna de al lado -las sedes miden lo que midan sus direcciones- y una
-   rejilla de dos filas les habria dado el mismo alto a los dos. */
-.l-cierre .ct-directo{grid-column:2;grid-row:1 / span 2;flex-direction:column}
+  grid-template-columns:1fr 250px;column-gap:40px}
+/* Esta hoja NO tiene nada que decir del par telefono+correo: apilarlo, el
+   hueco y la columna que ocupa los pone estilos.css para las tres maquetas.
+   Tuvo aqui un flex-direction:column mientras la panoramica los ponia en
+   fila; desde que se apilan en las tres, repetirlo era decir dos veces lo
+   mismo. */
 /* NI el cuerpo del texto ni el del rotulo se tocan aqui: los dos se quedan con
    los de estilos.css -14 y 11- y esta hoja no los repite. Los tuvo, en 13 y en
    10, mientras la direccion de Caracas se partia en tres renglones y "SEDE
@@ -919,7 +954,19 @@
    de 540/396: es lo que dan los 646 utiles menos el hueco entre los dos. El h2
    baja de 42 a 32: a 42 "Una flota que no para de crecer" se comia tres
    renglones. */
-.fl-cab{left:var(--marg-izq);top:38px;width:380px}
+/* EL TITULO VA EN UN SOLO RENGLON, que lo pidio el usuario el 2026-09-09, y
+   basta con ENSANCHAR SU COLUMNA: la letra se queda en los 33,5 de siempre.
+   "Una flota que no para de crecer" pide 381 px a ese cuerpo y su columna
+   tenia 380: se partia en dos renglones por UN pixel. Con 405 entra con 24 de
+   sobra.
+   405 es lo mas que conviene: entre el filo izquierdo y el bloque del 841 hay
+   662 px y ese bloque ya esta en su minimo -su renglon mas ancho, el de "44
+   tipos de equipo  38 marcas", mide 221 de los 230 que tiene-, asi que la
+   columna no puede pasar de 412 sin pegarse a el. Con 405 quedan 27 de hueco.
+   El titular estuvo un rato a 31 px por una medida MAL TOMADA -el testigo se
+   colgaba fuera de la lamina, donde no le llega la escala, y devolvia 426 en
+   vez de 381-, y con la cifra buena esa rebaja no hacia falta. */
+.fl-cab{left:var(--marg-izq);top:38px;width:405px}
 .l-flota h2{font-size:33.5px}
 .l-flota .fl-cab p{margin-top:12px;font-size:14.5px;line-height:1.7}
 /* El bloque del total -el 841, "equipos propios" y las dos cifras de abajo-
@@ -932,8 +979,22 @@
 .fl-total{right:var(--marg-der);top:38px;width:230px;text-align:right}
 .fl-total>b{font-size:48.5px}
 .fl-total .fl-sub{justify-content:flex-end}
-/* La rejilla arranca en 228 y no en los 216 de la panoramica porque el parrafo
-   del titular, mas angosto aqui, ocupa un renglon mas.
+/* La rejilla arranca en 264, y ese numero SALE DE UNA MEDIDA, no de un tanteo.
+   Estuvo en 228 y a 228 el parrafo del titular se le montaba encima -lo canto
+   el usuario el 2026-09-09-: con la columna de entonces, 380 px, el parrafo
+   caia en cinco renglones y el bloque de arriba terminaba en y=272. Paso a
+   292. Al poner el titular en un solo renglon -ver .fl-cab, aqui arriba- ese
+   bloque se acorto dos veces: pierde el renglon del titulo y, con la columna
+   ya en 405, el parrafo baja de cinco renglones a cuatro. Ahora termina en
+   y=213, cincuenta y nueve px mas arriba, y dejar la rejilla en 292 abria un
+   hueco de 79 donde antes habia 20.
+   264 reparte esos px sobrantes CASI POR IGUAL por arriba y por abajo: la
+   rejilla mide 347, asi que quedan 51 entre el parrafo y ella y 54 entre ella
+   y el filo del panel, que da 665. Centrada en el sitio que le deja el
+   encabezado, en vez de pegada arriba con un vacio abajo o al reves.
+   SI SE TOCA EL TITULAR O EL PARRAFO HAY QUE VOLVER A MEDIR ESTE NUMERO -es un
+   top absoluto, no sabe lo que hay encima-, y revisar.py no lo canta porque un
+   solape entre dos absolutos no desborda la hoja.
    CUATRO columnas, no las seis de la panoramica: lo pidio el usuario el
    2026-09-06 y antes de eso estuvo en tres.
    Y UNA SOLA rejilla, no las dos que trae el HTML. Eso es lo importante de
@@ -955,7 +1016,7 @@
    comprobar que no se parta, porque una ficha a dos renglones estira su fila
    entera. Y si se anade o se quita un equipo, mirar que el total siga siendo
    multiplo de 4 o volveran los huecos. */
-.fl-bloques{left:var(--marg-izq);top:228px;width:var(--ancho-util);
+.fl-bloques{left:var(--marg-izq);top:264px;width:var(--ancho-util);
   display:grid;grid-template-columns:repeat(4,1fr);gap:6px 18px}
 .l-flota .fl-bloque,.l-flota .fl-bloque ul{display:contents}
 .fl-bloque li{padding-top:5px}

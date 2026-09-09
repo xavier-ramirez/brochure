@@ -64,6 +64,26 @@ FOTO_SEDE = 'sede_edificio'
 FOTOS_EMPRESA = (('empresa_sede',    'Obra: Oleoducto 30″ Veladero · Tramo I'),
                  ('empresa_tendido', 'Patio de máquinas El Tigre'))
 
+#: FOTOS DE MAS PARA EL CARRUSEL, y SOLO para el carrusel. Estas dos listas
+#: -una por lamina- son el sitio donde añadir fotos al carrusel de la
+#: presentacion con efectos SIN tocar nada de lo que ya sale hoy: el PDF, el
+#: PowerPoint, la hoja carta y la de pie siguen enseñando solo las de arriba.
+#: Se escriben igual, ('nombre_del_archivo_sin_extension', 'rotulo'), y la
+#: foto tiene que estar en img/ como .jpg. El rotulo puede ir vacio: ''.
+#: Como funciona: salen en el marcado con class="solo-efectos", que estilos.css
+#: esconde con display:none; el modo presentacion con efectos les devuelve la
+#: caja al montar la pila (ver .pres-pila > figure.solo-efectos en
+#: presentacion.js). Al no generar caja, las rejillas de siempre reparten el
+#: alto entre las de siempre y nada se mueve.
+#: Se pueden dejar vacias, que es como estan: entonces el carrusel gira con las
+#: mismas fotos que se ven en el papel.
+FOTOS_EMPRESA_PILA = ()
+
+#: Las de "Nuestras oficinas". Ojo: las de siempre salen de OFICINAS
+#: (contenido.py), una por ciudad, porque ademas alimentan la lista de
+#: direcciones de la izquierda. Estas son solo fotos, no llevan direccion.
+FOTOS_OFICINAS_PILA = ()
+
 #: La foto de la PORTADA. Solo sale ahi -no la usa ninguna otra lamina-, y esa
 #: es la razon de elegirla y no cualquier otra: el encuadre va por nombre de
 #: foto y se comparte alla donde la foto aparezca, asi que si aqui se pusiera
@@ -204,7 +224,8 @@ def rieles_trio(clase, izq=RIELES_SUELTOS):
 ETIQUETA_SECCION = {
     'l-cubierta': None, 'l-portada': None, 'l-cierre': None,
     'l-empresa': 'Nuestra empresa', 'l-nosotros': 'Misión y visión',
-    'l-valores': 'Nuestros valores', 'l-servicios': 'Nuestros servicios',
+    'l-valores': 'Nuestros valores', 'l-oficinas': 'Nuestras oficinas',
+    'l-servicios': 'Nuestros servicios',
     'l-portafolio': 'Portafolio', 'l-proyectos': 'Proyectos',
     'l-destacado': 'Proyecto destacado', 'l-flota': 'Flota propia',
     'l-clientes': 'Clientes',
@@ -369,11 +390,13 @@ def lamina_empresa():
   </div>
 </section>''' % (rieles('rieles-panel'), epigrafe('Quiénes somos', 'claro'),
                  EMPRESA['entrada_portada'], rieles('rieles-derecha'),
-                 ''.join('<figure>%s%s%s</figure>'
-                         % (foto(n),
+                 ''.join('<figure%s>%s%s%s</figure>'
+                         % (extra, foto(n),
                             '<figcaption>%s</figcaption>' % chip(r) if r else '',
                             rieles('rieles-banda'))
-                         for n, r in FOTOS_EMPRESA))
+                         for extra, lista in (('', FOTOS_EMPRESA),
+                                              (' class="solo-efectos"', FOTOS_EMPRESA_PILA))
+                         for n, r in lista))
 
 
 def lamina_nosotros():
@@ -444,6 +467,10 @@ def lamina_oficinas():
     """
     franjas = ''.join('<figure>%s<figcaption>%s</figcaption></figure>'
                       % (foto(o['foto']), chip(o['ciudad'])) for o in OFICINAS)
+    # Las de mas, escondidas: solo las ve el carrusel (ver FOTOS_OFICINAS_PILA)
+    franjas += ''.join('<figure class="solo-efectos">%s%s</figure>'
+                       % (foto(n), '<figcaption>%s</figcaption>' % chip(r) if r else '')
+                       for n, r in FOTOS_OFICINAS_PILA)
     bloques = ''
     for o in OFICINAS:
         # El rotulo va en UN renglon y en este orden: primero DONDE -"Maturin"-

@@ -30,6 +30,7 @@
 !revisar_carta.py
 !exportar_pdf.py
 !exportar_pptx.py
+!exportar_html.py
 !montar_fotos.py
 !probar_encuadre.py
 !mantener_servidor.bat

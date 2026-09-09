@@ -12,8 +12,9 @@
 
    COMO SE ENTRA: index.html?presentacion          -limpia, sin animacion-
                   index.html?presentacion&efectos  -con animaciones-
-   Los dos enlaces estan en la barra del editor, y el boton "Efectos" de la
-   barra de aqui cambia de una a otra sin recargar. Sin el parametro
+   En la barra del editor solo esta el enlace de los efectos -la que se ensena-;
+   a la limpia se llega con el boton "Efectos" de la barra de aqui, que cambia
+   de una a otra sin recargar y lo anota en la URL. Sin el parametro
    ?presentacion este archivo no hace absolutamente nada, ni siquiera mira el
    DOM, asi que la pagina normal queda igual que estaba y los scripts que
    capturan o exportan -revisar.py, exportar_pdf.py, exportar_pptx.py- no
@@ -46,8 +47,14 @@
 
   /* Con el parametro o sin el: es lo unico que decide si esto corre. Se acepta
      "?presentacion" tal cual y "?presentacion=1", que es lo que escribiria
-     cualquiera a mano. */
-  if (!/(^|[?&])presentacion(=|&|$)/.test(location.search)) return;
+     cualquiera a mano.
+
+     Y una segunda puerta: la marca __presSuelta, que pone el HTML de un solo
+     archivo (ver exportar_html.py). Ese se abre con doble clic, sin direccion
+     que escribir y sin servidor, asi que no hay parametros donde mirar: la
+     presentacion tiene que arrancar sola y con efectos. */
+  var suelta = window.__presSuelta === true;
+  if (!suelta && !/(^|[?&])presentacion(=|&|$)/.test(location.search)) return;
 
   /* La marca va ANTES de nada: editor.js corre despues -va con defer- y lo
      primero que hace es mirarla para salirse. */
@@ -71,7 +78,7 @@
      No son dos archivos ni dos maquetas: es la misma, y todo lo que cambia
      cuelga de la clase 'pres-efectos' en el <html>. Por eso el boton de la
      barra puede encenderlo y apagarlo en caliente sin recargar. */
-  var conEfectos = /(^|[?&])efectos(=|&|$)/.test(location.search);
+  var conEfectos = suelta || /(^|[?&])efectos(=|&|$)/.test(location.search);
 
   /* Quien manda es la clase del <html>, no la variable de arriba: esa solo dice
      con que se arranco, y el boton de la barra la cambia despues. Todo el que
@@ -106,21 +113,30 @@
      Las laminas pasan a estar una ENCIMA de otra -position:fixed y centradas-
      en vez de apiladas hacia abajo, y se ve la que toque. --k es la escala,
      que se recalcula con la ventana (ver encajar()). */
-  /* ---- el carrusel de fotos apiladas ----
-     Estas tres van ARRIBA del todo y no con las demas medidas: CARRUSEL se
-     lee mas abajo desde la hoja de estilos que se arma aqui mismo, y una var
-     declarada despues valdria undefined en ese momento. */
-  /* Cada cuanto pasa el turno de una foto a la siguiente. Largo a proposito:
-     es para mirar la foto, no para marear. */
-  var CARRUSEL = 5200;
-  /* Cuantas partes se lleva la que manda frente a una de cada una de las
-     demas. Con 3,4: de dos fotos la grande ocupa el 77%; de cuatro, el 52%
-     frente al 15% de las otras. */
-  var FOCO = 3.4;
-  /* Las rejillas que se turnan. Son estas dos y no cualquier grupo de figuras:
-     en las laminas de proyectos cada foto es una obra distinta y agrandar una
-     a costa de las demas no querria decir nada. */
-  var CARRUSELES = '.qse-foto, .ofi-fotos';
+  /* ---- la pila de fotos ----
+     Van ARRIBA del todo y no con las demas medidas: se leen mas abajo desde la
+     hoja de estilos que se arma aqui mismo, y una var declarada despues
+     valdria undefined en ese momento.
+
+     Las dos rejillas de fotos -"Nuestra empresa" con dos y "Nuestras oficinas"
+     con cuatro- pasan a enseñar UNA PILA DE CARTAS: la foto que toca al
+     frente, entera y a tamaño, y las dos vecinas asomando detras -una por
+     arriba y otra por abajo-, mas chicas y apagadas. Cada pocos segundos la
+     pila avanza y la de abajo pasa al frente. El usuario lo enseño con una
+     captura el 2026-09-09.
+     Los cantos se quedan RECTOS, no redondeados como en la captura: en este
+     brochure no hay una sola esquina blanda y esa es su firma.
+     Antes fueron dos cosas distintas: un carrusel que repartia el alto dando
+     mas franja a la que mandaba -se quito-, y despues las fotos quietas del
+     todo -tambien-. De aquello queda que sus fotos NO entran en la fila de la
+     lamina y que la hoja de estilos les apaga la deriva: el pase de la pila es
+     el unico efecto que tienen, que es justo lo que se pidio. */
+  /* Cada cuanto pasa a la siguiente. Estuvo en 5200 y el usuario lo pidio "un
+     poquitito mas rapido" el 2026-09-09: con 3800 la pila gira sin que de
+     tiempo a olvidarse de que gira, y el pase sigue durando lo mismo. */
+  var PILA_TURNO = 3800;
+  var PILA_PASE = 720;     // lo que tarda el cambio; el mismo .72s del CSS
+  var PILAS = '.qse-foto, .ofi-fotos';
 
   var css = document.createElement('style');
   css.textContent =
@@ -192,6 +208,10 @@
     'to{opacity:1;filter:none}}' +
     /* Las palabras suben mas y ademas se enfocan: es lo que separa un titulo
        que "aparece" de uno que "entra". */
+    /* La foto SOLO se funde: su transform es el de la deriva, y escribirle otro
+       encima la sacaria de su encuadre. Por eso este keyframe no toca mas que
+       la opacidad -asi los dos se componen, cada uno con su propiedad-. */
+    '@keyframes pres-e-foto{from{opacity:0}to{opacity:1}}' +
     '@keyframes pres-e-palabra{from{opacity:0;transform:translateY(30px);' +
     'filter:blur(7px)}to{opacity:1;transform:none;filter:none}}' +
     '@keyframes pres-e-palabra-lado{from{opacity:0;transform:translateX(-22px);' +
@@ -199,8 +219,10 @@
 
     'html.pres.pres-efectos .pres-anim{animation:.62s ' +
     'cubic-bezier(.16,.84,.28,1) both}' +
-    /* Sin ninguna de las de abajo entra solo con el fundido, que es lo que le
-       toca a las fotos encuadradas. */
+    /* Sin ninguna de las de abajo esta regla no pone animation-name, o sea
+       NINGUNA animacion. Eso vale para lo que no deba moverse; las fotos
+       encuadradas, que caen aqui, tienen su propia regla mas abajo -la de la
+       deriva- porque si no se quedaban puestas desde el primer fotograma. */
     'html.pres.pres-efectos .pres-anim.pres-sube{animation-name:pres-e-sube}' +
     'html.pres.pres-efectos .pres-anim.pres-zoom{animation-name:pres-e-zoom}' +
     'html.pres.pres-efectos .pres-anim.pres-lado{animation-name:pres-e-lado}' +
@@ -223,54 +245,88 @@
        solo vuelve a abrir flujo normal para que los espacios cuenten. */
     'html.pres .pres-tramo{display:inline}' +
 
-    /* ---- carrusel de fotos apiladas ----
-       Dos laminas llevan sus fotos en una rejilla de franjas iguales: la de
-       "Nuestra empresa" con dos y la de "Nuestras oficinas" con cuatro. En vez
-       de sacar una y meter otra, se reparte el alto: la que manda se lleva
-       FOCO partes y las demas una, y cada pocos segundos pasa el turno a la
-       siguiente. Como las fotos van con object-fit:cover, al crecer la franja
-       se descubre MAS FOTO de verdad -que es lo que se pedia- y las otras
-       siguen a la vista.
-       Aqui solo va la transicion: el reparto lo escribe el JS, que es quien
-       sabe cuantas fotos hay en cada una. Se mueve grid-template-rows, de lo
-       poco de una rejilla que el navegador sabe interpolar; no se toca el
-       transform de las imagenes, que es el de su encuadre. */
-    'html.pres.pres-efectos .pres-carrusel{position:relative;' +
-    'transition:grid-template-rows 1.25s cubic-bezier(.33,0,.15,1)}' +
+    /* ---- la pila de cartas ----
+       Las figuras dejan de repartirse el alto y se APILAN todas en la misma
+       celda -grid-area 1/1-, una encima de otra. Desde ahi, cada una se coloca
+       segun su turno: la que manda al frente y a su tamaño, la anterior
+       asomando por arriba y la siguiente por abajo, las dos mas chicas,
+       apagadas y por detras. Las demas esperan invisibles en el centro.
 
-    /* Las que NO mandan se apagan: bajan de luz y de color y se quedan como
-       el contexto de la que se esta mirando. Es lo que hace que la grande se
-       lea como grande y no como "una franja mas pero mayor". El filtro va en
-       la figura entera para que se apague tambien su rotulo. */
-    'html.pres.pres-efectos .pres-carrusel > *{' +
-    'transition:filter 1.25s ease,opacity 1.25s ease;' +
-    'filter:saturate(.45) brightness(.52);opacity:.72}' +
-    'html.pres.pres-efectos .pres-carrusel > .pres-foco{' +
-    'filter:none;opacity:1}' +
+       LA CARTA ES APAISADA, no del alto de la caja. La caja mide 730 x 720
+       -practicamente cuadrada- y las fotos NO lo son: las de la empresa son
+       16:9 y las de las oficinas van de 1,33 a 3,00. Con la carta cuadrada y
+       object-fit:cover, la foto se recortaba por los LADOS -las de 16:9
+       perdian el 43% del ancho- y ensenaba todo el alto. Lo canto el usuario
+       el 2026-09-09.
+       Ahora cada rejilla le da a su carta la forma de SUS fotos:
+         .qse-foto   16:9, que es exactamente la de sus dos fotos: no recorta
+                     nada.
+         .ofi-fotos  3:2, un termino medio. Ahi las cuatro son distintas -1,33
+                     de Caracas, 0,56 de Lecheria que es VERTICAL, 3,00 de El
+                     Tigre y 1,61 de Maturin-, asi que ninguna forma les sirve
+                     a todas; 3:2 es la que menos les quita y recorta por
+                     arriba y abajo, que duele menos que por los lados.
+       align-self:center centra la carta en la celda, que ahora le sobra alto.
 
+       LAS VECINAS SON MAS ANCHAS QUE LA DEL FRENTE, no mas chicas. Es lo que
+       enseña la captura que mando el usuario el 2026-09-09: la pila se lee como
+       un taco de hojas donde la de encima es un pelin menor y las de abajo
+       asoman por los cuatro costados. Estuvieron al reves -frente .9, vecinas
+       .78- y se leia como si las de atras estuvieran lejos, no debajo.
+       Ahora el frente va al 86% y las vecinas al 95%, corridas un 14%: cada
+       vecina sobresale unos 33 px por cada lado y asoma unos 89 px por arriba
+       o por abajo, y aun le quedan mas de 60 hasta el filo del contenedor, que
+       recorta lo que se sale. Si se sube el .86 hay que bajar el 14% o las
+       vecinas desaparecen detras.
 
-    /* ---- los tramos de arriba, uno por foto ----
-       Dicen cuantas hay, cual se esta viendo y cuanto le queda. Es lo que
-       convierte "dos fotos que cambian de tamaño" en un carrusel que se
-       entiende sin explicarlo. Se crean desde el JS y se van al desmontar:
-       en la lamina impresa no existen. */
-    /* Sobre una foto de cielo el blanco sobre blanco no se ve, asi que los
-       tramos van sobre una placa navy con el mismo canto recto del brochure
-       -nada redondeado, que aqui no hay una sola esquina blanda-. */
-    'html.pres .pres-indices{position:absolute;z-index:6;top:0;right:0;' +
-    'display:flex;gap:5px;pointer-events:none;' +
-    'padding:11px 14px;background:linear-gradient(200deg,' +
-    'rgba(10,19,48,.82) 0%,rgba(10,19,48,.82) 62%,rgba(10,19,48,0) 100%)}' +
-    'html.pres .pres-indices i{display:block;width:30px;height:3px;' +
-    'background:rgba(255,255,255,.3);overflow:hidden}' +
-    'html.pres .pres-indices i s{display:block;width:100%;height:100%;' +
-    'background:#fff;transform:scaleX(0);transform-origin:left center}' +
-    /* El que corre se llena en el tiempo que dura el turno; los ya pasados se
-       quedan llenos, que es como se lee "vas por la tercera de cuatro". */
-    'html.pres .pres-indices i.pres-hecho s{transform:scaleX(1)}' +
-    'html.pres .pres-indices i.pres-corre s{transform:scaleX(1);' +
-    'transition:transform ' + (CARRUSEL / 1000) + 's linear}' +
+       Cada figura se lleva su rotulo dentro, en su figcaption, asi que el
+       nombre de la obra o de la oficina viaja con su foto sin hacer nada.
+       El selector lleva las tres clases de html.pres.pres-efectos para pesar
+       mas que el .qse-foto de estilos.css, que es quien reparte las filas. */
+    'html.pres.pres-efectos .pres-pila{position:relative;overflow:hidden;' +
+    'grid-template-rows:1fr;grid-template-columns:1fr}' +
+    /* CANTOS REDONDEADOS, y solo aqui. En el brochure no hay una sola esquina
+       blanda -es su firma- pero el usuario los pidio para el carrusel el
+       2026-09-09, y ahi tienen sentido: es lo que hace que la pila se lea como
+       un taco de fotos y no como tres rectangulos pegados. Va en el modo
+       presentacion, asi que el PDF y el PowerPoint siguen con sus cantos
+       rectos. Recorta solo porque .qse-foto figure y .l-oficinas figure ya
+       traen overflow:hidden de estilos.css. */
+    /* Las fotos de mas, las que SOLO salen en el carrusel: aqui recuperan su
+       caja. Van con display:none de fabrica (ver .solo-efectos en estilos.css)
+       para no aparecer en el PDF, el PowerPoint ni las hojas impresas, y solo
+       vuelven a existir dentro de una pila. */
+    'html.pres.pres-efectos .pres-pila > figure.solo-efectos{display:block}' +
+    'html.pres.pres-efectos .pres-pila > figure{grid-area:1 / 1;' +
+    'align-self:center;border-radius:20px;' +
+    'transform:scale(.72);opacity:0;z-index:1;' +
+    'transition:transform ' + (PILA_PASE / 1000) + 's cubic-bezier(.4,.02,.2,1),' +
+    'opacity ' + (PILA_PASE / 1000) + 's ease,filter ' + (PILA_PASE / 1000) + 's ease}' +
+    /* la forma de la carta, la de las fotos de cada rejilla */
+    'html.pres.pres-efectos .qse-foto.pres-pila > figure{aspect-ratio:16 / 9}' +
+    'html.pres.pres-efectos .ofi-fotos.pres-pila > figure{aspect-ratio:3 / 2}' +
+    /* la que manda: al frente y sin apagar */
+    'html.pres.pres-efectos .pres-pila > figure.pres-p-va{' +
+    'transform:scale(.86);opacity:1;z-index:3;filter:none}' +
+    /* las dos vecinas: detras, mas anchas y apagadas */
+    'html.pres.pres-efectos .pres-pila > figure.pres-p-antes{' +
+    'transform:translateY(-14%) scale(.95);opacity:1;z-index:2;' +
+    'filter:saturate(.3) brightness(.42)}' +
+    'html.pres.pres-efectos .pres-pila > figure.pres-p-luego{' +
+    'transform:translateY(14%) scale(.95);opacity:1;z-index:2;' +
+    'filter:saturate(.3) brightness(.42)}' +
 
+    /* Los puntos: cuantas fotos hay y por cual va. Cuadrados, como todo en
+       este brochure -no hay una sola esquina blanda-, y sin capturar el raton,
+       que el clic en cualquier sitio pasa de lamina. */
+    'html.pres .pres-puntos{position:absolute;z-index:6;left:0;right:0;' +
+    'bottom:16px;display:flex;justify-content:center;gap:7px;' +
+    'pointer-events:none}' +
+    'html.pres .pres-puntos i{display:block;width:7px;height:7px;' +
+    'background:rgba(255,255,255,.42);' +
+    'transition:background .4s ease,transform .4s ease}' +
+    'html.pres .pres-puntos i.pres-punto-va{background:#fff;' +
+    'transform:scale(1.3)}' +
 
     /* ---- las fotos, con deriva lenta ----
        Van recortadas por su marco -object-fit:cover- y encuadradas a mano:
@@ -285,17 +341,52 @@
     'to{transform:scale(var(--zoom,1)) translate(0,0)}}' +
     'html.pres.pres-efectos .lamina.pres-va img[data-foto]{' +
     'animation:pres-deriva 8s cubic-bezier(.22,.61,.36,1) both}' +
-    /* MENOS donde hay carrusel. Alli el movimiento es el turno, y las dos
-       cosas juntas se leian como que la foto no se estaba quieta.
+    /* LA FOTO QUE ENTRA EN LA FILA se funde ADEMAS de derivar, y esta regla es
+       la unica que lo consigue. La de arriba escribe animation en la foto y
+       pesa mas que la de .pres-anim, asi que se comia la entrada: la foto
+       estaba puesta desde el fotograma cero y solo derivaba. Se veia en las
+       laminas de dos proyectos -lo canto el usuario el 2026-09-09-: entraba el
+       texto de la izquierda y luego el de la derecha, pero las cuatro fotos ya
+       estaban ahi desde el principio.
+       Las dos animaciones se listan juntas y no se pisan porque cada una toca
+       una propiedad distinta -opacidad la entrada, transform la deriva-. El
+       animation-delay que el JS escribe en el estilo del elemento vale para
+       las DOS, que es justo lo que hace falta: hasta que le toca su turno la
+       foto no se ve, y en ese instante empieza tambien su deriva.
+       Solo alcanza a las que estan en la fila de entrada: las de las dos
+       rejillas apiladas se quedan fuera y nunca llevan pres-anim. */
+    'html.pres.pres-efectos .lamina.pres-va img[data-foto].pres-anim{' +
+    'animation:pres-e-foto .62s cubic-bezier(.16,.84,.28,1) both,' +
+    'pres-deriva 8s cubic-bezier(.22,.61,.36,1) both}' +
+    /* LAS QUE NO PARAN (ver SIN_PARAR): su deriva es INFINITA y de ida y
+       vuelta, asi que la foto se abre y se cierra sin fin. alternate es lo que
+       quita el corte: sin el, al llegar al final saltaria de golpe a su
+       posicion de partida. Y con ease-in-out frena en los dos extremos, que es
+       lo que hace que el cambio de sentido no se note.
+       Sin retardo y sin fill: empieza con la lamina y no para hasta que se
+       pasa de pagina. Pesa mas que la regla de arriba -una clase mas- para
+       ganarle el animation. */
+    'html.pres.pres-efectos .lamina.pres-va.pres-sinparar img[data-foto]{' +
+    'animation:pres-deriva 8s ease-in-out infinite alternate}' +
+    /* MENOS las de las dos rejillas que hacen pila (ver PILAS): alli el
+       movimiento es el pase de la pila, y las dos cosas juntas se leerian como
+       que la foto no se esta quieta. De la fila de entrada ya salen excluidas; esta
+       regla es la que ademas les apaga la deriva.
        Ojo con el selector: lleva .lamina.pres-va aunque no haga falta para
-       localizar nada. Es para PESAR mas que la regla de arriba; sin eso la que
-       pone la deriva gana por especificidad y la exclusion no hace nada -asi
-       estuvo, y las fotos del carrusel seguian moviendose-. */
-    'html.pres.pres-efectos .lamina.pres-va .pres-carrusel img[data-foto]{' +
+       localizar nada. Es para PESAR mas que las reglas de arriba; sin eso la
+       que pone la deriva gana por especificidad y la exclusion no hace nada
+       -asi estuvo, y estas fotos seguian moviendose-. */
+    'html.pres.pres-efectos .lamina.pres-va .qse-foto img[data-foto],' +
+    'html.pres.pres-efectos .lamina.pres-va .ofi-fotos img[data-foto]{' +
     'animation:none}' +
     /* Quien no quiera mareo lo dice en el sistema y aqui se respeta. */
+    /* El segundo selector no sobra: la regla del fundido de arriba pesa lo
+       mismo que este, y sin nombrarlo aqui volveria a encender la animacion
+       justo a quien pidio que no la hubiera. */
     '@media (prefers-reduced-motion:reduce){' +
-    'html.pres.pres-efectos .lamina.pres-va img[data-foto]{animation:none}}' +
+    'html.pres.pres-efectos .lamina.pres-va img[data-foto],' +
+    'html.pres.pres-efectos .lamina.pres-va img[data-foto].pres-anim' +
+    '{animation:none}}' +
 
     /* sin transicion al recolocar por un cambio de ventana: ahi no hay pase de
        diapositiva que animar, y la lamina daria un salto raro */
@@ -341,6 +432,7 @@
     '<button type="button" class="pres-flecha" id="pres-luego" title="Siguiente">&#9654;</button>' +
     '<button type="button" id="pres-efectos"></button>' +
     '<button type="button" id="pres-pantalla">Pantalla completa</button>' +
+    '<button type="button" id="pres-suelta">Descargar presentacion</button>' +
     '<button type="button" id="pres-pptx">Descargar PowerPoint</button>' +
     '<button type="button" id="pres-salir">Salir</button>' +
     '<span class="pres-aviso" id="pres-aviso"></span>';
@@ -349,6 +441,7 @@
   var elCuenta = document.getElementById('pres-cuenta');
   var elAviso  = document.getElementById('pres-aviso');
   var btnPptx  = document.getElementById('pres-pptx');
+  var btnSuelta = document.getElementById('pres-suelta');
 
   var relojAviso = null;
   function aviso(txt, mal) {
@@ -395,6 +488,17 @@
     '[class*="bloque"]', '[class*="ficha"]'
   ].join(',');
 
+  /* EL LOGOTIPO DE LA EMPRESA, para poder dejarlo fuera de las REPETICIONES.
+     Entra con todo lo demas la primera vez -es parte de como se abre la
+     lamina-, pero las dos que se repiten solas son justo las dos que lo
+     llevan: la cubierta (.cbp-logo) y el cierre (img.logo). Verlo desaparecer
+     y volver cada cinco segundos lo convierte en un anuncio parpadeando; la
+     marca tiene que quedarse puesta mientras el resto vuelve a entrar.
+     Pedido por el usuario el 2026-09-09.
+     Los logotipos de los CLIENTES no entran aqui -son img sin esa clase, y
+     ademas viven en l-clientes, que no repite entera sino por partes. */
+  var SEL_LOGO = '.cbp-logo img, img.logo';
+
   /* Pasadas de mas fina a mas gruesa: si con el detalle salen mas de TOPE
      cosas se sube de nivel. No es por tiempo -el paso ya se acorta solo-, es
      que veinte piezas entrando de una en una no se leen como una entrada:
@@ -415,10 +519,38 @@
      de DURA porque la limpieza tiene que esperar a la mas lenta de las dos. */
   var DURA_PALABRA = 780;   // el mismo .78s del CSS de .pres-palabra
   var TELON = 260;  // el pase de lamina; hasta que no acaba no entra nada dentro
-  /* Cada cuanto vuelve a empezar el efecto de la portada, contado desde que
-     termina el anterior. Ni tan seguido que maree ni tan largo que parezca
-     congelada: da tiempo a leer el titulo entero y vuelve a escribirse. */
-  var REPETIR_PORTADA = 9000;
+  /* Cada cuanto vuelve a empezar el efecto de la PORTADA, contado desde que
+     termina el anterior. Estuvo en 9000 y el usuario lo vio largo el
+     2026-09-09 -"queda mucho tiempo en volver a empezar"-: con la entrada
+     durando 1,7 s, la lamina se pasaba mas de cinco veces ese rato quieta.
+     Con 5000 el ciclo entero baja de 10,7 s a 6,7 y el titulo se vuelve a
+     escribir sin que de tiempo a leerlo dos veces. */
+  var REPETIR_PORTADA = 5000;
+  /* El CIERRE espera lo MISMO que la portada. Estuvo en 16000, al doble, con
+     esta razon: lo que se repite ahi son los datos de contacto -direccion,
+     telefono, correo- y repetir el efecto los borra y los vuelve a escribir
+     palabra a palabra, asi que una espera corta le pasa por encima a quien los
+     este copiando o fotografiando. El usuario lo sabe y aun asi pidio bajarlo
+     el 2026-09-09, igual que la portada; queda escrito por si algun dia el
+     cierre se vuelve a ver apurado y hay que subirlo otra vez. */
+  var REPETIR_CIERRE = 5000;
+  /* Lo que se espera entre la ULTIMA pieza de una ficha y la PRIMERA de la
+     siguiente, en las laminas de dos fichas por pagina. Es lo que convierte
+     una entrada de doce piezas seguidas en dos tiempos que se leen: primero la
+     ficha de la izquierda, luego la de la derecha. Lo pidio el usuario el
+     2026-09-09. Medido antes: las doce arrancaban en 902 ms y cada una tarda
+     620, asi que la derecha empezaba (492) con la izquierda aun entrando y el
+     ojo lo leia como un solo golpe, no como dos lados.
+
+     EN CERO, y el cero es el valor pedido, no un descuido: "apenas termina de
+     aparecer lo del lado izquierdo debe salir lo del lado derecho"
+     (2026-09-09). Estuvo en 300 y esa espera se notaba. Con cero, la derecha
+     arranca en el mismo instante en que aterriza la ultima pieza de la
+     izquierda -que es lo que ya cuenta el DURA de la formula-, asi que siguen
+     siendo dos tiempos y no uno, pero encadenados.
+     La constante se queda porque es la perilla de esa costura: si algun dia
+     se quiere volver a separar, el numero va aqui. */
+  var PAUSA_FICHA = 0;
   /* Tope de cuando ARRANCA la ultima, no de cuando termina: la lamina acaba de
      armarse TOPE_ARRANQUES + DURA despues. Si con PASO fijo la ultima se
      arrancaria mas tarde que esto, el paso se acorta hasta que quepa. */
@@ -646,8 +778,11 @@
      anterior vivos, y esos animarian o limpiarian una lamina que ya no se ve.
      Por eso todo reloj de animacion pasa por aqui y se para de golpe. */
   var relojesAnim = [];
-  var relojCarrusel = null;
-  var cajaCarrusel = null;
+  /* El de la pila va aparte por lo mismo: se rearma solo cada PILA_TURNO sin
+     volver a pasar por animarDentro, que es quien vacia relojesAnim. Y la caja
+     se guarda para poder desmontarla al salir. */
+  var relojPila = null;
+  var cajaPila = null;
 
   function pararAnim() {
     relojesAnim.forEach(clearTimeout);
@@ -655,83 +790,83 @@
     /* El carrusel se para y se desmonta aqui y en ningun otro sitio. No puede
        hacerlo limpiarAnim: esa corre en cuanto termina la entrada, y el
        carrusel empieza justo despues y tiene que seguir vivo mientras la
-       lamina este puesta. */
-    clearTimeout(relojCarrusel);
-    relojCarrusel = null;
-    if (cajaCarrusel) {
-      var indices = cajaCarrusel.querySelector('.pres-indices');
-      if (indices) indices.remove();
-      [].slice.call(cajaCarrusel.children).forEach(function (foto) {
-        foto.classList.remove('pres-foco');
+       lamina este puesta. Se le devuelven las clases a las figuras y se le
+       quitan los puntos: la lamina tiene que quedar como estaba, que de ella
+       salen el PDF y el PowerPoint. */
+    clearTimeout(relojPila);
+    relojPila = null;
+    if (cajaPila) {
+      var puntos = cajaPila.querySelector('.pres-puntos');
+      if (puntos) puntos.remove();
+      [].slice.call(cajaPila.children).forEach(function (fig) {
+        fig.classList.remove('pres-p-va', 'pres-p-antes', 'pres-p-luego');
       });
-      cajaCarrusel.classList.remove('pres-carrusel');
-      cajaCarrusel.style.removeProperty('grid-template-rows');
-      cajaCarrusel = null;
+      cajaPila.classList.remove('pres-pila');
+      cajaPila = null;
     }
   }
 
-  /* La rejilla de fotos apiladas de esta lamina, si la tiene y si vale la pena
-     turnarla. Un solo sitio lo decide, que lo preguntan dos. */
-  function cajaDeCarrusel(lamina) {
-    var caja = lamina.querySelector(CARRUSELES);
-    return (caja && caja.children.length > 1) ? caja : null;
-  }
-
-  /* Reparte el alto dando FOCO partes a la que manda y una a cada una de las
-     demas, apaga las que no mandan y va pasando el turno. Los tramos de arriba
-     -uno por foto- cuentan por donde va. */
-  function montarCarrusel(lamina) {
-    var caja = cajaDeCarrusel(lamina);
+  /* LA PILA DE CARTAS. Aqui solo se dice QUE PAPEL hace cada figura en cada
+     turno -la del frente, la de arriba, la de abajo o ninguno-; de colocarlas
+     se encarga el CSS. Con dos fotos, la vecina hace de las dos: se le da el
+     papel de "la de abajo", que es hacia donde avanza la pila, y no se pone
+     ninguna arriba -si no, la misma figura tendria dos sitios a la vez-.
+     Con menos de dos no se monta nada: no hay pila que pasar. */
+  function montarPila(lamina) {
+    var caja = lamina.querySelector(PILAS);
     if (!caja) return;
-    var fotos = [].slice.call(caja.children);
-
-    caja.classList.add('pres-carrusel');
-    cajaCarrusel = caja;
-
-    var indices = document.createElement('div');
-    indices.className = 'pres-indices';
-    var tramos = fotos.map(function () {
-      var t = document.createElement('i');
-      t.appendChild(document.createElement('s'));
-      indices.appendChild(t);
-      return t;
+    var fotos = [].slice.call(caja.children).filter(function (el) {
+      return el.tagName === 'FIGURE';
     });
-    caja.appendChild(indices);
+    if (fotos.length < 2) return;
 
-    var turno = 0;
+    caja.classList.add('pres-pila');
+    cajaPila = caja;
+
+    var puntos = document.createElement('div');
+    puntos.className = 'pres-puntos';
+    var marcas = fotos.map(function () {
+      var i = document.createElement('i');
+      puntos.appendChild(i);
+      return i;
+    });
+    caja.appendChild(puntos);
+
+    var n = fotos.length, turno = 0;
+
+    function pintar() {
+      var antes = (turno - 1 + n) % n;
+      var luego = (turno + 1) % n;
+      fotos.forEach(function (f, i) {
+        f.classList.toggle('pres-p-va', i === turno);
+        /* con n = 2, antes y luego son la misma: manda luego */
+        f.classList.toggle('pres-p-luego', i === luego && i !== turno);
+        f.classList.toggle('pres-p-antes', i === antes && i !== turno && i !== luego);
+      });
+      marcas.forEach(function (m, i) { m.classList.toggle('pres-punto-va', i === turno); });
+    }
+    pintar();
+
     (function pasar() {
-      var partes = fotos.map(function (foto, i) {
-        foto.classList.toggle('pres-foco', i === turno);
-        return i === turno ? FOCO + 'fr' : '1fr';
-      });
-      caja.style.gridTemplateRows = partes.join(' ');
-
-      /* Los tramos: el de la foto que entra se llena en lo que dura el turno,
-         los de antes se quedan llenos y los de despues vacios. Al dar la vuelta
-         se vacian todos, que es lo que dice "empezamos otra ronda". */
-      /* El indice se guarda AQUI, en una variable de este turno. Si el
-         fotograma de abajo leyera 'turno' lo leeria ya sumado -pasa antes de
-         que corra- y encenderia el tramo de la foto siguiente. */
-      var actual = turno;
-      tramos.forEach(function (t, i) {
-        t.className = i < actual ? 'pres-hecho' : '';
-      });
-      /* El fotograma de por medio es el de siempre: sin el, poner la clase y
-         quitarla en el mismo golpe no deja nada que interpolar. */
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { tramos[actual].className = 'pres-corre'; });
-      });
-
-      turno = (turno + 1) % fotos.length;
-      relojCarrusel = setTimeout(pasar, CARRUSEL);
+      relojPila = setTimeout(function () {
+        turno = (turno + 1) % n;
+        pintar();
+        pasar();
+      }, PILA_TURNO);
     })();
   }
-
 
   /* La deriva es una animacion CSS atada a .pres-va, asi que sola no vuelve a
      empezar mientras la lamina siga puesta. Quitarsela y devolversela con un
      reflujo forzado en medio es lo unico que la relanza; hace falta para que la
      portada, que se repite, no se quede con la foto quieta a la segunda vuelta. */
+  /* La deriva es una animacion CSS atada a .pres-va, asi que sola no vuelve a
+     empezar mientras la lamina siga puesta. Quitarsela y devolversela con un
+     reflujo forzado en medio es lo unico que la relanza; hace falta para la
+     portada y el cierre, que se repiten enteros y su foto tiene que volver a
+     entrar con lo demas.
+     En las laminas de SIN_PARAR no se llama nunca: alli la deriva es infinita
+     y no hay nada que relanzar. */
   function reiniciarDeriva(lamina) {
     [].slice.call(lamina.querySelectorAll('img[data-foto]')).forEach(function (im) {
       im.style.animation = 'none';
@@ -740,26 +875,102 @@
     });
   }
 
-  function animarDentro(lamina) {
+
+  /* LAS QUE NO PARAN. Ni se quedan quietas como las de en medio ni vuelven a
+     entrar enteras como la portada y el cierre: su FOTO se mueve sin parar y
+     lo demas entra una sola vez.
+        l-nosotros    la mision y la vision. Son dos textos para leer, no para
+                      verlos entrar cada pocos segundos.
+        l-valores     los cuatro valores, por lo mismo.
+        l-portafolio  la lista de los diecinueve proyectos. Veintitantas fichas
+                      saltando serian ilegibles: esa hoja se lee.
+        l-clientes    la rejilla de logotipos. Repetirle la entrada seria ver
+                      saltar todas las marcas; ahi lo que se hace es mirarlas.
+        l-flota       la hoja de los equipos, por lo mismo.
+
+     LA FOTO NO SE REINICIA: NO TERMINA. Lo pidio el usuario el 2026-09-09
+     -"que no pare de moverse, para que no tengas que reiniciar"-, primero para
+     Nuestros clientes y enseguida para Nuestros proyectos; va para las cinco,
+     que el caso es el mismo. La deriva se declara infinita y de ida y vuelta
+     en la hoja de estilos, asi que la foto se abre y se cierra sin fin y sin un
+     solo corte: no hay final del que volver.
+     Antes esto lo llevaba un reloj que la relanzaba cada nueve segundos, con
+     un contador que le alternaba el sentido para que no diera el tiron. Nada
+     de eso hace falta cuando la animacion no termina, asi que se fueron el
+     reloj, el contador y el parametro de reiniciarDeriva.
+     Y por eso sus fotos tampoco entran en la fila de la lamina -ver
+     animarDentro-: si entraran, al limpiar la entrada les cambiaria la
+     declaracion de animacion y ahi si darian el salto que se venia a quitar. */
+  var SIN_PARAR = ['l-nosotros', 'l-valores', 'l-portafolio',
+                   'l-clientes', 'l-flota'];
+
+  function noPara(lamina) {
+    return SIN_PARAR.some(function (c) { return lamina.classList.contains(c); });
+  }
+
+  /* La marca, puesta UNA vez y para siempre. La regla de la hoja de estilos
+     pide ademas .pres-va, asi que solo actua en la lamina que se este viendo;
+     una clase que no se toca nunca no se puede desincronizar.
+     Va AQUI y no arriba con el resto del arranque: SIN_PARAR se declara en
+     esta misma zona, y una var leida antes de su linea vale undefined -no
+     lanza al declararla, lanza al usarla-, que es justo lo que paso. */
+  laminas.forEach(function (l) {
+    if (noPara(l)) l.classList.add('pres-sinparar');
+  });
+
+  function animarDentro(lamina, esVuelta) {
     pararAnim();
 
-    /* Donde hay carrusel, las fotos NO entran una a una: se quedan puestas
-       desde el primer fotograma y el carrusel es todo el movimiento de ese
-       lado. Antes se enfocaban y se fundian ademas de turnarse, y eran dos
-       efectos peleandose por la misma mitad de la lamina. Aqui se sacan de la
-       fila; lo del otro lado -epigrafe, titulo, textos- entra como siempre. */
-    var caja = cajaDeCarrusel(lamina);
+    /* Las fotos de las dos rejillas que hacen pila salen de la fila: su
+       efecto es el pase de la pila (ver PILAS). Lo del otro lado -epigrafe,
+       titulo, textos- entra como siempre. */
+    var pila = lamina.querySelector(PILAS);
+    var sinParar = noPara(lamina);
     var cosas = cosasDe(lamina).filter(function (el) {
-      return !caja || !caja.contains(el);
+      if (pila && pila.contains(el)) return false;
+      /* En las vueltas el logo se queda quieto: ver SEL_LOGO, mas arriba. */
+      if (esVuelta && (el.matches(SEL_LOGO) || el.querySelector(SEL_LOGO))) return false;
+      /* Y donde la foto no para, la foto no entra: entrar le cambiaria la
+         animacion al limpiar y ahi daria el salto (ver SIN_PARAR). */
+      if (sinParar && el.matches('img[data-foto]')) return false;
+      return true;
     });
     if (!cosas.length) return;
 
-    /* Cuando hay muchas cosas el paso se acorta para que la ultima no arranque
-       mas tarde del tope: mas alla de eso deja de parecer una entrada y parece
-       una espera. Con una sola cosa la division da Infinity y gana PASO, que es
-       lo que toca: no hay nada que escalonar. */
+    /* UNA FICHA DETRAS DE OTRA, no las doce piezas en fila. En las laminas de
+       dos proyectos por pagina las cosas se reparten en grupos -uno por
+       .tarjeta- y el grupo de la derecha no arranca hasta que el de la
+       izquierda ha terminado de entrar. En las demas laminas no hay fichas,
+       sale UN grupo con todo y el reparto es exactamente el de siempre. */
+    var grupos = [], deGrupo = [];
+    cosas.forEach(function (el) {
+      var ficha = el.closest ? el.closest('.tarjeta') : null;
+      var i = grupos.indexOf(ficha);
+      if (i < 0) { i = grupos.length; grupos.push(ficha); }
+      deGrupo.push(i);
+    });
+
+    /* El paso se mide contra el grupo MAS LARGO, no contra el total: el tope
+       es de cuanto tarda en armarse un lado, y los lados van uno detras de
+       otro. Contra el total, doce piezas apretaban el paso a 82 ms y cada
+       ficha entraba mas deprisa de lo que se puede seguir.
+       Con una sola cosa la division da Infinity y gana PASO, que es lo que
+       toca: no hay nada que escalonar. */
+    var tamano = grupos.map(function () { return 0; });
+    deGrupo.forEach(function (i) { tamano[i]++; });
+    var mayor = tamano.reduce(function (a, b) { return Math.max(a, b); }, 1);
     var paso = Math.round(Math.min(PASO,
-      Math.max(24, TOPE_ARRANQUES / (cosas.length - 1))));
+      Math.max(24, TOPE_ARRANQUES / (mayor - 1))));
+
+    /* Donde arranca cada grupo: el siguiente empieza cuando el anterior ha
+       puesto su ultima pieza -su arranque mas DURA- y despues de la pausa.
+       Asi los dos lados se leen como dos tiempos y no como uno solo. */
+    var arranqueGrupo = [0];
+    for (var g = 1; g < grupos.length; g++) {
+      arranqueGrupo[g] = arranqueGrupo[g - 1] +
+        (tamano[g - 1] - 1) * paso + DURA + PAUSA_FICHA;
+    }
+    var enGrupo = grupos.map(function () { return 0; });
 
     var ultimo = 0;      // el arranque mas tardio de todos, para saber cuando limpiar
     var retardoDe = new WeakMap();   // que retardo le toco a cada bloque
@@ -775,7 +986,8 @@
     }
 
     cosas.forEach(function (el, i) {
-      var base = i * paso;
+      var g = deGrupo[i];
+      var base = arranqueGrupo[g] + enGrupo[g]++ * paso;
       retardoDe.set(el, base);
       el.classList.add('pres-anim');
       /* La caja que CONTIENE un rotulo que escribe no se mueve, solo se funde.
@@ -833,20 +1045,28 @@
        siempre y una captura o una impresion no la pilla a medio animar. La
        ultima cosa arranca en (n-1)*paso y tarda DURA; el margen es por si el
        navegador va justo. */
-    montarCarrusel(lamina);
+
+    montarPila(lamina);
 
     relojesAnim.push(setTimeout(function () {
       limpiarAnim(lamina);
-      /* La PORTADA se repite. Es la lamina que se queda puesta mientras llega
-         la gente a la reunion, y una portada quieta parece una pantalla
-         colgada; las demas no, que ahi el que manda es quien esta hablando.
+      /* LA PRIMERA Y LA ULTIMA se repiten; las de en medio no. Son las dos
+         que se quedan puestas solas y sin nadie pasando pagina: la portada
+         mientras llega la gente a la reunion, y el cierre mientras se pregunta
+         y se conversa. Quietas parecen una pantalla colgada. En las de en
+         medio el que manda es quien esta hablando, y un movimiento detras le
+         competiria la atencion: por eso la repeticion no se generaliza.
          Se comprueba que siga siendo la que se ve: si ya se paso de lamina no
          hay nada que repetir. */
-      if (lamina === laminas[0] && hayEfectos() && laminas[actual] === lamina) {
+      if (!hayEfectos() || laminas[actual] !== lamina) return;
+      var repite = lamina === laminas[0] ? REPETIR_PORTADA
+                 : lamina === laminas[laminas.length - 1] ? REPETIR_CIERRE
+                 : 0;
+      if (repite) {
         relojesAnim.push(setTimeout(function () {
           reiniciarDeriva(lamina);
-          animarDentro(lamina);
-        }, REPETIR_PORTADA));
+          animarDentro(lamina, true);
+        }, repite));
       }
     }, ultimo + Math.max(DURA, DURA_PALABRA) + 150));
   }
@@ -931,6 +1151,37 @@
       })
       .catch(function () { aviso('No se pudo generar el PowerPoint', true); })
       .then(function () { btnPptx.disabled = false; btnPptx.textContent = texto; });
+  });
+
+  /* ---- la presentacion en UN SOLO ARCHIVO -------------------------------
+     Da un .html con TODO dentro -las fotos, las fuentes, el CSS y este mismo
+     guion, en base64- que se abre con doble clic en cualquier PC y arranca
+     solo, en modo presentacion y con efectos. No hace falta instalar nada, ni
+     internet, ni el servidor.
+     Es la unica salida que conserva los efectos TAL CUAL se ven aqui: el
+     PowerPoint no sabe hacer la pila de fotos ni los bucles, y traducir lo
+     demas lo dejaria parecido pero no igual (ver exportar_html.py).
+     Mismo baile que el boton del PowerPoint, que es el que ya funcionaba. */
+  btnSuelta.addEventListener('click', function () {
+    if (!conServidor) { aviso('Abre la pagina con: python servidor.py', true); return; }
+    btnSuelta.disabled = true;
+    var texto = btnSuelta.textContent;
+    btnSuelta.textContent = 'Armando...';
+    aviso('Metiendo las fotos dentro del archivo, tarda un rato...');
+    fetch('/api/html', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) { aviso(res.error || 'No se pudo generar', true); return; }
+        var a = document.createElement('a');
+        a.href = '/' + res.archivo + '?v=' + Date.now();
+        a.download = res.archivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        aviso('Presentacion lista (' + res.megas + ' MB). Se abre con doble clic.');
+      })
+      .catch(function () { aviso('No se pudo generar la presentacion', true); })
+      .then(function () { btnSuelta.disabled = false; btnSuelta.textContent = texto; });
   });
 
   /* ---- encender / apagar los efectos sin recargar ----------------------
