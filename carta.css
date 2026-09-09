@@ -148,8 +148,14 @@
    su pie. Quedan 79 px de aire entre las dos columnas.
    Al caber el parrafo en tres lineas, nada mas de esta lamina se mueve: la
    rejilla, el panel y la tira de fotos siguen con las medidas de siempre. */
-.l-flota .fl-cab{width:545px}
-.l-flota .fl-total{width:300px}
+/* El mismo reparto que en la panoramica y por el mismo motivo -ver la nota de
+   .fl-cab en estilos.css-: el bloque del 841 se estrecha a 210, que es lo que
+   pide su renglon mas ancho con respiro, y al ir anclado al canto derecho eso
+   LO MUEVE a la derecha; el titular se queda los 89 que suelta.
+   Los numeros son otros porque esta hoja tiene 924 px utiles y no 1088: 634 y
+   210 dejan 80 de hueco entre los dos bloques. */
+.l-flota .fl-cab{width:634px}
+.l-flota .fl-total{width:210px}
 /* El contador. La panoramica bajo de 88 a 74 px -el usuario lo pidio mas
    chico ahi tambien-, asi que aqui se corre la misma escalera: de 72 -88 x
    0,825- a 60, y ahora de 60 a 50 -74 x 0,825, la misma proporcion entre las

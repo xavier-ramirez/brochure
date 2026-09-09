@@ -1023,7 +1023,18 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 
 
 /* =====================================================  FLOTA PROPIA  == */
-.fl-cab{position:absolute;left:var(--lado);top:44px;width:540px}
+/* La columna del titular se lleva 760 y no 540. El bloque del 841 estaba en
+   396 px de ancho cuando su renglon mas ancho -"44 tipos de equipo  38
+   marcas"- mide 189: sobraban mas de doscientos que no hacian nada, y entre
+   los dos bloques quedaba un hueco de 152. El usuario pidio el 2026-09-09
+   correr el 841 a la derecha para darle sitio al parrafo, y eso es lo que
+   hacen estos dos numeros juntos: el 841 baja a 210 -su contenido con 21 de
+   respiro- y como va anclado al canto derecho, estrecharlo LO MUEVE a la
+   derecha; los 220 que suelta se los queda el titular. El hueco entre ambos
+   queda en 118.
+   El parrafo sigue en dos renglones: mide 944 de una linea y en 760 entra en
+   1,24. Si algun dia se sube el 760 hay que bajar el 210 o se tocan. */
+.fl-cab{position:absolute;left:var(--lado);top:44px;width:760px}
 .l-flota h2{color:#fff;font-size:42.5px;margin-top:12px}
 /* EN BANDERA, no justificado -lo pidio el usuario-. Es el mismo caso que la
    entrada de la portada: la columna mide 540 px y el texto va a 14,5, asi que
@@ -1034,7 +1045,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    solo serviria para partir palabras sin necesidad. */
 .l-flota .fl-cab p{margin-top:16px;font-size:15px;line-height:1.78;font-weight:300;
   color:#fff}
-.fl-total{position:absolute;right:var(--lado);top:44px;width:396px}
+.fl-total{position:absolute;right:var(--lado);top:44px;width:210px}
 .fl-total>b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
   font-weight:700;font-size:74.5px;line-height:.9;color:#fff;letter-spacing:-.01em}
 .fl-total>span{display:block;margin-top:5px;font-size:13px;font-weight:600;
