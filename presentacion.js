@@ -162,54 +162,63 @@
     'transform:translate(-50%,-50%) scale(calc(var(--k,1) * 1.015))}' +
 
     /* ---- las cosas de DENTRO de la lamina, una detras de otra ----
-       La transicion vive en .pres-anim y el estado de partida en
-       .pres-oculto: son dos clases y no una porque al quitar la que trae la
-       transicion no habria nada que animar en el camino de vuelta. El retardo
-       de cada elemento lo pone el JS en --d. */
-    'html.pres.pres-efectos .pres-anim{' +
-    'transition:opacity .62s ease var(--d,0s),' +
-    'transform .62s cubic-bezier(.16,.84,.28,1) var(--d,0s),' +
-    'filter .62s ease var(--d,0s)}' +
-    /* El estado de partida basico es SOLO la opacidad. El movimiento va en
-       clases aparte y no aqui: lo que ya trae un transform del brochure
-       -bandas giradas, marcos desplazados- no recibe ninguna de las dos, y asi
-       entra con un fundido sin que le escribamos un transform encima que lo
-       sacaria de su sitio. */
-    'html.pres.pres-efectos .pres-anim.pres-oculto{opacity:0}' +
-    /* 26px y no 14: la lamina se ensena escalada a media pantalla, asi que un
-       recorrido corto en el diseno se queda en nada al proyectarlo. */
-    'html.pres.pres-efectos .pres-anim.pres-sube.pres-oculto{transform:translateY(26px)}' +
-    /* Las fotos y el logo no suben: crecen. Subir un bloque de imagen grande se
-       ve como un salto; el zoom se lee como un enfoque. */
-    'html.pres.pres-efectos .pres-anim.pres-zoom.pres-oculto{transform:scale(.94)}' +
-    /* El epigrafe -el rotulito con la rayita delante- entra por la izquierda,
-       en el sentido en que se lee y en el que apunta su propia raya. */
-    'html.pres.pres-efectos .pres-anim.pres-lado.pres-oculto{transform:translateX(-34px)}' +
-    /* Lo que trae transform propio no se puede mover sin descolocarlo, y
-       tampoco vale recortarlo: el brochure usa clip-path en quince sitios para
-       los cortes diagonales. Se enfoca: entra desenfocado y se afina. */
-    'html.pres.pres-efectos .pres-anim.pres-nitidez.pres-oculto{filter:blur(9px)}' +
+       Esto va con ANIMACIONES y no con transiciones, y el motivo es el fallo
+       que costo mas caro de todo el archivo: una transicion necesita que el
+       navegador haya pintado antes el estado de partida, y las palabras del
+       titulo son elementos recien creados por partirEnPalabras. Segun cuando
+       cuadren los fotogramas, el navegador ve el principio y el final a la vez
+       y no interpola nada: el titulo aparecia puesto de golpe. Se probo con
+       dos fotogramas de espera y con un reflujo forzado, y ninguna de las dos
+       lo arregla siempre.
+       Una animacion no depende de eso. Con animation-fill-mode:both el
+       elemento se pinta ya en el fotograma 0% desde la primera vez que se ve,
+       venga de donde venga. El retardo de cada uno lo escribe el JS en su
+       animation-delay.
+
+       Cada entrada es su propio @keyframes en vez de un from parametrizado con
+       variables: son seis reglas de dos lineas, se leen de un vistazo, y
+       meter var() en un keyframe nos devolveria justo al terreno resbaladizo
+       del que venimos. */
+    '@keyframes pres-e-sube{from{opacity:0;transform:translateY(26px)}' +
+    'to{opacity:1;transform:none}}' +
+    '@keyframes pres-e-zoom{from{opacity:0;transform:scale(.94)}' +
+    'to{opacity:1;transform:none}}' +
+    '@keyframes pres-e-lado{from{opacity:0;transform:translateX(-34px)}' +
+    'to{opacity:1;transform:none}}' +
+    /* Sin transform: lo que trae el suyo del brochure no se puede mover sin
+       descolocarlo, y tampoco vale recortarlo -hay clip-path en quince sitios-.
+       Se enfoca y ya. */
+    '@keyframes pres-e-nitidez{from{opacity:0;filter:blur(9px)}' +
+    'to{opacity:1;filter:none}}' +
+    /* Las palabras suben mas y ademas se enfocan: es lo que separa un titulo
+       que "aparece" de uno que "entra". */
+    '@keyframes pres-e-palabra{from{opacity:0;transform:translateY(30px);' +
+    'filter:blur(7px)}to{opacity:1;transform:none;filter:none}}' +
+    '@keyframes pres-e-palabra-lado{from{opacity:0;transform:translateX(-22px);' +
+    'filter:blur(7px)}to{opacity:1;transform:none;filter:none}}' +
+
+    'html.pres.pres-efectos .pres-anim{animation:.62s ' +
+    'cubic-bezier(.16,.84,.28,1) both}' +
+    /* Sin ninguna de las de abajo entra solo con el fundido, que es lo que le
+       toca a las fotos encuadradas. */
+    'html.pres.pres-efectos .pres-anim.pres-sube{animation-name:pres-e-sube}' +
+    'html.pres.pres-efectos .pres-anim.pres-zoom{animation-name:pres-e-zoom}' +
+    'html.pres.pres-efectos .pres-anim.pres-lado{animation-name:pres-e-lado}' +
+    'html.pres.pres-efectos .pres-anim.pres-nitidez{animation-name:pres-e-nitidez}' +
 
     /* ---- el titulo, palabra por palabra ----
        Es el efecto que se pide cuando se dice "que aparezcan las letras". Va
-       solo en el titular de la lamina y no en todo el texto: en un parrafo
+       solo en los rotulos de la lamina y no en todo el texto: en un parrafo
        entero seria ilegible y ademas cansa. Cada palabra es un inline-block
        porque un <span> normal no admite transform, y los espacios se quedan
        fuera de los spans para que la linea siga partiendo donde partia. */
     'html.pres.pres-efectos .pres-palabra{display:inline-block;' +
-    'transition:opacity .78s ease var(--d,0s),' +
-    'transform .78s cubic-bezier(.16,.84,.28,1) var(--d,0s),' +
-    'filter .78s ease var(--d,0s)}' +
-    /* Sube y ademas se enfoca: es lo que separa un titulo que "aparece" de uno
-       que "entra". El desenfoque es barato aqui -son siete palabras- y no
-       choca con nada: el unico filter del brochure esta en la foto de portada. */
-    'html.pres.pres-efectos .pres-palabra.pres-oculto{opacity:0;' +
-    'transform:translateY(30px);filter:blur(7px)}' +
+    'animation:pres-e-palabra .78s cubic-bezier(.16,.84,.28,1) both}' +
     /* Las del epigrafe, de lado: es el mismo gesto que tenia el epigrafe
        entero antes de partirse, y asi los dos rotulos escriben pero cada uno
        con su caracter. */
-    'html.pres.pres-efectos .pres-palabra.pres-lado.pres-oculto{' +
-    'transform:translateX(-22px)}' +
+    'html.pres.pres-efectos .pres-palabra.pres-lado{' +
+    'animation-name:pres-e-palabra-lado}' +
     /* El tramo que agrupa las palabras dentro de una caja flex: no pinta nada,
        solo vuelve a abrir flujo normal para que los espacios cuenten. */
     'html.pres .pres-tramo{display:inline}' +
@@ -311,20 +320,13 @@
     '#pres-barra .pres-aviso.mal{color:#FF9B9B}' +
     /* Al imprimir se deshace todo el montaje de pantalla. Lo de .pres-anim es
        por si se manda a imprimir con una lamina a medio animar: lo que aun no
-       hubiera entrado saldria en blanco. Se anula el estado de partida, no el
-       transform a secas -eso descolocaria lo que trae el suyo del brochure,
-       que es justo lo que NO lleva pres-sube ni pres-zoom-. */
+       hubiera entrado saldria en blanco. Con animaciones basta con apagarlas:
+       sin animacion el elemento se pinta con su estilo de siempre, asi que no
+       hay que ir deshaciendo opacidades ni transforms uno a uno. */
     '@media print{html.pres .lamina{position:relative;left:auto;top:auto;' +
     'transform:none;opacity:1;visibility:visible;margin:0 auto}' +
-    'html.pres .pres-anim,html.pres .pres-palabra{transition:none!important}' +
-    'html.pres .pres-anim.pres-oculto,' +
-    'html.pres .pres-palabra.pres-oculto{opacity:1!important}' +
-    'html.pres .pres-anim.pres-sube.pres-oculto,' +
-    'html.pres .pres-anim.pres-zoom.pres-oculto,' +
-    'html.pres .pres-anim.pres-lado.pres-oculto,' +
-    'html.pres .pres-palabra.pres-oculto{transform:none!important}' +
-    'html.pres .pres-anim.pres-nitidez.pres-oculto,' +
-    'html.pres .pres-palabra.pres-oculto{filter:none!important}' +
+    'html.pres .pres-anim,html.pres .pres-palabra,' +
+    'html.pres img[data-foto]{animation:none!important}' +
     '#pres-barra{display:none}}';
   document.head.appendChild(css);
   document.documentElement.classList.add('pres');
@@ -464,7 +466,6 @@
   /* Quitar el estado de partida se hace en dos sitios -al limpiar la lamina y
      al ceder el turno al titular-, asi que vive aqui y no repetido. */
   function quitarEntrada(el) {
-    el.classList.remove('pres-oculto');
     CLASES_ENTRADA.forEach(function (c) { el.classList.remove(c); });
   }
 
@@ -612,7 +613,7 @@
     [].slice.call(lamina.querySelectorAll('.pres-anim')).forEach(function (el) {
       el.classList.remove('pres-anim');
       quitarEntrada(el);
-      el.style.removeProperty('--d');
+      el.style.removeProperty('animation-delay');
     });
   }
 
@@ -751,7 +752,7 @@
     cosas.forEach(function (el, i) {
       var base = i * paso;
       retardoDe.set(el, base);
-      el.classList.add('pres-anim', 'pres-oculto');
+      el.classList.add('pres-anim');
       /* La caja que CONTIENE un rotulo que escribe no se mueve, solo se funde.
          Si se moviera, el texto viajaria dos veces -con su caja y con sus
          palabras-, cada una con su retardo y su curva, y eso se ve como un
@@ -759,11 +760,11 @@
          entera subia mientras el titulo subia por su cuenta.
 
          La clase se pide ANTES de añadirla, no despues: claseDeEntrada mira el
-         transform calculado, y pres-oculto todavia no ha puesto ninguno -solo
-         toca la opacidad-, asi que lo que lee es el del brochure. */
+         transform calculado, y la que se acaba de poner -pres-anim- no toca
+         ninguno, asi que lo que lee es el del brochure. */
       var entrada = llevaRotulo(el) ? '' : claseDeEntrada(el);
       if (entrada) el.classList.add(entrada);
-      el.style.setProperty('--d', base + 'ms');
+      el.style.animationDelay = base + 'ms';
       ultimo = Math.max(ultimo, base);
     });
 
@@ -797,26 +798,10 @@
 
       var palabras = [].slice.call(rotulo.querySelectorAll('.pres-palabra'));
       palabras.forEach(function (p, j) {
-        p.classList.add('pres-oculto');
         if (deLado) p.classList.add('pres-lado');
-        p.style.setProperty('--d', (arranque + j * PASO_PALABRA) + 'ms');
+        p.style.animationDelay = (arranque + j * PASO_PALABRA) + 'ms';
       });
       ultimo = Math.max(ultimo, arranque + (palabras.length - 1) * PASO_PALABRA);
-    });
-
-    /* El navegador tiene que haber CALCULADO el estado de partida antes de que
-       le quitemos la clase; si no, ve el principio y el final en el mismo golpe
-       y no interpola nada -las palabras aparecen puestas, que es justo el fallo
-       que hubo-. Leer offsetHeight le obliga a recalcular ahi mismo, y entonces
-       quitar la clase ya es una transicion de verdad.
-
-       Antes esto se hacia esperando dos fotogramas. Es el truco de siempre,
-       pero depende de que los fotogramas lleguen: en una pestaña de fondo, o
-       con el navegador ocupado, no llegan cuando toca. Un reflujo forzado
-       ocurre siempre y en el acto. */
-    void lamina.offsetHeight;
-    [].slice.call(lamina.querySelectorAll('.pres-oculto')).forEach(function (el) {
-      el.classList.remove('pres-oculto');
     });
 
     /* Al terminar se quitan las clases: asi la lamina queda con su CSS de
@@ -952,9 +937,9 @@
     anotarEnLaUrl();
     pararAnim();
     /* Se barre SIEMPRE, se encienda o se apague. Quitar la clase del <html>
-       mata las reglas pero no las clases: un elemento con pres-oculto puesta
-       se quedaria invisible en cuanto los efectos volvieran. Y al encender hay
-       que partir de limpio por lo mismo. */
+       mata las reglas pero no las clases ni los retardos que el JS dejo en el
+       estilo, y al volver los efectos esos retardos harian entrar las cosas a
+       destiempo. Al encender hay que partir de limpio por lo mismo. */
     laminas.forEach(limpiarAnim);
     if (on) animarDentro(laminas[actual]);
     aviso(on ? 'Presentacion con efectos' : 'Presentacion limpia, sin efectos');
