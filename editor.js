@@ -218,8 +218,8 @@
     '#ed-barra{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:flex;' +
     'flex-wrap:wrap;align-items:center;' +
     'gap:16px;padding:10px 18px;background:rgba(12,23,52,.96);color:#E7EBF4;' +
-    'font:500 12px/1.4 "Barlow",system-ui,sans-serif;box-shadow:0 -2px 16px rgba(0,0,0,.4)}' +
-    '#ed-barra b{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#fff}' +
+    'font:500 11px/1.4 "Barlow",system-ui,sans-serif;box-shadow:0 -2px 16px rgba(0,0,0,.4)}' +
+    '#ed-barra b{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff}' +
     '#ed-barra .ed-derecha{margin-left:auto}' +
     /* La hoja carta: los dos botones juntos y centrados en la pagina. El aviso
        sale del flujo y se ancla a la derecha; si contara como una pieza mas de
@@ -239,9 +239,13 @@
     '#ed-barra.ed-carta .ed-estado{position:static;order:9;width:100%;' +
     'min-width:0;text-align:center}' +
     '#ed-barra.ed-carta .ed-estado:empty{display:none}' +
-    '#ed-barra button,#ed-barra a{font:600 11px/1 "Barlow",sans-serif;letter-spacing:.14em;' +
+    /* 10 px y no 11: con la barra llena -Editor, tres enlaces y dos botones- la
+       fila se partia en dos renglones en cuanto la ventana bajaba de pantalla
+       completa. El relleno baja a la par para que el boton no quede hinchado
+       alrededor de una letra mas pequeña. */
+    '#ed-barra button,#ed-barra a{font:600 10px/1 "Barlow",sans-serif;letter-spacing:.12em;' +
     'text-transform:uppercase;text-decoration:none;display:inline-block;' +
-    'background:#4966AD;color:#fff;border:0;padding:9px 16px;cursor:pointer;' +
+    'background:#4966AD;color:#fff;border:0;padding:8px 14px;cursor:pointer;' +
     'flex:none;white-space:nowrap}' +
     '#ed-barra button:disabled{background:#39456B;color:#8A93AD;cursor:default}' +
     '#ed-barra button:not(:disabled):hover,#ed-barra a:hover{background:#5B79C2}' +
