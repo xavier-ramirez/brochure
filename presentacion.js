@@ -83,15 +83,6 @@
   var laminas = [].slice.call(document.querySelectorAll('.lamina'));
   if (!laminas.length) return;
 
-  /* Hacia donde deriva cada foto (ver @keyframes pres-deriva). Se reparten en
-     ciclo por orden de aparicion: dos fotos vecinas nunca se mueven igual, que
-     es lo que delata un efecto puesto con plantilla. */
-  var DERIVAS = [['-1.7%', '-1.2%'], ['1.7%', '-1.2%'], ['-1.7%', '1.2%'], ['1.7%', '1.2%']];
-  [].slice.call(document.querySelectorAll('img[data-foto]')).forEach(function (im, i) {
-    var d = DERIVAS[i % DERIVAS.length];
-    im.style.setProperty('--kbx', d[0]);
-    im.style.setProperty('--kby', d[1]);
-  });
 
   var ANCHO = 1280, ALTO = 720;   // la diapositiva, la misma de exportar_pptx.py
   var actual = 0;
@@ -224,8 +215,7 @@
        Aqui solo va la transicion: el reparto lo escribe el JS, que es quien
        sabe cuantas fotos hay en cada una. Se mueve grid-template-rows, de lo
        poco de una rejilla que el navegador sabe interpolar; no se toca el
-       transform de las imagenes -es el de su encuadre- ni la deriva que ya
-       corre encima. */
+       transform de las imagenes, que es el de su encuadre. */
     'html.pres.pres-efectos .pres-carrusel{position:relative;' +
     'transition:grid-template-rows 1.25s cubic-bezier(.33,0,.15,1)}' +
 
@@ -239,12 +229,6 @@
     'html.pres.pres-efectos .pres-carrusel > .pres-foco{' +
     'filter:none;opacity:1}' +
 
-    /* La deriva lenta se queda SOLO en la que manda. Encima de las franjas
-       chicas no se apreciaba y era ruido; sobre la grande es lo que la hace
-       parecer viva mientras se mira. */
-    'html.pres.pres-efectos .pres-carrusel figure img[data-foto]{animation:none}' +
-    'html.pres.pres-efectos .pres-carrusel > .pres-foco img[data-foto]{' +
-    'animation:pres-deriva 6.5s cubic-bezier(.22,.61,.36,1) both}' +
 
     /* ---- los tramos de arriba, uno por foto ----
        Dicen cuantas hay, cual se esta viendo y cuanto le queda. Es lo que
@@ -268,25 +252,6 @@
     'html.pres .pres-indices i.pres-corre s{transform:scaleX(1);' +
     'transition:transform ' + (CARRUSEL / 1000) + 's linear}' +
 
-    /* ---- las fotos, con deriva lenta ----
-       Las fotos del brochure van recortadas por su marco -object-fit:cover- y
-       encuadradas a mano por el usuario: estilos.css les pone
-       transform:scale(var(--zoom)) con transform-origin en --org, que es lo que
-       guarda encuadre.css. Por eso aqui NO se escribe un transform cualquiera:
-       se ARRANCA un 9% mas cerca y se va abriendo hasta scale(var(--zoom)) a
-       secas, o sea hasta el encuadre exacto que eligio el usuario. Se ve mas
-       foto segun se abre y el fotograma final es el suyo, intacto.
-       La deriva -kbx/kby- la reparte el JS para que dos fotos vecinas no se
-       muevan igual. */
-    '@keyframes pres-deriva{' +
-    'from{transform:scale(calc(var(--zoom,1) * 1.09)) ' +
-    'translate(var(--kbx,0),var(--kby,0))}' +
-    'to{transform:scale(var(--zoom,1)) translate(0,0)}}' +
-    'html.pres.pres-efectos .lamina.pres-va img[data-foto]{' +
-    'animation:pres-deriva 8s cubic-bezier(.22,.61,.36,1) both}' +
-    /* Quien no quiera mareo lo dice en el sistema y aqui se respeta. */
-    '@media (prefers-reduced-motion:reduce){' +
-    'html.pres.pres-efectos .lamina.pres-va img[data-foto]{animation:none}}' +
 
     /* sin transicion al recolocar por un cambio de ventana: ahi no hay pase de
        diapositiva que animar, y la lamina daria un salto raro */
@@ -408,8 +373,7 @@
   var TELON = 260;  // el pase de lamina; hasta que no acaba no entra nada dentro
   /* Cada cuanto vuelve a empezar el efecto de la portada, contado desde que
      termina el anterior. Ni tan seguido que maree ni tan largo que parezca
-     congelada: la deriva de la foto dura 8s, asi que con esto la portada
-     respira un momento y arranca otra vez. */
+     congelada: da tiempo a leer el titulo entero y vuelve a escribirse. */
   var REPETIR_PORTADA = 9000;
   /* Tope de cuando ARRANCA la ultima, no de cuando termina: la lamina acaba de
      armarse TOPE_ARRANQUES + DURA despues. Si con PASO fijo la ultima se
@@ -443,8 +407,9 @@
      les toca la geometria. Poner las clases primero se ve raro y cuesta dar con
      el porque, asi que no se reordena.
 
-       (nada)        las fotos encuadradas: ya tienen la deriva lenta, y
-                     cualquier transform de aqui lo pisaria esa animacion.
+       (nada)        las fotos encuadradas: entran solo con un fundido. Su
+                     transform es el de su encuadre -scale(var(--zoom)) con
+                     origen en --org- y escribirles otro encima las descoloca.
        pres-nitidez  lo que trae transform propio: no se puede mover.
        pres-lado     el epigrafe, o sea el subtitulo: entra por la izquierda.
        pres-zoom     el resto de imagenes y figuras.
@@ -701,17 +666,6 @@
     })();
   }
 
-  /* La deriva de las fotos es una animacion CSS atada a .pres-va, asi que sola
-     no vuelve a empezar mientras la lamina siga puesta. Quitarsela y devolversela
-     con un reflujo forzado en medio es lo unico que hace que el navegador la
-     relance; sin leer offsetWidth lo junta todo y no pasa nada. */
-  function reiniciarDeriva(lamina) {
-    [].slice.call(lamina.querySelectorAll('img[data-foto]')).forEach(function (im) {
-      im.style.animation = 'none';
-      void im.offsetWidth;
-      im.style.removeProperty('animation');
-    });
-  }
 
   function animarDentro(lamina) {
     pararAnim();
@@ -803,14 +757,19 @@
       ultimo = Math.max(ultimo, arranque + (palabras.length - 1) * PASO_PALABRA);
     });
 
-    /* Los dos fotogramas de siempre: el navegador necesita ver el estado de
-       partida pintado antes de que le quitemos la clase, o no interpola nada. */
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        [].slice.call(lamina.querySelectorAll('.pres-oculto')).forEach(function (el) {
-          el.classList.remove('pres-oculto');
-        });
-      });
+    /* El navegador tiene que haber CALCULADO el estado de partida antes de que
+       le quitemos la clase; si no, ve el principio y el final en el mismo golpe
+       y no interpola nada -las palabras aparecen puestas, que es justo el fallo
+       que hubo-. Leer offsetHeight le obliga a recalcular ahi mismo, y entonces
+       quitar la clase ya es una transicion de verdad.
+
+       Antes esto se hacia esperando dos fotogramas. Es el truco de siempre,
+       pero depende de que los fotogramas lleguen: en una pestaña de fondo, o
+       con el navegador ocupado, no llegan cuando toca. Un reflujo forzado
+       ocurre siempre y en el acto. */
+    void lamina.offsetHeight;
+    [].slice.call(lamina.querySelectorAll('.pres-oculto')).forEach(function (el) {
+      el.classList.remove('pres-oculto');
     });
 
     /* Al terminar se quitan las clases: asi la lamina queda con su CSS de
@@ -828,7 +787,6 @@
          hay nada que repetir. */
       if (lamina === laminas[0] && hayEfectos() && laminas[actual] === lamina) {
         relojesAnim.push(setTimeout(function () {
-          reiniciarDeriva(lamina);
           animarDentro(lamina);
         }, REPETIR_PORTADA));
       }
