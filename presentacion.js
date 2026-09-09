@@ -399,7 +399,14 @@
      cosas se sube de nivel. No es por tiempo -el paso ya se acorta solo-, es
      que veinte piezas entrando de una en una no se leen como una entrada:
      se leen como una lista cargando. */
-  var TOPE = 18;
+  /* Mas alto de lo que parece necesario a proposito. Es el numero a partir del
+     cual la busqueda se rinde y anima bloques en vez de piezas, y rendirse sale
+     caro: en "Nuestros servicios" hay cuatro columnas de cinco puntos, se
+     pasaba de 18 y acababa animando los TRES bloques que son toda la lamina
+     -cabecera, panel y tira-, con lo que la lamina entera entraba fundida y se
+     veia el blanco de la pagina por debajo. Con 30 caben sus veintitantas
+     piezas, y el reparto de arranques ya se encarga de que no se alargue. */
+  var TOPE = 30;
   var PASO = 90;    // milisegundos entre el arranque de una cosa y el de la siguiente
   var DURA = 620;   // lo que dura la entrada de UNA cosa; el mismo .62s del CSS
   var PASO_PALABRA = 95;  // entre una palabra del titular y la siguiente
@@ -475,6 +482,20 @@
 
   function visible(el) { return !!(el.offsetWidth || el.offsetHeight); }
 
+  /* Un bloque que pinta el SUELO de la lamina no entra nunca: si se funde, por
+     debajo se ve el blanco de la pagina y la lamina parpadea al abrirse. Se
+     reconoce por ser grande Y tener fondo propio. Las imagenes se libran: una
+     foto grande es contenido, no suelo, y su fundido es el efecto que se
+     busca. */
+  function esSuelo(el, areaLamina) {
+    if (el.tagName === 'IMG') return false;
+    var r = el.getBoundingClientRect();
+    if (r.width * r.height < areaLamina * 0.35) return false;
+    var cs = getComputedStyle(el);
+    return cs.backgroundImage !== 'none' ||
+           !/^(rgba\(0, 0, 0, 0\)|transparent)$/.test(cs.backgroundColor);
+  }
+
   /* Los CONTENEDORES se descartan y se anima lo que llevan dentro: si se anima
      el panel entero, la lamina aparece de un golpe y el efecto no se ve. Asi
      que de todos los que casan con el selector nos quedamos con las HOJAS -las
@@ -508,6 +529,10 @@
     if (elegidos.length > TOPE) {
       elegidos = [].slice.call(lamina.children).filter(visible);
     }
+
+    var caja = lamina.getBoundingClientRect();
+    var area = caja.width * caja.height;
+    elegidos = elegidos.filter(function (el) { return !esSuelo(el, area); });
 
     cacheAnim.set(lamina, elegidos);
     return elegidos;
