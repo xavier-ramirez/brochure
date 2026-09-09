@@ -311,10 +311,6 @@
    Ese es el presupuesto y esta agotado: si algun dia se alarga un texto de
    contenido.py o crece otra pieza, no hay de donde sacarlo sin bajar los
    cuerpos. revisar.py lo canta. */
-.l-proyectos .tarjeta:not(:only-child) .insignias .anio{font-size:13.5px}
-.l-proyectos .tarjeta:not(:only-child) h3{font-size:19.5px}
-.l-proyectos .tarjeta:not(:only-child) .sub{font-size:13.5px}
-.l-proyectos .tarjeta:not(:only-child) .desc{font-size:12px;line-height:1.39}
 /* 1,2 cm mas angosto de lo que da la ficha: 0,7 que pidio el usuario el 2026-09-07 y
    0,5 mas que pidio despues, el mismo dia. Va en cm y no en px para que se lea la medida
    que se pidio. Encoge por la DERECHA: el borde izquierdo manda, porque es el que alinea
@@ -348,8 +344,6 @@
    1,39. Mas baja no puede ir la caja sin que las letras se coman el borde. */
 .l-proyectos .tarjeta:not(:only-child) .caja-cliente{grid-area:6 / 1;
   padding:3px 16px 5px 28px}
-.l-proyectos .tarjeta:not(:only-child) .caja-cliente .rot{font-size:10.5px;line-height:1.1}
-.l-proyectos .tarjeta:not(:only-child) .caja-cliente b{font-size:14.5px;line-height:1.1}
 /* Las dos, UNA DEBAJO DE OTRA: una sola columna en vez de las dos que trae
    .minis de serie (estilos.css). Como se reparten el alto de la columna lo explica
    la regla de mas abajo (.minis figure). */
@@ -414,12 +408,11 @@
    fila 1fr hace que el desborde NO se vea como una ficha que se sale de la hoja, sino
    como el parrafo montandose encima de la caja del cliente-. */
 .l-proyectos .tarjeta .insignias{margin:6px 0 16px}
-.l-proyectos .tarjeta .insignias .anio{font-size:15px}
-/* Los CUERPOS de letra no estan aqui: cada ficha tiene el suyo -19/13/11,5 la
-   de media hoja y 30/17/15 la que va sola- y una talla comun no la veria
-   nadie. Aqui solo lo que comparten: el aire alrededor del subtitulo, 9 px por
-   arriba y 8 hasta su raya -mas los 6 con que arranca el parrafo-. Sale del mismo
-   presupuesto medido que las insignias, aqui arriba. */
+/* Los CUERPOS de letra no estan aqui: van todos juntos al final del fichero,
+   en un solo sitio y con la misma talla para las dos maquetas -la de dos
+   fichas y la que va sola-. Aqui solo el aire alrededor del subtitulo: 9 px
+   por arriba y 8 hasta su raya, mas los 6 con que arranca el parrafo. Sale del
+   mismo presupuesto medido que las insignias, aqui arriba. */
 .l-proyectos .tarjeta .sub{margin-top:9px;padding-bottom:8px}
 /* SIN el overflow:hidden que .desc trae de estilos.css. Alli hace falta -en la
    panoramica la ficha es una caja flexible y el recorte evita que un texto
@@ -445,8 +438,6 @@
    seis de aire. Si alguna vez se cambia la cuna, este numero va detras. */
 .l-proyectos .tarjeta .caja-cliente{
   margin-top:6px;height:auto;padding:13px 20px 13px 28px}
-.l-proyectos .tarjeta .caja-cliente .rot{font-size:13.5px}
-.l-proyectos .tarjeta .caja-cliente b{font-size:18.5px}
 
 /* LA HOJA DE UNA SOLA FICHA. Los proyectos van de dos en dos y son diecinueve,
    asi que el ultimo -Laguna de Curataquiche- se queda solo en su hoja: en la
@@ -475,9 +466,24 @@
   align-content:space-between}
 .l-proyectos .tarjeta:only-child .hero{height:244px}
 .l-proyectos .tarjeta:only-child .insignias{margin:0}
-.l-proyectos .tarjeta:only-child h3{font-size:30.5px}
-.l-proyectos .tarjeta:only-child .sub{font-size:17.5px;margin-top:10px}
-.l-proyectos .tarjeta:only-child .desc{font-size:15.5px;line-height:1.6;margin-top:10px}
+/* LAS MEDIDAS DE LAS FICHAS DE PROYECTO, todas juntas y una sola vez.
+   Valen igual para las paginas de dos fichas y para la que va sola
+   -Curataquiche-: esa venia con su propia escala, casi al doble, y saltaba a
+   la vista al pasar la hoja, porque sus letras no eran las de los demas
+   proyectos. Lo pidio el usuario el 2026-09-09.
+   Van AQUI y no arriba, con el resto de lo de dos-por-pagina, porque las
+   reglas base de esta hoja vienen a media altura del fichero y las
+   agrandarian; puestas despues, ganan sin necesidad de pesar mas.
+   Lo unico que sigue siendo propio de la ficha sola es el aire: mas
+   separacion arriba de cada bloque, que para eso tiene la pagina entera. */
+.l-proyectos .tarjeta h3{font-size:19.5px}
+.l-proyectos .tarjeta .sub{font-size:13.5px}
+.l-proyectos .tarjeta .desc{font-size:13px;line-height:1.42}
+.l-proyectos .tarjeta .insignias .anio{font-size:13.5px}
+.l-proyectos .tarjeta .caja-cliente .rot{font-size:10.5px;line-height:1.1}
+.l-proyectos .tarjeta .caja-cliente b{font-size:14.5px;line-height:1.1}
+.l-proyectos .tarjeta:only-child .sub,
+.l-proyectos .tarjeta:only-child .desc{margin-top:10px}
 /* CUATRO miniaturas, dos y dos: la ficha sola las trae todas -las mismas que
    ensena el destacado de la panoramica, ver lamina_proyectos en generar.py- y
    son las que llenan la hoja. Siguen en la rejilla de dos que traen de serie,
