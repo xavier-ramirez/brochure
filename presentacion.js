@@ -83,6 +83,16 @@
   var laminas = [].slice.call(document.querySelectorAll('.lamina'));
   if (!laminas.length) return;
 
+  /* Hacia donde deriva cada foto (ver @keyframes pres-deriva). Se reparten en
+     ciclo por orden de aparicion: dos fotos vecinas nunca se mueven igual, que
+     es lo que delata un efecto puesto con plantilla. */
+  var DERIVAS = [['-1.7%', '-1.2%'], ['1.7%', '-1.2%'], ['-1.7%', '1.2%'], ['1.7%', '1.2%']];
+  [].slice.call(document.querySelectorAll('img[data-foto]')).forEach(function (im, i) {
+    var d = DERIVAS[i % DERIVAS.length];
+    im.style.setProperty('--kbx', d[0]);
+    im.style.setProperty('--kby', d[1]);
+  });
+
 
   var ANCHO = 1280, ALTO = 720;   // la diapositiva, la misma de exportar_pptx.py
   var actual = 0;
@@ -252,6 +262,26 @@
     'html.pres .pres-indices i.pres-corre s{transform:scaleX(1);' +
     'transition:transform ' + (CARRUSEL / 1000) + 's linear}' +
 
+
+    /* ---- las fotos, con deriva lenta ----
+       Van recortadas por su marco -object-fit:cover- y encuadradas a mano:
+       estilos.css les pone transform:scale(var(--zoom)) con origen en --org,
+       que es lo que guarda encuadre.css. Por eso aqui NO se escribe un
+       transform cualquiera: se ARRANCA un 9% mas cerca y se va abriendo hasta
+       scale(var(--zoom)) a secas, o sea hasta el encuadre exacto del usuario.
+       Se ve mas foto segun se abre y el fotograma final es el suyo, intacto. */
+    '@keyframes pres-deriva{' +
+    'from{transform:scale(calc(var(--zoom,1) * 1.09)) ' +
+    'translate(var(--kbx,0),var(--kby,0))}' +
+    'to{transform:scale(var(--zoom,1)) translate(0,0)}}' +
+    'html.pres.pres-efectos .lamina.pres-va img[data-foto]{' +
+    'animation:pres-deriva 8s cubic-bezier(.22,.61,.36,1) both}' +
+    /* MENOS donde hay carrusel. Alli el movimiento es el turno, y las dos
+       cosas juntas se leian como que la foto no se estaba quieta. */
+    'html.pres.pres-efectos .pres-carrusel img[data-foto]{animation:none}' +
+    /* Quien no quiera mareo lo dice en el sistema y aqui se respeta. */
+    '@media (prefers-reduced-motion:reduce){' +
+    'html.pres.pres-efectos .lamina.pres-va img[data-foto]{animation:none}}' +
 
     /* sin transicion al recolocar por un cambio de ventana: ahi no hay pase de
        diapositiva que animar, y la lamina daria un salto raro */
@@ -667,6 +697,18 @@
   }
 
 
+  /* La deriva es una animacion CSS atada a .pres-va, asi que sola no vuelve a
+     empezar mientras la lamina siga puesta. Quitarsela y devolversela con un
+     reflujo forzado en medio es lo unico que la relanza; hace falta para que la
+     portada, que se repite, no se quede con la foto quieta a la segunda vuelta. */
+  function reiniciarDeriva(lamina) {
+    [].slice.call(lamina.querySelectorAll('img[data-foto]')).forEach(function (im) {
+      im.style.animation = 'none';
+      void im.offsetWidth;
+      im.style.removeProperty('animation');
+    });
+  }
+
   function animarDentro(lamina) {
     pararAnim();
 
@@ -787,6 +829,7 @@
          hay nada que repetir. */
       if (lamina === laminas[0] && hayEfectos() && laminas[actual] === lamina) {
         relojesAnim.push(setTimeout(function () {
+          reiniciarDeriva(lamina);
           animarDentro(lamina);
         }, REPETIR_PORTADA));
       }
