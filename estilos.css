@@ -939,7 +939,15 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* Tampoco justificado: es la mitad de una lamina partida en dos fichas, y
    con nombres largos -"Almacenamiento y Embarque Jose (TAEJ)"- abria los
    mismos huecos. Ver la nota de .ct p. */
-.desc{margin-top:13px;font-size:13.5px;line-height:1.72;color:#000;
+/* 12,5 px y NO MAS. Es la unica medida de la lamina que no puede subir: la
+   ficha reparte su alto en pixeles contados y el parrafo se lleva lo que
+   sobra, con overflow:hidden. Medido el 2026-09-09 sobre las diecinueve
+   descripciones: a 12,5 no se corta ninguna, a 13 se corta una -la de
+   "Servicio de movimientos...", que pierde 24 px- y a 13,5 se cortan ocho.
+   Y se corta EN SILENCIO, que es lo peor: el texto no se ve faltar.
+   Para subirla hay que acortar esa descripcion en contenido.py o darle mas
+   alto a la ficha; mientras tanto, esta se queda. */
+.desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:#000;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .minis figure{height:142px;overflow:hidden;background:var(--hielo);
