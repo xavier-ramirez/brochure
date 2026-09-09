@@ -277,8 +277,13 @@
     'html.pres.pres-efectos .lamina.pres-va img[data-foto]{' +
     'animation:pres-deriva 8s cubic-bezier(.22,.61,.36,1) both}' +
     /* MENOS donde hay carrusel. Alli el movimiento es el turno, y las dos
-       cosas juntas se leian como que la foto no se estaba quieta. */
-    'html.pres.pres-efectos .pres-carrusel img[data-foto]{animation:none}' +
+       cosas juntas se leian como que la foto no se estaba quieta.
+       Ojo con el selector: lleva .lamina.pres-va aunque no haga falta para
+       localizar nada. Es para PESAR mas que la regla de arriba; sin eso la que
+       pone la deriva gana por especificidad y la exclusion no hace nada -asi
+       estuvo, y las fotos del carrusel seguian moviendose-. */
+    'html.pres.pres-efectos .lamina.pres-va .pres-carrusel img[data-foto]{' +
+    'animation:none}' +
     /* Quien no quiera mareo lo dice en el sistema y aqui se respeta. */
     '@media (prefers-reduced-motion:reduce){' +
     'html.pres.pres-efectos .lamina.pres-va img[data-foto]{animation:none}}' +
