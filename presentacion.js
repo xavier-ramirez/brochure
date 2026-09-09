@@ -272,9 +272,13 @@
        la captura de referencia se pusieron las vecinas mas anchas que ella
        -frente al 86%, vecinas al 95%- y el resultado era que la que mandaba se
        veia MENOR que las de fuera de foco. Lo canto el usuario el 2026-09-09.
-       Ahora el frente va al 98% y las vecinas al 84%: la que toca es la mayor
+       Ahora el frente va al 95% y las vecinas al 84%: la que toca es la mayor
        de las tres, y las otras se leen detras por tamaño, no solo por estar
        apagadas.
+       El 95 y no el 98 que tuvo: el usuario pidio quitarle medio centimetro
+       (2026-09-09). En esta lamina el centimetro son 37,8 px -1280 px para
+       13,333 pulgadas-, asi que medio son 19: la carta baja de 715 a 696 de
+       ancho, que es .953 redondeado a .95.
 
        Y SE APARTAN 120 PX, no un porcentaje. Antes quedaban amontonadas justo
        detras de la del frente -"todo como agrupado atras", 2026-09-09- y
@@ -286,7 +290,7 @@
        -411 y 487-, asi que un mismo numero apartaba mas en una que en otra y
        en la de 3:2 se salia. En pixeles las dos asoman lo mismo. Escalan
        igual, que toda la lamina va dentro de un transform.
-       Si se sube el .98 o el .84 hay que bajar los 120, o las vecinas se salen
+       Si se sube el .95 o el .84 hay que bajar los 120, o las vecinas se salen
        por arriba y por abajo.
 
        Cada figura se lleva su rotulo dentro, en su figcaption, asi que el
@@ -330,7 +334,7 @@
     'html.pres.pres-efectos .ofi-fotos.pres-pila > figure{aspect-ratio:3 / 2}' +
     /* la que manda: al frente y sin apagar */
     'html.pres.pres-efectos .pres-pila > figure.pres-p-va{' +
-    'transform:scale(.98);opacity:1;z-index:3;filter:none}' +
+    'transform:scale(.95);opacity:1;z-index:3;filter:none}' +
     /* las dos vecinas: detras, mas anchas y apagadas */
     'html.pres.pres-efectos .pres-pila > figure.pres-p-antes{' +
     'transform:translateY(-120px) scale(.84);opacity:1;z-index:2;' +
@@ -388,9 +392,14 @@
        lo que hace que el cambio de sentido no se note.
        Sin retardo y sin fill: empieza con la lamina y no para hasta que se
        pasa de pagina. Pesa mas que la regla de arriba -una clase mas- para
-       ganarle el animation. */
+       ganarle el animation.
+       SEIS SEGUNDOS por tramo y no los ocho de la deriva de entrada: el
+       usuario vio la portada "muy lenta" al lado de un carrusel que cambia
+       cada 3,8 s (2026-09-09). Doce segundos de ida y vuelta se leen como
+       movimiento; dieciseis se leian como una foto quieta. Por debajo de cinco
+       deja de ser una deriva y empieza a ser un zoom, que es otra cosa. */
     'html.pres.pres-efectos .lamina.pres-va.pres-sinparar img[data-foto]{' +
-    'animation:pres-deriva 8s ease-in-out infinite alternate}' +
+    'animation:pres-deriva 6s ease-in-out infinite alternate}' +
     /* MENOS las de las dos rejillas que hacen pila (ver PILAS): alli el
        movimiento es el pase de la pila, y las dos cosas juntas se leerian como
        que la foto no se esta quieta. De la fila de entrada ya salen excluidas; esta
