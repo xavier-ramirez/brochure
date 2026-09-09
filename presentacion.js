@@ -268,25 +268,25 @@
                      arriba y abajo, que duele menos que por los lados.
        align-self:center centra la carta en la celda, que ahora le sobra alto.
 
-       LAS VECINAS SON MAS ANCHAS QUE LA DEL FRENTE, no mas chicas. Es lo que
-       enseña la captura que mando el usuario el 2026-09-09: la pila se lee como
-       un taco de hojas donde la de encima es un pelin menor y las de abajo
-       asoman por los cuatro costados. Estuvieron al reves -frente .9, vecinas
-       .78- y se leia como si las de atras estuvieran lejos, no debajo.
-       El frente va al 86% y las vecinas al 95%: cada vecina sobresale unos 33
-       px por cada lado.
+       LA DEL FRENTE ES LA GRANDE. Suena obvio y hubo que corregirlo: leyendo
+       la captura de referencia se pusieron las vecinas mas anchas que ella
+       -frente al 86%, vecinas al 95%- y el resultado era que la que mandaba se
+       veia MENOR que las de fuera de foco. Lo canto el usuario el 2026-09-09.
+       Ahora el frente va al 98% y las vecinas al 84%: la que toca es la mayor
+       de las tres, y las otras se leen detras por tamaño, no solo por estar
+       apagadas.
 
-       Y SE APARTAN 120 PX, no un 14%. Con el 14% quedaban amontonadas justo
+       Y SE APARTAN 120 PX, no un porcentaje. Antes quedaban amontonadas justo
        detras de la del frente -"todo como agrupado atras", 2026-09-09- y
        arriba y abajo sobraba sitio sin usar. Con 120 px cada vecina asoma unos
-       138 y sigue entera dentro del contenedor, que recorta lo que se sale: en
-       la rejilla de 16:9 le quedan 45 px hasta el filo y en la de 3:2, nueve.
+       90 y sigue entera dentro del contenedor, que recorta lo que se sale: en
+       la rejilla de 16:9 le quedan 67 px hasta el filo y en la de 3:2, 35.
        EN PIXELES Y NO EN PORCENTAJE a proposito: el porcentaje se mide sobre
        el alto de la carta, y las dos rejillas tienen cartas de alto distinto
        -411 y 487-, asi que un mismo numero apartaba mas en una que en otra y
        en la de 3:2 se salia. En pixeles las dos asoman lo mismo. Escalan
        igual, que toda la lamina va dentro de un transform.
-       Si se sube el .86 o el .95 hay que bajar los 120, o las vecinas se salen
+       Si se sube el .98 o el .84 hay que bajar los 120, o las vecinas se salen
        por arriba y por abajo.
 
        Cada figura se lleva su rotulo dentro, en su figcaption, asi que el
@@ -317,13 +317,13 @@
     'html.pres.pres-efectos .ofi-fotos.pres-pila > figure{aspect-ratio:3 / 2}' +
     /* la que manda: al frente y sin apagar */
     'html.pres.pres-efectos .pres-pila > figure.pres-p-va{' +
-    'transform:scale(.86);opacity:1;z-index:3;filter:none}' +
+    'transform:scale(.98);opacity:1;z-index:3;filter:none}' +
     /* las dos vecinas: detras, mas anchas y apagadas */
     'html.pres.pres-efectos .pres-pila > figure.pres-p-antes{' +
-    'transform:translateY(-120px) scale(.95);opacity:1;z-index:2;' +
+    'transform:translateY(-120px) scale(.84);opacity:1;z-index:2;' +
     'filter:saturate(.3) brightness(.42)}' +
     'html.pres.pres-efectos .pres-pila > figure.pres-p-luego{' +
-    'transform:translateY(120px) scale(.95);opacity:1;z-index:2;' +
+    'transform:translateY(120px) scale(.84);opacity:1;z-index:2;' +
     'filter:saturate(.3) brightness(.42)}' +
 
     /* Los puntos: cuantas fotos hay y por cual va. Cuadrados, como todo en
@@ -443,14 +443,12 @@
     '<button type="button" id="pres-efectos"></button>' +
     '<button type="button" id="pres-pantalla">Pantalla completa</button>' +
     '<button type="button" id="pres-suelta">Descargar presentacion</button>' +
-    '<button type="button" id="pres-pptx">Descargar PowerPoint</button>' +
     '<button type="button" id="pres-salir">Salir</button>' +
     '<span class="pres-aviso" id="pres-aviso"></span>';
   document.body.appendChild(barra);
 
   var elCuenta = document.getElementById('pres-cuenta');
   var elAviso  = document.getElementById('pres-aviso');
-  var btnPptx  = document.getElementById('pres-pptx');
   var btnSuelta = document.getElementById('pres-suelta');
 
   var relojAviso = null;
@@ -1136,32 +1134,6 @@
     location.href = 'index.html';
   }
 
-  /* ---- descargar el PowerPoint -----------------------------------------
-     Lo mismo que hace el boton de la barra del editor -misma ruta y misma
-     respuesta-, pero escrito aqui porque en este modo editor.js no corre.
-     El .pptx que sale es el de siempre: una diapositiva por lamina, que es
-     justo lo que se esta viendo en pantalla. */
-  btnPptx.addEventListener('click', function () {
-    if (!conServidor) { aviso('Abre la pagina con: python servidor.py', true); return; }
-    btnPptx.disabled = true;
-    var texto = btnPptx.textContent;
-    btnPptx.textContent = 'Generando...';
-    aviso('Armando el PowerPoint, tarda un rato...');
-    fetch('/api/pptx', { method: 'POST' })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (!res.ok) { aviso(res.error || 'No se pudo generar', true); return; }
-        var a = document.createElement('a');
-        a.href = '/' + res.archivo + '?v=' + Date.now();
-        a.download = res.archivo;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        aviso('PowerPoint listo (' + res.megas + ' MB)');
-      })
-      .catch(function () { aviso('No se pudo generar el PowerPoint', true); })
-      .then(function () { btnPptx.disabled = false; btnPptx.textContent = texto; });
-  });
 
   /* ---- la presentacion en UN SOLO ARCHIVO -------------------------------
      Da un .html con TODO dentro -las fotos, las fuentes, el CSS y este mismo
