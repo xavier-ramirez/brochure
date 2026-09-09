@@ -496,16 +496,6 @@
     '[class*="bloque"]', '[class*="ficha"]'
   ].join(',');
 
-  /* EL LOGOTIPO DE LA EMPRESA, para poder dejarlo fuera de las REPETICIONES.
-     Entra con todo lo demas la primera vez -es parte de como se abre la
-     lamina-, pero las dos que se repiten solas son justo las dos que lo
-     llevan: la cubierta (.cbp-logo) y el cierre (img.logo). Verlo desaparecer
-     y volver cada cinco segundos lo convierte en un anuncio parpadeando; la
-     marca tiene que quedarse puesta mientras el resto vuelve a entrar.
-     Pedido por el usuario el 2026-09-09.
-     Los logotipos de los CLIENTES no entran aqui -son img sin esa clase, y
-     ademas viven en l-clientes, que no repite entera sino por partes. */
-  var SEL_LOGO = '.cbp-logo img, img.logo';
 
   /* Pasadas de mas fina a mas gruesa: si con el detalle salen mas de TOPE
      cosas se sube de nivel. No es por tiempo -el paso ya se acorta solo-, es
@@ -527,21 +517,6 @@
      de DURA porque la limpieza tiene que esperar a la mas lenta de las dos. */
   var DURA_PALABRA = 780;   // el mismo .78s del CSS de .pres-palabra
   var TELON = 260;  // el pase de lamina; hasta que no acaba no entra nada dentro
-  /* Cada cuanto vuelve a empezar el efecto de la PORTADA, contado desde que
-     termina el anterior. Estuvo en 9000 y el usuario lo vio largo el
-     2026-09-09 -"queda mucho tiempo en volver a empezar"-: con la entrada
-     durando 1,7 s, la lamina se pasaba mas de cinco veces ese rato quieta.
-     Con 5000 el ciclo entero baja de 10,7 s a 6,7 y el titulo se vuelve a
-     escribir sin que de tiempo a leerlo dos veces. */
-  var REPETIR_PORTADA = 5000;
-  /* El CIERRE espera lo MISMO que la portada. Estuvo en 16000, al doble, con
-     esta razon: lo que se repite ahi son los datos de contacto -direccion,
-     telefono, correo- y repetir el efecto los borra y los vuelve a escribir
-     palabra a palabra, asi que una espera corta le pasa por encima a quien los
-     este copiando o fotografiando. El usuario lo sabe y aun asi pidio bajarlo
-     el 2026-09-09, igual que la portada; queda escrito por si algun dia el
-     cierre se vuelve a ver apurado y hay que subirlo otra vez. */
-  var REPETIR_CIERRE = 5000;
   /* Lo que se espera entre la ULTIMA pieza de una ficha y la PRIMERA de la
      siguiente, en las laminas de dos fichas por pagina. Es lo que convierte
      una entrada de doce piezas seguidas en dos tiempos que se leen: primero la
@@ -864,29 +839,11 @@
     })();
   }
 
-  /* La deriva es una animacion CSS atada a .pres-va, asi que sola no vuelve a
-     empezar mientras la lamina siga puesta. Quitarsela y devolversela con un
-     reflujo forzado en medio es lo unico que la relanza; hace falta para que la
-     portada, que se repite, no se quede con la foto quieta a la segunda vuelta. */
-  /* La deriva es una animacion CSS atada a .pres-va, asi que sola no vuelve a
-     empezar mientras la lamina siga puesta. Quitarsela y devolversela con un
-     reflujo forzado en medio es lo unico que la relanza; hace falta para la
-     portada y el cierre, que se repiten enteros y su foto tiene que volver a
-     entrar con lo demas.
-     En las laminas de SIN_PARAR no se llama nunca: alli la deriva es infinita
-     y no hay nada que relanzar. */
-  function reiniciarDeriva(lamina) {
-    [].slice.call(lamina.querySelectorAll('img[data-foto]')).forEach(function (im) {
-      im.style.animation = 'none';
-      void im.offsetWidth;
-      im.style.removeProperty('animation');
-    });
-  }
 
 
-  /* LAS QUE NO PARAN. Ni se quedan quietas como las de en medio ni vuelven a
-     entrar enteras como la portada y el cierre: su FOTO se mueve sin parar y
-     lo demas entra una sola vez.
+  /* LAS QUE NO PARAN: entran UNA vez y su FOTO se mueve sin fin.
+        l-cubierta    la portada. Es la que se queda puesta mientras llega la
+                      gente a la reunion.
         l-nosotros    la mision y la vision. Son dos textos para leer, no para
                       verlos entrar cada pocos segundos.
         l-valores     los cuatro valores, por lo mismo.
@@ -895,22 +852,33 @@
         l-clientes    la rejilla de logotipos. Repetirle la entrada seria ver
                       saltar todas las marcas; ahi lo que se hace es mirarlas.
         l-flota       la hoja de los equipos, por lo mismo.
+        l-cierre      el cierre, que se queda puesto mientras se pregunta y se
+                      conversa.
+
+     LA PORTADA Y EL CIERRE ESTABAN APARTE Y VOLVIAN A ENTRAR ENTERAS cada
+     cinco segundos, para que no parecieran una pantalla colgada. Se quito el
+     2026-09-09: el usuario vio que al repetirse la lamina TITILABA -toda la
+     entrada se rehace de golpe, y eso es un parpadeo, no un movimiento- y
+     pidio que hicieran lo mismo que "Nuestros clientes", donde la foto no para
+     y nada titila. Con eso se fueron sus dos intervalos, la rama que las
+     repetia, el parametro esVuelta de animarDentro, el selector del logo -que
+     solo existia para dejarlo fuera de esas vueltas- y reiniciarDeriva, que
+     era quien relanzaba la foto y ya no relanza nadie.
 
      LA FOTO NO SE REINICIA: NO TERMINA. Lo pidio el usuario el 2026-09-09
      -"que no pare de moverse, para que no tengas que reiniciar"-, primero para
-     Nuestros clientes y enseguida para Nuestros proyectos; va para las cinco,
-     que el caso es el mismo. La deriva se declara infinita y de ida y vuelta
-     en la hoja de estilos, asi que la foto se abre y se cierra sin fin y sin un
-     solo corte: no hay final del que volver.
+     Nuestros clientes y enseguida para Nuestros proyectos; acabo valiendo para
+     las siete. La deriva se declara infinita y de ida y vuelta en la hoja de
+     estilos, asi que la foto se abre y se cierra sin fin y sin un solo corte:
+     no hay final del que volver.
      Antes esto lo llevaba un reloj que la relanzaba cada nueve segundos, con
      un contador que le alternaba el sentido para que no diera el tiron. Nada
-     de eso hace falta cuando la animacion no termina, asi que se fueron el
-     reloj, el contador y el parametro de reiniciarDeriva.
+     de eso hace falta cuando la animacion no termina, y todo aquello se fue.
      Y por eso sus fotos tampoco entran en la fila de la lamina -ver
      animarDentro-: si entraran, al limpiar la entrada les cambiaria la
      declaracion de animacion y ahi si darian el salto que se venia a quitar. */
-  var SIN_PARAR = ['l-nosotros', 'l-valores', 'l-portafolio',
-                   'l-clientes', 'l-flota'];
+  var SIN_PARAR = ['l-cubierta', 'l-nosotros', 'l-valores', 'l-portafolio',
+                   'l-clientes', 'l-flota', 'l-cierre'];
 
   function noPara(lamina) {
     return SIN_PARAR.some(function (c) { return lamina.classList.contains(c); });
@@ -926,7 +894,7 @@
     if (noPara(l)) l.classList.add('pres-sinparar');
   });
 
-  function animarDentro(lamina, esVuelta) {
+  function animarDentro(lamina) {
     pararAnim();
 
     /* Las fotos de las dos rejillas que hacen pila salen de la fila: su
@@ -936,8 +904,6 @@
     var sinParar = noPara(lamina);
     var cosas = cosasDe(lamina).filter(function (el) {
       if (pila && pila.contains(el)) return false;
-      /* En las vueltas el logo se queda quieto: ver SEL_LOGO, mas arriba. */
-      if (esVuelta && (el.matches(SEL_LOGO) || el.querySelector(SEL_LOGO))) return false;
       /* Y donde la foto no para, la foto no entra: entrar le cambiaria la
          animacion al limpiar y ahi daria el salto (ver SIN_PARAR). */
       if (sinParar && el.matches('img[data-foto]')) return false;
@@ -1058,24 +1024,6 @@
 
     relojesAnim.push(setTimeout(function () {
       limpiarAnim(lamina);
-      /* LA PRIMERA Y LA ULTIMA se repiten; las de en medio no. Son las dos
-         que se quedan puestas solas y sin nadie pasando pagina: la portada
-         mientras llega la gente a la reunion, y el cierre mientras se pregunta
-         y se conversa. Quietas parecen una pantalla colgada. En las de en
-         medio el que manda es quien esta hablando, y un movimiento detras le
-         competiria la atencion: por eso la repeticion no se generaliza.
-         Se comprueba que siga siendo la que se ve: si ya se paso de lamina no
-         hay nada que repetir. */
-      if (!hayEfectos() || laminas[actual] !== lamina) return;
-      var repite = lamina === laminas[0] ? REPETIR_PORTADA
-                 : lamina === laminas[laminas.length - 1] ? REPETIR_CIERRE
-                 : 0;
-      if (repite) {
-        relojesAnim.push(setTimeout(function () {
-          reiniciarDeriva(lamina);
-          animarDentro(lamina, true);
-        }, repite));
-      }
     }, ultimo + Math.max(DURA, DURA_PALABRA) + 150));
   }
 

@@ -259,6 +259,16 @@
    las dos columnas de esta hoja respiran igual. */
 .ct-directo{gap:14px}
 
+/* Los equipos, un pelin mas juntos: el hueco entre filas baja de 12 a 8. Lo
+   pidio el usuario el 2026-09-09 -"reduce minimamente la separacion"- y ademas
+   hacia falta sitio: medido, las cuatro filas cerraban a TRES px del filo del
+   panel, y con un rotulo que un dia pase a dos renglones se salen. Con 8 se
+   ganan 12 px -cuatro por cada uno de los tres huecos- y quedan quince.
+   Solo el de FILA: el de columna se queda en 20, que ese no aprieta a nadie.
+   Y solo en esta hoja: la panoramica reparte los mismos 24 equipos en cuatro
+   filas dentro de una lamina que le sobra alto, y alli los 12 estan bien. */
+.l-flota .fl-bloque ul{row-gap:8px}
+
 /* servicios: en columnas mas angostas varias vinetas pasan a dos lineas y el
    panel azul se comia la ultima de dos columnas, asi que aqui es mas alto que
    en la panoramica y la tira de fotos de abajo le presta ese alto.
