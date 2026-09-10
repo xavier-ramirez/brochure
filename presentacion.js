@@ -207,6 +207,18 @@
     '@keyframes pres-e-palabra-lado{from{opacity:0;transform:translateX(-22px);' +
     'filter:blur(7px)}to{opacity:1;transform:none;filter:none}}' +
 
+    /* LO QUE VA A ENTRAR EMPIEZA INVISIBLE, desde el primer fotograma en que
+       la lamina se ve. Sin esto la lamina se pintaba ENTERA durante el telon
+       -260 ms- y solo despues se le ponia .pres-anim, que con fill:both la
+       devuelve a su fotograma 0 y la apaga: se veia todo, un titileo, y todo
+       otra vez apareciendo. Lo canto el usuario el 2026-09-10 en "Nuestros
+       servicios" y en las hojas de proyectos, donde ademas se veia el lado
+       izquierdo ya puesto antes de que empezara nada.
+       La clase la pone ir() en cuanto coloca la lamina, y animarDentro se la
+       quita en el mismo instante en que pone .pres-anim: como esa ya deja el
+       elemento en opacidad 0 -su fotograma 0-, entre las dos no hay ni un
+       fotograma en que la cosa se vea. */
+    'html.pres.pres-efectos .pres-espera{opacity:0}' +
     'html.pres.pres-efectos .pres-anim{animation:.62s ' +
     'cubic-bezier(.16,.84,.28,1) both}' +
     /* Sin ninguna de las de abajo esta regla no pone animation-name, o sea
@@ -664,6 +676,11 @@
       el.classList.remove('pres-titular');
       devolverTitular(el);
     });
+    /* La espera se barre SIEMPRE: si se pasa de lamina antes de que la entrada
+       arranque, lo apagado se quedaria apagado para siempre. */
+    [].slice.call(lamina.querySelectorAll('.pres-espera')).forEach(function (el) {
+      el.classList.remove('pres-espera');
+    });
     [].slice.call(lamina.querySelectorAll('.pres-anim')).forEach(function (el) {
       el.classList.remove('pres-anim');
       quitarEntrada(el);
@@ -800,8 +817,31 @@
     }, REESCRIBIR_CADA);
   }
 
+  /* Apaga de golpe todo lo que va a entrar: las piezas de la fila y los dos
+     rotulos, que ademas se parten en palabras despues y sin esto se verian
+     enteros un momento. Lo mismo que anima animarDentro, ni mas ni menos: si
+     aqui se apagara algo que luego no entra, se quedaria apagado. */
+  function esconderDentro(lamina) {
+    cosasDe(lamina).forEach(function (el) { el.classList.add('pres-espera'); });
+    [buscarEpigrafe(lamina), buscarTitular(lamina)].forEach(function (el) {
+      if (el) el.classList.add('pres-espera');
+    });
+  }
+
   function animarDentro(lamina) {
     pararAnim();
+
+    /* Se levanta la espera de golpe y ANTES de nada. De aqui al final de esta
+       funcion no hay ni una pausa -es todo sincrono-, asi que el navegador no
+       pinta nada en medio: lo que reciba .pres-anim se queda apagado igual,
+       por su fotograma 0, y lo que no lo reciba se ve, que es lo que toca.
+       En una sola barrida y no elemento a elemento por seguridad: si un rotulo
+       no se puede partir en palabras, o si esta funcion se sale antes de
+       tiempo porque la lamina no tiene nada que animar, quitarla pieza a pieza
+       dejaria algo apagado para siempre. */
+    [].slice.call(lamina.querySelectorAll('.pres-espera')).forEach(function (el) {
+      el.classList.remove('pres-espera');
+    });
 
     /* Las fotos de las dos rejillas de franjas salen de la fila (ver
        REJILLAS_FOTO). Lo del otro lado -epigrafe,
@@ -963,6 +1003,10 @@
     }
     entra.classList.toggle('pres-atras', !!atras);
     entra.classList.add('pres-entra', 'pres-va');
+    /* Antes del primer fotograma: lo que va a entrar se apaga ya. Va DESPUES
+       de pres-va porque cosasDe() mide, y un elemento en una lamina sin
+       colocar no tiene medidas de las que fiarse. */
+    if (hayEfectos()) esconderDentro(entra);
     requestAnimationFrame(function () {
       requestAnimationFrame(function () { entra.classList.remove('pres-entra'); });
     });
