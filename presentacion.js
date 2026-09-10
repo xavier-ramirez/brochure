@@ -830,16 +830,26 @@
       deGrupo.push(i);
     });
 
-    /* El paso se mide contra el grupo MAS LARGO, no contra el total: el tope
-       es de cuanto tarda en armarse un lado, y los lados van uno detras de
-       otro. Contra el total, doce piezas apretaban el paso a 82 ms y cada
-       ficha entraba mas deprisa de lo que se puede seguir.
-       Con una sola cosa la division da Infinity y gana PASO, que es lo que
-       toca: no hay nada que escalonar. */
     var tamano = grupos.map(function () { return 0; });
     deGrupo.forEach(function (i) { tamano[i]++; });
     var mayor = tamano.reduce(function (a, b) { return Math.max(a, b); }, 1);
-    var paso = Math.round(Math.min(PASO,
+
+    /* DONDE HAY FICHAS, LA FICHA ENTERA DE GOLPE: paso cero. En las laminas de
+       dos proyectos no se escalona pieza a pieza -foto, chip, titulo, texto,
+       miniaturas-, porque lo que se lee son DOS BLOQUES y no doce cosas: sale
+       todo lo de la izquierda a la vez y despues todo lo de la derecha. Lo
+       pidio el usuario el 2026-09-09.
+       Con paso cero la formula de abajo deja el arranque del segundo grupo en
+       DURA + PAUSA_FICHA, o sea 620 ms: la derecha empieza en el instante en
+       que la izquierda acaba de aterrizar, que es lo mas corto que se puede
+       sin que los dos lados se solapen y se lean como uno solo. La lamina
+       entera se arma en 1240 ms en vez de 2140.
+
+       En las laminas de UN solo grupo -todas las demas- el paso es el de
+       siempre, y se mide contra el grupo mas largo y no contra el total: el
+       tope es de cuanto tarda en armarse un lado. Con una sola cosa la
+       division da Infinity y gana PASO, que es lo que toca. */
+    var paso = grupos.length > 1 ? 0 : Math.round(Math.min(PASO,
       Math.max(24, TOPE_ARRANQUES / (mayor - 1))));
 
     /* Donde arranca cada grupo: el siguiente empieza cuando el anterior ha
