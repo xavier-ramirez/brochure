@@ -731,13 +731,21 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .pilar-cab h3{color:#fff;font-family:"Barlow",sans-serif;font-weight:600;font-size:13px;letter-spacing:.3em}
 /* 14px, el mismo tamano que .srv li -"Nuestros servicios"-: el usuario lo
    pidio igual al de esa lista. */
-/* Sin justificar, por lo mismo que .ct p: aqui los dos pilares van uno al lado
-   del otro y cada columna es media lamina; con palabras largas -"infraestruc-
-   tura", "constructivas"- cuadrar el canto derecho abria huecos entre palabras
-   y la Mision se leia a saltos. En la panoramica solo se justifica .qs-texto,
-   que se lleva una columna ancha. De pie estos dos parrafos SI van
-   justificados, porque alli se apilan (ver .l-nosotros .pilar p, vertical.css). */
-.pilar p{color:#fff;font-weight:300;font-size:14.5px;line-height:1.82}
+/* JUSTIFICADOS, los cinco parrafos largos del brochure. Lo pidio el usuario el
+   2026-09-10 -"todos los textos deben estar justificados"- y va contra lo que
+   decia esta hoja hasta hoy, asi que queda escrito por que se cambio y a que
+   hay que mirar: en la panoramica y en la carta estos parrafos viven en
+   columnas de media lamina, y cuadrar el canto derecho reparte el sobrante
+   entre pocos huecos, que es lo que abre rios entre palabras.
+   Lo que lo hace viable es hyphens:auto: con lang="es" en el <html> el
+   navegador parte las palabras largas -"infraestruc-tura", "socioambien-tal",
+   "constructi-vas"- al final del renglon en vez de estirar los espacios de uno
+   solo. Es el mismo par que ya llevaban .qs-texto y, en la hoja de pie, la
+   Mision y la Vision.
+   Si un dia se cambia uno de estos textos, mirar que el interpalabra siga
+   parejo: el riesgo no desaparece, solo se reduce. */
+.pilar p{color:#fff;font-weight:300;font-size:14.5px;line-height:1.82;
+  text-align:justify;hyphens:auto}
 
 /* =====================================================  2b. VALORES  ===
    Foto a toda la altura en el lado izquierdo -.va-foto-, panel navy a la
@@ -761,6 +769,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
   width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio))}
 .l-valores h2{color:#fff;font-size:38.5px;margin-top:12px}
 .l-valores .va-cab p{margin-top:14px;font-size:15px;line-height:1.6;font-weight:300;
+  text-align:justify;hyphens:auto;
   color:#fff}
 .va-lista{position:absolute;left:var(--lado-medio);top:222px;z-index:4;
   width:calc(var(--ancho-lamina) * .55 - 2 * var(--lado-medio));
@@ -847,7 +856,8 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .estado.sede{background:rgba(95,105,128,.92)}
 .estado.sede b{color:#fff}
 .l-oficinas .ofi-lista h3{color:#fff;font-size:22.5px;line-height:1.12}
-.l-oficinas .ofi-lista p{font-size:13px;line-height:1.6;color:#fff;margin-top:8px}
+.l-oficinas .ofi-lista p{font-size:13px;line-height:1.6;color:#fff;margin-top:8px;
+  text-align:justify;hyphens:auto}
 
 /* ==================================================  3. SERVICIOS  ===== */
 .cabecera{position:absolute;left:var(--lado);top:46px;width:calc(var(--ancho-lamina) - 2 * var(--lado))}
@@ -974,7 +984,9 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    Y se corta EN SILENCIO, que es lo peor: el texto no se ve faltar.
    Para subirla hay que acortar esa descripcion en contenido.py o darle mas
    alto a la ficha; mientras tanto, esta se queda. */
+/* Justificado y con hyphens, como los demas: ver la nota de .pilar p. */
 .desc{margin-top:13px;font-size:12.5px;line-height:1.72;color:#000;
+  text-align:justify;hyphens:auto;
   flex:1 1 auto;min-height:0;overflow:hidden}
 .minis{flex:none;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .minis figure{height:142px;overflow:hidden;background:var(--hielo);
@@ -982,7 +994,12 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 .minis img{width:100%;height:100%;transition:transform .6s ease}
 .caja-cliente{flex:none;margin-top:16px;height:66px;background:var(--navy);color:#fff;
   padding:13px 22px;clip-path:polygon(0 0,100% 0,100% 100%,22px 100%)}
-.caja-cliente .rot{display:block;font-size:11px;font-weight:600;letter-spacing:.32em;color:var(--azul-palido)}
+/* El rotulo "CLIENTE" en HIELO y no en azul palido: a 11 px, con .32em de
+   tracking y sobre el navy de la caja, el #AEBCE0 se apagaba y costaba leerlo.
+   Lo pidio el usuario el 2026-09-10. El #EBEEF6 es el mismo blanco roto que ya
+   usa el brochure -no un blanco puro- para no competir con el nombre del
+   cliente, que va debajo y en cuerpo grande. */
+.caja-cliente .rot{display:block;font-size:11px;font-weight:600;letter-spacing:.32em;color:var(--hielo)}
 .caja-cliente b{display:block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24.5px;margin-top:1px}
 
 /* proyecto impar: lamina completa */
@@ -1052,7 +1069,7 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
    como se reparte el texto entre ellos. Vale para las tres maquetas: la de pie
    lo agradece igual, que alli son cuatro. */
 .l-flota .fl-cab p{margin-top:16px;font-size:15px;line-height:1.78;font-weight:300;
-  text-wrap:balance;
+  text-wrap:balance;text-align:justify;hyphens:auto;
   color:#fff}
 .fl-total{position:absolute;right:var(--lado);top:44px;width:210px}
 .fl-total>b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;
