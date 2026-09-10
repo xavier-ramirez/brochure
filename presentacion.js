@@ -730,10 +730,10 @@
      2026-09-09: el usuario vio que al repetirse la lamina TITILABA -toda la
      entrada se rehace de golpe, y eso es un parpadeo, no un movimiento- y
      pidio que hicieran lo mismo que "Nuestros clientes", donde la foto no para
-     y nada titila. Con eso se fueron sus dos intervalos, la rama que las
-     repetia, el parametro esVuelta de animarDentro, el selector del logo -que
-     solo existia para dejarlo fuera de esas vueltas- y reiniciarDeriva, que
-     era quien relanzaba la foto y ya no relanza nadie.
+     y nada titila. Con aquella rama se fueron tambien sus dos intervalos, un
+     parametro que le decia a animarDentro si estaba en una vuelta, el selector
+     que dejaba el logo fuera de esas vueltas y la funcion que relanzaba la
+     deriva: sin vueltas, ninguna de las cuatro cosas tenia trabajo.
 
      LA FOTO NO SE REINICIA: NO TERMINA. Lo pidio el usuario el 2026-09-09
      -"que no pare de moverse, para que no tengas que reiniciar"-, primero para
@@ -743,7 +743,7 @@
      no hay final del que volver.
      Antes esto lo llevaba un reloj que la relanzaba cada nueve segundos, con
      un contador que le alternaba el sentido para que no diera el tiron. Nada
-     de eso hace falta cuando la animacion no termina, y todo aquello se fue.
+     de eso hace falta cuando la animacion no termina, y se fue entero.
      Y por eso sus fotos tampoco entran en la fila de la lamina -ver
      animarDentro-: si entraran, al limpiar la entrada les cambiaria la
      declaracion de animacion y ahi si darian el salto que se venia a quitar. */

@@ -1271,8 +1271,13 @@
    Se intento forzarlo con hyphenate-limit-chars y con text-wrap:pretty y
    ninguno de los dos movio un pixel, asi que no se dejan puestos de adorno.
    Si se cambia una direccion o se vuelve a mover la foto, repetir la tabla: no
-   vale interpolar. */
-.l-oficinas .ofi-lista p{text-align:justify;hyphens:auto}
+   vale interpolar.
+
+   AQUI YA NO HAY REGLA: el text-align:justify y el hyphens:auto de estas
+   direcciones los pone estilos.css desde el 2026-09-10, cuando el usuario
+   pidio justificar TODOS los parrafos del brochure. Repetirlos aqui era decir
+   dos veces lo mismo. La tabla se queda porque es lo que sostiene el 450 del
+   corte de la foto y el 14,5 del cuerpo, que si se deciden en esta hoja. */
 /* Las fotos, a sangre por el canto derecho y una debajo de otra. Las filas se
    reparten solas -grid-auto-rows:1fr, en estilos.css- y son cuatro, las mismas
    cuatro de la lista.

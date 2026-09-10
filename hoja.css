@@ -128,3 +128,19 @@
    la segunda columna en sus dos filas. */
 .l-cierre .contacto > .ct{grid-column:1}
 .l-cierre .contacto > .ct-directo{grid-column:2;grid-row:1 / span 2}
+
+/* SERVICIOS: aqui la lista respira lo que respiraba siempre.
+   La panoramica tuvo que apretar el hueco entre viñetas y los margenes de la
+   regla, y subir la columna a 10 px del canto, porque su panel mide 281 px de
+   alto y el primer servicio -"Soldadura calificada para diametros de 3/4" a
+   42""- pasa de una linea a dos y ya no cabia. Las hojas impresas NO tienen
+   ese problema: la de carta le da al panel 328 px y la de pie 480, sitio de
+   sobra. Heredar el apreton dejaba la columna descolgada -10 px de aire
+   arriba contra 38 abajo-, asi que aqui vuelven los numeros de antes y el
+   bloque queda centrado otra vez.
+   Con la MISMA especificidad que estilos.css, a proposito: vertical.css se
+   carga despues de esta hoja y tiene los suyos -gap 7, regla escondida,
+   columna a 20-, y con un selector mas fuerte se los pisaria. */
+.cols4{top:16px}
+.srv .regla{margin:12px 0 14px}
+.srv ul{gap:9px}

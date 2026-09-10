@@ -865,15 +865,27 @@ h1,h2,h3,h4{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight
 /* z-index:4 -por encima del riel diagonal (z-index:3): la primera columna
    arranca en --lado-medio, 16 px antes de donde acaba el riel, y sin esto
    la barra palida cruzaba el "01" y el titulo del primer servicio. */
-.cols4{position:absolute;left:var(--lado-medio);top:16px;z-index:4;
+/* top:10 y no 16: al pasar el primer servicio a dos lineas la columna mas
+   alta acaba a 10 px del canto de abajo, y dejarla con 16 arriba y 10 abajo se
+   veia descolgada. Con 10 y 10 el bloque queda centrado en el panel. */
+.cols4{position:absolute;left:var(--lado-medio);top:10px;z-index:4;
   width:calc(var(--ancho-lamina) - 2 * var(--lado-medio));
   display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
 .srv .num{background:none;transform:none;padding:0;color:#fff;
   font-weight:600;font-size:12.5px;letter-spacing:.26em}
 .srv h3{color:#fff;font-size:23.5px;margin-top:7px;height:2.1em}
-.srv .regla{height:2px;margin:12px 0 14px;
+/* Los margenes de la regla y el hueco entre viñetas se apretaron el
+   2026-09-10 -antes 12/14 y 9- al alargar el primer servicio a "Soldadura
+   calificada para diametros de 3/4" a 42"", que pasa de una linea a dos. El
+   panel no puede crecer: acaba en 441 y ahi empieza la tira de fotos, asi que
+   los 20 px de la linea nueva habia que sacarlos de dentro. Repartidos entre
+   los cuatro huecos de la lista y los dos margenes de la regla no se notan, y
+   la columna mas alta vuelve a caber con 4 px de sobra. Se aprieta en las
+   CUATRO columnas a proposito: bajarle el hueco solo a la primera dejaba las
+   viñetas de las cuatro a distinta altura, que se ve en seguida. */
+.srv .regla{height:2px;margin:10px 0 11px;
   background:linear-gradient(90deg,var(--azul) 0 34%,rgba(124,139,186,.32) 34%)}
-.srv ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.srv ul{list-style:none;display:flex;flex-direction:column;gap:6px}
 .srv li{position:relative;padding-left:22px;font-size:14.5px;font-weight:300;line-height:1.4;color:#fff}
 .srv li::before{content:"";position:absolute;left:0;top:.5em;width:11px;height:7px;background:var(--azul);
   clip-path:polygon(0 100%,32% 0,100% 0,68% 100%)}
